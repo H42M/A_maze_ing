@@ -1,0 +1,19 @@
+install:
+	python3 -m venv .venv
+	./.venv/bin/pip install -r requirements.txt
+
+clean:
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	rm -rf .mypy_cache
+
+run:
+	./.venv/bin/python main.py
+	make clean
+
+lint:
+	flake8 . --extend-ignore=D --exclude=.venv,.env
+	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+
+lint-strict:
+	flake8 . --exclude=.venv,.env
+	mypy . --exclude '\.venv|\.env' --strict
