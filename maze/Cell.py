@@ -4,11 +4,13 @@
 class Cell:
     """Cell class."""
 
-    def __init__(self, w: bool = True, s: bool = True,
-                 e: bool = True, n: bool = True) -> None:
+    def __init__(self, x: int, y: int, w: bool = True, s: bool = True,
+                 e: bool = True, n: bool = True,) -> None:
         """Initialize a Cell class instance.
 
         Args:
+            x (int): postition x in the maze.
+            y (int): position y in the maze.
             w (bool): State of west wall.
             s (bool): State of south wall.
             e (bool): State of east wall.
@@ -22,6 +24,68 @@ class Cell:
         self._e: bool = e
         self._n: bool = n
         self._visited: bool = False
+        self._x = x
+        self._y = y
+
+    @property
+    def x(self) -> int:
+        """Gets the x pos of the Cell in the maze.
+
+        Returns:
+            int: x pos of the cell.
+
+        Example:
+            >>> print(cell.x)
+            5
+        """
+        return self._x
+
+    @x.setter
+    def x(self, value: int) -> None:
+        """Set the state of the x position.
+
+        Args:
+            value (int): New position.
+
+        Raises:
+            TypeError: If value is not a integer.
+
+        Example:
+            >>> cell.x = 5
+        """
+        if not isinstance(value, int):
+            raise TypeError("X positon must be an integer.")
+        self._x = value
+
+    @property
+    def y(self) -> int:
+        """Gets the x pos of the Cell in the maze.
+
+        Returns:
+            int: x pos of the cell.
+
+        Example:
+            >>> print(cell.x)
+            5
+        """
+        return self._y
+
+    @y.setter
+    def y(self, value: int) -> None:
+        """Set the state of the x position.
+
+        Args:
+            value (int): New position.
+
+        Raises:
+            TypeError: If value is not a integer.
+
+        Example:
+            >>> cell.x = 5
+        """
+        if not isinstance(value, int):
+            raise TypeError("X positon must be an integer.")
+        self._y = value
 
     @property
     def w(self) -> bool:
@@ -154,7 +218,7 @@ class Cell:
             >>> print(cell.visited)
             True
         """
-        return self._n
+        return self._visited
 
     @visited.setter
     def visited(self, value: bool) -> None:

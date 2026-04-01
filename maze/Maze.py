@@ -5,6 +5,8 @@ from .Cell import Cell
 from Logs import Log
 from config.Config import Config
 
+from typing import Optional
+
 
 class Maze:
     """Maze class."""
@@ -13,6 +15,7 @@ class Maze:
         """Initialize a Maze class instance.
 
         Args:
+            logs (Log): Log manager
             width (int): Maze width.
             height (int): Maze height.
             entry (tuple[int,int]): Entry coordinates.
@@ -43,14 +46,48 @@ class Maze:
         """
         maze = []
         if self._height and self._width:
-            for _ in range(self._height):
+            for y in range(self._height):
                 row = []
-                for _ in range(self._width):
-                    row.append(Cell())
+                for x in range(self._width):
+                    row.append(Cell(x, y))
                 maze.append(row)
         return maze
 
+    def available_cells(self) -> list[Cell]:
+        """Return a list of all available Cell.
+
+        Returns:
+            Cell: available Cell list.
+
+        Example:
+            >>> maze.available_cells()
+            [Cell, Cell, ...]
+        """
+        available_cells = []
+        for col in self.maze_list:
+            for cell in col:
+                if not cell.visited:
+                    available_cells.append(cell)
+        return available_cells
+
 # Getters / Setters
+    def get_cell(self, x: int, y: int) -> Optional[Cell]:
+        """Return the corresponding Cell.
+
+        Returns:
+            Cell: corresponding Cell.
+
+        Example:
+            >>> maze.get_cell(3,4)
+            Cell
+        """
+        if x < 0 or y < 0:
+            return None
+        try:
+            return self.maze_list[y][x]
+        except Exception:
+            return None
+
     @property
     def width(self) -> int:
         """Gets the maze width.

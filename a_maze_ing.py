@@ -3,6 +3,7 @@
 from config.Config import Config
 from display.Display import Display
 from maze.Maze import Maze
+from algo.Dfs import Dfs
 from Errors import ConfigError
 from Logs import Log
 import sys
@@ -22,6 +23,9 @@ if __name__ == "__main__":
 
         maze = Maze(logs, config)
         Display.print_maze(maze)
+        dfs = Dfs(logs, 98723)
+        dfs.build(maze)
+
     except ConfigError as e:
         print(e)
 
