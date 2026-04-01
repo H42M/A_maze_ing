@@ -1,3 +1,5 @@
+"""Generate a Maze an resolve it."""
+
 from config.Config import Config
 from Errors import ConfigError
 from Logs import Log
@@ -18,3 +20,21 @@ if __name__ == "__main__":
         config.print_config()
     except ConfigError as e:
         print(e)
+
+
+"""Exemple de Docstring a implementer dans tout le code selon le Google Style.
+
+    Args:
+        weight_kg (float): Le poids de la personne en kilogrammes.
+        height_m (float): La taille de la personne en mètres.
+
+    Returns:
+        float: L'IMC calculé, arrondi à deux décimales.
+
+    Raises:
+        ValueError: Si le poids ou la taille sont négatifs ou nuls.
+
+    Example:
+        >>> calculate_bmi(70, 1.75)
+        22.86
+    """

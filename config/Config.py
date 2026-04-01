@@ -1,3 +1,6 @@
+"""Manage config object."""
+
+
 from Logs import Log, LogType
 from Errors import ConfigError
 from .ConfigChecker import ConfigChecker
@@ -7,12 +10,27 @@ import os
 
 
 class Config:
+    """Config Object."""
+
     def __init__(self, logs: Log, width: Optional[int] = None,
-                 height: Optional[int] = None, entry: Optional[tuple] = None,
-                 exit: Optional[tuple] = None,
+                 height: Optional[int] = None,
+                 entry: Optional[tuple[int, int]] = None,
+                 exit: Optional[tuple[int, int]] = None,
                  output_file: Optional[str] = None,
                  perfect: Optional[bool] = None,
                  config_path: Optional[str] = None) -> None:
+        """Initialize Config instance.
+
+        Args:
+            logs (Log): Log manager.
+            width (int): Maze width.
+            height (int): Maze height.
+            entry (tuple[int, int]): entry coordinates.
+            exit (tuple[int, int]):  exit coordinates.
+
+        Example:
+            >>> config = Config()
+        """
         self.__config: dict[str, Any] = {
             "WIDTH": width,
             "HEIGHT": height,
@@ -27,6 +45,18 @@ class Config:
             self.parse_config_file(config_path)
 
     def parse_config_file(self, config_path: str) -> None:
+        """Parse configuration and check results.
+
+        Args:
+            config_path (str): path of config file.
+
+        Raises:
+            ConfigError: if config file is not correct.
+
+        Example:
+            >>> calculate_bmi(70, 1.75)
+            22.86
+        """
         if not os.path.isfile(config_path):
             raise ConfigError(f"Config file doesnt exist: {config_path}")
 
@@ -70,6 +100,12 @@ class Config:
                             LogType.LOGSUCESS)
 
     def print_config(self) -> None:
+        """Print the current configuration.
+
+        Example:
+            >>> config.print_config()
+            <config printed>
+        """
         print("*******************")
         for key, value in self.__config.items():
             print(f" * {key}: {value}")
