@@ -13,7 +13,7 @@ class ConfigChecker:
         __min_size (int): Minimum allowed size for width and height.
     """
 
-    __max_size = 20
+    __max_size = 50
     __min_size = 3
 
     @classmethod

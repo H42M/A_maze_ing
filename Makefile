@@ -7,7 +7,7 @@ clean:
 	rm -rf .mypy_cache
 
 run:
-	./.venv/bin/python main.py
+	./.venv/bin/python a_maze_ing.py
 	make clean
 
 lint:

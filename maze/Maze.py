@@ -3,13 +3,13 @@
 
 from .Cell import Cell
 from Logs import Log
+from config.Config import Config
 
 
 class Maze:
     """Maze class."""
 
-    def __init__(self, logs: Log, width: int, height: int,
-                 entry: tuple[int, int], exit: tuple[int, int]) -> None:
+    def __init__(self, logs: Log, config: Config) -> None:
         """Initialize a Maze class instance.
 
         Args:
@@ -22,10 +22,10 @@ class Maze:
             >>> maze = Maze(5, 5, (2,2), (5,5))
         """
         self.__logs = logs
-        self._width = width
-        self._height = height
-        self._entry = entry
-        self._exit = exit
+        self._width = config.width
+        self._height = config.height
+        self._entry = config.entry
+        self._exit = config.exit
         self._maze = self.default_maze()
 
     def default_maze(self) -> list[list[Cell]]:
@@ -42,11 +42,12 @@ class Maze:
             ]
         """
         maze = []
-        for _ in range(self._height):
-            row = []
-            for _ in range(self._width):
-                row.append(Cell())
-            maze.append(row)
+        if self._height and self._width:
+            for _ in range(self._height):
+                row = []
+                for _ in range(self._width):
+                    row.append(Cell())
+                maze.append(row)
         return maze
 
 # Getters / Setters
@@ -61,7 +62,9 @@ class Maze:
             >>> print(maze.width)
             5
         """
-        return self._width
+        if self._width:
+            return self._width
+        return -1
 
     @property
     def height(self) -> int:
@@ -74,7 +77,9 @@ class Maze:
             >>> print(maze.height)
             5
         """
-        return self._width
+        if self._height:
+            return self._height
+        return -1
 
     @property
     def exit(self) -> tuple[int, int]:
@@ -87,7 +92,9 @@ class Maze:
             >>> print(maze.exit)
             (2, 2)
         """
-        return self._exit
+        if self._exit:
+            return self._exit
+        return (-1, -1)
 
     @property
     def entry(self) -> tuple[int, int]:
@@ -100,4 +107,20 @@ class Maze:
             >>> print(maze.width)
             5
         """
-        return self._entry
+        if self._entry:
+            return self._entry
+        return (-1, -1)
+
+# Getters / Setters
+    @property
+    def maze_list(self) -> list[list[Cell]]:
+        """Gets the maze width.
+
+        Returns:
+            int: Maze width.
+
+        Example:
+            >>> print(maze.width)
+            5
+        """
+        return self._maze

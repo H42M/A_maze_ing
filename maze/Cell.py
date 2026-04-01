@@ -17,10 +17,11 @@ class Cell:
         Example:
             >>> cell = Cell(True, True, False, False)
         """
-        self._w = w
-        self._s = s
-        self._e = e
-        self._n = n
+        self._w: bool = w
+        self._s: bool = s
+        self._e: bool = e
+        self._n: bool = n
+        self._visited: bool = False
 
     @property
     def w(self) -> bool:
@@ -141,3 +142,33 @@ class Cell:
         if not isinstance(value, bool):
             raise TypeError("Wall state must be a boolean.")
         self._n = value
+
+    @property
+    def visited(self) -> bool:
+        """Gets the state of the cell.
+
+        Returns:
+            bool: True if the has visited.
+
+        Example:
+            >>> print(cell.visited)
+            True
+        """
+        return self._n
+
+    @visited.setter
+    def visited(self, value: bool) -> None:
+        """Set the state of the cell.
+
+        Args:
+            value (bool): New state of the cell.
+
+        Raises:
+            TypeError: If value is not a boolean.
+
+        Example:
+            >>> cell.n = True
+        """
+        if not isinstance(value, bool):
+            raise TypeError("Cell state must be a boolean.")
+        self._visited = value

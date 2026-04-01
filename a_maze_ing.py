@@ -1,9 +1,10 @@
 """Generate a Maze an resolve it."""
 
 from config.Config import Config
+from display.Display import Display
+from maze.Maze import Maze
 from Errors import ConfigError
 from Logs import Log
-
 import sys
 
 if __name__ == "__main__":
@@ -18,6 +19,9 @@ if __name__ == "__main__":
     try:
         config.parse_config_file(conf_file)
         config.print_config()
+
+        maze = Maze(logs, config)
+        Display.print_maze(maze)
     except ConfigError as e:
         print(e)
 

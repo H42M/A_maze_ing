@@ -110,3 +110,71 @@ class Config:
         for key, value in self.__config.items():
             print(f" * {key}: {value}")
         print("*******************")
+
+    # Getters
+    @property
+    def width(self) -> Optional[int]:
+        """Gets the maze width.
+
+        Returns:
+            Optional[int]: The maze width, or None if not set.
+        """
+        return self.__config["WIDTH"]
+
+    @property
+    def height(self) -> Optional[int]:
+        """Gets the maze height.
+
+        Returns:
+            Optional[int]: The maze height, or None if not set.
+        """
+        return self.__config["HEIGHT"]
+
+    @property
+    def entry(self) -> Optional[tuple[int, int]]:
+        """Gets the entry point coordinates.
+
+        Returns:
+            Optional[tuple[int, int]]: The (x, y) entry coordinates,
+            or None if not set.
+        """
+        return self.__config["ENTRY"]
+
+    @property
+    def exit(self) -> Optional[tuple[int, int]]:
+        """Gets the exit point coordinates.
+
+        Returns:
+            Optional[tuple[int, int]]: The (x, y) exit coordinates,
+            or None if not set.
+        """
+        return self.__config["EXIT"]
+
+    @property
+    def output_file(self) -> Optional[str]:
+        """Gets the output file path.
+
+        Returns:
+            Optional[str]: The output file path, or None if not set.
+        """
+        return self.__config["OUTPUT_FILE"]
+
+    @property
+    def perfect(self) -> Optional[bool]:
+        """Gets the perfect maze flag.
+
+        Returns:
+            Optional[bool]: True if the maze should be perfect,
+            False otherwise, or None if not set.
+        """
+        return self.__config["PERFECT"]
+
+    @property
+    def config(self) -> dict[str, Any]:
+        """Gets the full configuration dictionary.
+
+        Returns:
+            dict[str, Any]: The complete configuration with all keys
+            and values.
+        """
+        return self.__config
