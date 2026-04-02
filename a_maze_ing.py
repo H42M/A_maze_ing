@@ -6,6 +6,8 @@ from maze.Maze import Maze
 from algo.Dfs import Dfs
 from Errors import ConfigError
 from Logs import Log
+
+import time
 import sys
 
 if __name__ == "__main__":
@@ -20,10 +22,11 @@ if __name__ == "__main__":
     try:
         config.parse_config_file(conf_file)
         config.print_config()
+        time.sleep(5)
 
         maze = Maze(logs, config)
         Display.print_maze(maze)
-        dfs = Dfs(logs, 98723)
+        dfs = Dfs(logs)
         dfs.build(maze)
 
     except ConfigError as e:

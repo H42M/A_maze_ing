@@ -29,6 +29,7 @@ class Maze:
         self._height = config.height
         self._entry = config.entry
         self._exit = config.exit
+        self._perfect = config.perfect
         self._maze = self.default_maze()
 
     def default_maze(self) -> list[list[Cell]]:
@@ -147,6 +148,21 @@ class Maze:
         if self._entry:
             return self._entry
         return (-1, -1)
+    
+    @property
+    def perfect(self) -> bool:
+        """Gets the perfect maze status.
+
+        Returns:
+            bool: Is  maze must be perfect.
+
+        Example:
+            >>> print(maze.perfect)
+            True
+        """
+        if self._perfect:
+            return self._perfect
+        return (False)
 
 # Getters / Setters
     @property
