@@ -22,6 +22,12 @@ if __name__ == "__main__":
         config.parse_config_file(conf_file)
 
         maze = Maze(logs, config)
+        mid_cell = maze.get_cell(
+            int((config.width - 7) / 2),
+            int((config.height - 5) / 2),
+        )
+        if mid_cell:
+            maze.generate_42(mid_cell)
         Display.print_maze(maze)
         dfs = Dfs(logs)
         dfs.build(maze)

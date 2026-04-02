@@ -71,6 +71,65 @@ class Maze:
                     available_cells.append(cell)
         return available_cells
 
+    def generate_42(self, starting_cell: Cell) -> None:
+        """Generate 42 logo in maze.
+
+        Args:
+            cell (Cell): 42 logo Start.
+
+        Example:
+            >>> maze.genrate_42()
+        """
+        starting_cell.visited = True
+        cell: Optional[Cell] = starting_cell
+        # Number 4:
+        for _ in range(2):
+            if cell:
+                cell = self.get_cell(cell.x, cell.y + 1)
+                if cell:
+                    cell.visited = True
+        for _ in range(2):
+            if cell:
+                cell = self.get_cell(cell.x + 1, cell.y)
+                if cell:
+                    cell.visited = True
+        for _ in range(2):
+            if cell:
+                cell = self.get_cell(cell.x, cell.y + 1)
+                if cell:
+                    cell.visited = True
+
+        # Number 2:
+        cell = self.get_cell(starting_cell.x + 4, starting_cell.y)
+        if cell:
+            cell.visited = True
+
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell(cell.x + 1, cell.y)
+                    if cell:
+                        cell.visited = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell(cell.x, cell.y + 1)
+                    if cell:
+                        cell.visited = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell(cell.x - 1, cell.y)
+                    if cell:
+                        cell.visited = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell(cell.x, cell.y + 1)
+                    if cell:
+                        cell.visited = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell(cell.x + 1, cell.y)
+                    if cell:
+                        cell.visited = True
+
 # Getters / Setters
     def get_cell(self, x: int, y: int) -> Optional[Cell]:
         """Return the corresponding Cell.

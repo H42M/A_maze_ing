@@ -52,23 +52,18 @@ class Dfs:
         random.seed(self.__seed)
         os.system("clear")
         Display.print_maze_v2(maze_obj)
+        sleep(5)
 
         while (len(maze_obj.available_cells()) > 0):
             self.__current_cell.visited = True
             cur_cell_pos = (self.__current_cell.x, self.__current_cell.y)
-            if self.__current_cell not in self.__traveled:
-                if not maze_obj.perfect:
-                    self.__traveled.append(self.__current_cell)
-                elif maze_obj.perfect and cur_cell_pos != maze_obj.exit:
-                    self.__traveled.append(self.__current_cell)
 
-            if cur_cell_pos == maze_obj.exit and maze_obj.perfect:
+            if (self.__current_cell not in self.__traveled and
+                    cur_cell_pos != maze_obj.exit):
+                self.__traveled.append(self.__current_cell)
+
+            if cur_cell_pos == maze_obj.exit:
                 self.__current_cell = self.get_first_pos_av(maze_obj)
-                sleep(5)
-
-            # print("Travel: ")
-            # [print(f" ({travel.x}, {travel.y})")
-            # for travel in self.__traveled]
 
             av_options = self.get_available_options(
                 maze_obj, self.__current_cell.x, self.__current_cell.y)

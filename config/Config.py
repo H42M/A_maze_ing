@@ -113,7 +113,7 @@ class Config:
 
     # Getters
     @property
-    def width(self) -> Optional[int]:
+    def width(self) -> int:
         """Gets the maze width.
 
         Returns:
@@ -122,7 +122,7 @@ class Config:
         return int(self.__config["WIDTH"])
 
     @property
-    def height(self) -> Optional[int]:
+    def height(self) -> int:
         """Gets the maze height.
 
         Returns:
