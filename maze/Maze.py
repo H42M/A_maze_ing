@@ -148,7 +148,7 @@ class Maze:
         if self._entry:
             return self._entry
         return (-1, -1)
-    
+
     @property
     def perfect(self) -> bool:
         """Gets the perfect maze status.

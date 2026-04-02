@@ -2,7 +2,7 @@
 
 
 from maze import Maze, Cell
-from Logs import Log, LogType
+from Logs import Log
 from Errors import DFSError
 from display.Display import Display
 
@@ -55,25 +55,28 @@ class Dfs:
 
         while (len(maze_obj.available_cells()) > 0):
             self.__current_cell.visited = True
-            if self.__current_cell not in self.__traveled:
-                self.__traveled.append(self.__current_cell)
-
             cur_cell_pos = (self.__current_cell.x, self.__current_cell.y)
+            if self.__current_cell not in self.__traveled:
+                if not maze_obj.perfect:
+                    self.__traveled.append(self.__current_cell)
+                elif maze_obj.perfect and cur_cell_pos != maze_obj.exit:
+                    self.__traveled.append(self.__current_cell)
+
             if cur_cell_pos == maze_obj.exit and maze_obj.perfect:
                 self.__current_cell = self.get_first_pos_av(maze_obj)
-                # print("Exit found")
-                # sleep(5)
-            
-            
-            # print("Travel: ")
-            # [print(f" ({travel.x}, {travel.y})") for travel in self.__traveled]
+                sleep(5)
 
-            av_options = self.get_available_options(maze_obj, self.__current_cell.x, self.__current_cell.y)
+            # print("Travel: ")
+            # [print(f" ({travel.x}, {travel.y})")
+            # for travel in self.__traveled]
+
+            av_options = self.get_available_options(
+                maze_obj, self.__current_cell.x, self.__current_cell.y)
             if len(av_options) > 0:
                 print(f"Available neighbors: {len(av_options)}")
                 rand_neigh = random.randint(0, len(av_options) - 1)
                 selected = av_options[rand_neigh]
-                
+
                 setattr(self.__current_cell, selected['wall'], False)
                 self.__current_cell = selected["neight"]
                 setattr(self.__current_cell, selected['neigh_wall'], False)
@@ -85,10 +88,23 @@ class Dfs:
             else:
                 current_index = self.__traveled.index(self.__current_cell)
                 self.__current_cell = self.__traveled[current_index - 1]
-            
-            
 
-    def get_available_options(self, maze_obj: Maze, curx: int, cury: int) -> dict[str, Any]:
+    def get_available_options(self, maze_obj: Maze, curx: int, cury: int
+                              ) -> list[dict[str, Any]]:
+        """Choose a cell amoung the 4 neighbors.
+
+        Args:
+            maze_obj (Maze): Current maze
+            curx (int): Current position X
+            cury (int): Current positoin y
+
+        Return:
+            list[dict[str, any]]: list of available options amoug neighbors.
+
+        Example:
+            >>> self.get_available_options(...)
+            [<option1>, <option2>, ...]
+        """
         options = [
                 {"neight": maze_obj.get_cell(curx - 1, cury),
                  "wall": "w", "neigh_wall": "e"},
@@ -105,18 +121,32 @@ class Dfs:
                 if not option['neight'].visited:
                     av_options.append(option)
         return av_options
-    
+
     def get_first_pos_av(self, maze_obj: Maze) -> Cell:
+        """Get the first availbale position back.
+
+        Args:
+            maze_obj (Maze): Current maze
+
+        Return:
+            Cell: available Cell
+
+        Example:
+            >>> self.get_first_pos_av(...)
+            Cell
+        """
         # current_cell = self.__traveled[0]
         # i = 0
-        # while  len(self.get_available_options(maze_obj, current_cell.x, current_cell.y)) < 1:
+        # while  len(self.get_available_options(maze_obj, current_cell.x,
+        # current_cell.y)) < 1:
         #     i += 1
         #     current_cell = self.__traveled[i]
         # return current_cell
 
-        i = len(self.__traveled) - 1
+        i = len(self.__traveled) - 5
         current_cell = self.__traveled[i]
-        while len(self.get_available_options(maze_obj, current_cell.x, current_cell.y)) < 1:
-            i -= 5
+        while len(self.get_available_options(maze_obj, current_cell.x,
+                                             current_cell.y)) < 1:
+            i -= 1
             current_cell = self.__traveled[i]
         return current_cell

@@ -119,7 +119,7 @@ class Config:
         Returns:
             Optional[int]: The maze width, or None if not set.
         """
-        return self.__config["WIDTH"]
+        return int(self.__config["WIDTH"])
 
     @property
     def height(self) -> Optional[int]:
@@ -128,7 +128,7 @@ class Config:
         Returns:
             Optional[int]: The maze height, or None if not set.
         """
-        return self.__config["HEIGHT"]
+        return int(self.__config["HEIGHT"])
 
     @property
     def entry(self) -> Optional[tuple[int, int]]:
@@ -138,7 +138,7 @@ class Config:
             Optional[tuple[int, int]]: The (x, y) entry coordinates,
             or None if not set.
         """
-        return self.__config["ENTRY"]
+        return tuple(self.__config["ENTRY"])
 
     @property
     def exit(self) -> Optional[tuple[int, int]]:
@@ -148,7 +148,7 @@ class Config:
             Optional[tuple[int, int]]: The (x, y) exit coordinates,
             or None if not set.
         """
-        return self.__config["EXIT"]
+        return tuple(self.__config["EXIT"])
 
     @property
     def output_file(self) -> Optional[str]:
@@ -157,7 +157,7 @@ class Config:
         Returns:
             Optional[str]: The output file path, or None if not set.
         """
-        return self.__config["OUTPUT_FILE"]
+        return str(self.__config["OUTPUT_FILE"])
 
     @property
     def perfect(self) -> Optional[bool]:
@@ -167,7 +167,7 @@ class Config:
             Optional[bool]: True if the maze should be perfect,
             False otherwise, or None if not set.
         """
-        return self.__config["PERFECT"]
+        return bool(self.__config["PERFECT"])
 
     @property
     def config(self) -> dict[str, Any]:
