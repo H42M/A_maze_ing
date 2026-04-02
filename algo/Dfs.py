@@ -55,7 +55,11 @@ class Dfs:
             os.system("clear")
             Display.print_maze(maze_obj)
             self.__current_cell.visited = True
-            self.__traveled.append(self.__current_cell)
+            if self.__current_cell not in self.__traveled:
+                self.__traveled.append(self.__current_cell)
+            # print("Travel: ")
+            # [print(f" ({travel.x}, {travel.y})") for travel in self.__traveled]
+
             curx = self.__current_cell.x
             cury = self.__current_cell.y
             self.__logs.add_log(f"Current pos: ({curx}, {cury})",
@@ -66,9 +70,9 @@ class Dfs:
                 {"neight": maze_obj.get_cell(curx + 1, cury),
                  "wall": "e", "neigh_wall": "w"},
                 {"neight": maze_obj.get_cell(curx, cury - 1),
-                 "wall": "s", "neigh_wall": "n"},
-                {"neight": maze_obj.get_cell(curx, cury + 1),
                  "wall": "n", "neigh_wall": "s"},
+                {"neight": maze_obj.get_cell(curx, cury + 1),
+                 "wall": "s", "neigh_wall": "n"},
             ]
 
             av_options = [option for option in options
@@ -82,6 +86,9 @@ class Dfs:
                 self.__current_cell = selected["neight"]
                 setattr(self.__current_cell, selected['neigh_wall'], False)
             else:
-                print("no neighbors")
+                current_index = self.__traveled.index(self.__current_cell)
+                self.__current_cell = self.__traveled[current_index - 1]
             
-            sleep(1)
+            print(f"Cell remaining: {len(maze_obj.available_cells())}")
+
+            sleep(0.1)
