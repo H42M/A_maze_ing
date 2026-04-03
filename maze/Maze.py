@@ -5,8 +5,13 @@ from .Cell import Cell
 from Logs import Log
 from config.Config import Config
 from Errors import MazeError
+from algo.Dfs import Dfs, Instruct
+
 
 from typing import Optional
+import os
+from time import sleep
+import random
 
 
 class Maze:
@@ -80,6 +85,36 @@ class Maze:
                 if not cell.visited:
                     available_cells.append(cell)
         return available_cells
+
+    def generate_maze(self, seed: Optional[int] = None):
+        """Build comlplete random maze based on his seed.
+
+        Returns:
+            Cell: available Cell list.
+
+        Example:
+            >>> maze.available_cells()
+            [Cell, Cell, ...]
+        """
+        from display.Display import Display
+        if not seed:
+            seed = random.randint(1000, 1000000)
+        dfs = Dfs(self.__logs, self.entry, self, seed)
+        instruct = dfs.get_instruct()
+
+        while (instruct):
+            setattr(instruct[Instruct.CUR_CELL],
+                    instruct[Instruct.CUR_WALL], False)
+            setattr(instruct[Instruct.NEIGH_CELL],
+                    instruct[Instruct.NEIGH_WALL], False)
+
+            dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
+            instruct = dfs.get_instruct()
+            os.system("clear")
+            Display.print_maze(self)
+            sleep(0.1)
+
+        os.system("clear")
 
     def generate_42(self, starting_cell: Cell) -> None:
         """Generate 42 logo in maze.
@@ -197,7 +232,6 @@ class Maze:
             >>> print(maze.exit)
             (2, 2)
         """
-
         cell_exit = self.get_cell(self._exit[0], self._exit[1])
         if cell_exit:
             return cell_exit

@@ -3,7 +3,6 @@
 from config.Config import Config
 from display.Display import Display
 from maze.Maze import Maze
-from algo.Dfs import Dfs
 from Errors import ConfigError
 from Logs import Log
 
@@ -28,9 +27,9 @@ if __name__ == "__main__":
         )
         if mid_cell:
             maze.generate_42(mid_cell)
+        maze.generate_maze()
         Display.print_maze(maze)
-        dfs = Dfs(logs)
-        dfs.build(maze)
+
         config.print_config()
 
     except ConfigError as e:

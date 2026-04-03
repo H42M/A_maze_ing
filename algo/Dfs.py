@@ -3,20 +3,19 @@
 
 from maze import Maze, Cell
 from Logs import Log
-from Errors import DFSError, MazeError
-from display.Display import Display
+from Errors import DFSError
+
 
 from typing import Optional, Any
 import random
-from time import sleep
-import os
+from enum import Enum
 
 
 class Dfs:
     """Dfs algorithm class."""
 
-    def __init__(self, logs: Log,
-                 seed: Optional[int] = None) -> None:
+    def __init__(self, logs: Log, entry: Cell, maze: Maze,
+                 seed: int) -> None:
         """Initialize a DFS class instance.
 
         Args:
@@ -27,14 +26,14 @@ class Dfs:
         Example:
             >>> maze = Maze(5, 5, (2,2), (5,5))
         """
-        if not seed:
-            seed = random.randint(1000, 1000000)
+        random.seed(seed)
         self.__seed = seed
         self.__logs = logs
+        self.__maze = maze
         self.__traveled: list[Cell] = []
-        self.__current_cell: Cell
+        self.__current_cell: Cell = entry
 
-    def build(self, maze_obj: Maze) -> None:
+    def get_instruct(self) -> Optional[dict[Enum, Any]]:
         """Build the maze.
 
         Args:
@@ -43,46 +42,36 @@ class Dfs:
         Example:
             >>> maze = Maze(5, 5, (2,2), (5,5))
         """
-        try:
-            self.__current_cell = maze_obj.entry
-        except MazeError as e:
-            raise DFSError(e)
+        self.__current_cell.visited = True
 
-        random.seed(self.__seed)
-        os.system("clear")
-        Display.print_maze_v2(maze_obj)
-        sleep(5)
+        if (self.__current_cell not in self.__traveled and
+                self.__current_cell != self.__maze.exit):
+            self.__traveled.append(self.__current_cell)
 
-        while (len(maze_obj.available_cells()) > 0):
-            self.__current_cell.visited = True
+        if self.__current_cell == self.__maze.exit:
+            self.__current_cell = self.get_first_pos_av(self.__maze)
 
-            if (self.__current_cell not in self.__traveled and
-                    self.__current_cell != maze_obj.exit):
-                self.__traveled.append(self.__current_cell)
-
-            if self.__current_cell == maze_obj.exit:
-                self.__current_cell = self.get_first_pos_av(maze_obj)
-
-            av_options = self.get_available_options(
-                maze_obj, self.__current_cell.x, self.__current_cell.y)
+        i = 1
+        count = 0
+        while (i >= 0):
+            count += 1
+            av_options = self.get_available_options(self.__maze,
+                                                    self.__current_cell)
             if len(av_options) > 0:
-                print(f"Available neighbors: {len(av_options)}")
                 rand_neigh = random.randint(0, len(av_options) - 1)
                 selected = av_options[rand_neigh]
-
-                setattr(self.__current_cell, selected['wall'], False)
-                self.__current_cell = selected["neight"]
-                setattr(self.__current_cell, selected['neigh_wall'], False)
-
-                os.system("clear")
-                Display.print_maze_v2(maze_obj)
-                sleep(0.1)
+                return selected
             else:
-                current_index = self.__traveled.index(self.__current_cell)
-                self.__current_cell = self.__traveled[current_index - 1]
+                i = self.__traveled.index(self.__current_cell)
+                if i == 0:
+                    return None
+                self.__current_cell = self.__traveled[i - 1]
+            if count > 5000:
+                raise DFSError(f"Loop detected: index = {i}")
+        return None
 
-    def get_available_options(self, maze_obj: Maze, curx: int, cury: int
-                              ) -> list[dict[str, Any]]:
+    def get_available_options(self, maze_obj: Maze, cell: Cell
+                              ) -> list[dict[Enum, Any]]:
         """Choose a cell amoung the 4 neighbors.
 
         Args:
@@ -98,19 +87,35 @@ class Dfs:
             [<option1>, <option2>, ...]
         """
         options = [
-                {"neight": maze_obj.get_cell(curx - 1, cury),
-                 "wall": "w", "neigh_wall": "e"},
-                {"neight": maze_obj.get_cell(curx + 1, cury),
-                 "wall": "e", "neigh_wall": "w"},
-                {"neight": maze_obj.get_cell(curx, cury - 1),
-                 "wall": "n", "neigh_wall": "s"},
-                {"neight": maze_obj.get_cell(curx, cury + 1),
-                 "wall": "s", "neigh_wall": "n"},
+                {
+                    Instruct.NEIGH_CELL: maze_obj.get_cell(cell.x - 1, cell.y),
+                    Instruct.CUR_CELL: cell,
+                    Instruct.CUR_WALL: "w",
+                    Instruct.NEIGH_WALL: "e"
+                 },
+                {
+                    Instruct.NEIGH_CELL: maze_obj.get_cell(cell.x + 1, cell.y),
+                    Instruct.CUR_CELL: cell,
+                    Instruct.CUR_WALL: "e",
+                    Instruct.NEIGH_WALL: "w"
+                 },
+                {
+                    Instruct.NEIGH_CELL: maze_obj.get_cell(cell.x, cell.y - 1),
+                    Instruct.CUR_CELL: cell,
+                    Instruct.CUR_WALL: "n",
+                    Instruct.NEIGH_WALL: "s"
+                 },
+                {
+                    Instruct.NEIGH_CELL: maze_obj.get_cell(cell.x, cell.y + 1),
+                    Instruct.CUR_CELL: cell,
+                    Instruct.CUR_WALL: "s",
+                    Instruct.NEIGH_WALL: "n"
+                 },
             ]
         av_options = []
         for option in options:
-            if isinstance(option["neight"], Cell):
-                if not option['neight'].visited:
+            if isinstance(option[Instruct.NEIGH_CELL], Cell):
+                if not option[Instruct.NEIGH_CELL].visited:
                     av_options.append(option)
         return av_options
 
@@ -135,10 +140,31 @@ class Dfs:
         #     current_cell = self.__traveled[i]
         # return current_cell
 
-        i = len(self.__traveled) - 5
+        i = len(self.__traveled) - 2
         current_cell = self.__traveled[i]
-        while len(self.get_available_options(maze_obj, current_cell.x,
-                                             current_cell.y)) < 1:
+        while len(self.get_available_options(maze_obj, current_cell)) < 1:
             i -= 1
             current_cell = self.__traveled[i]
         return current_cell
+
+    def set_current_cell(self, cell: Cell) -> None:
+        """Set the dfs current cell.
+
+        Args:
+            cell: Cell: new current cell
+
+        Example:
+            >>> self.set_current_cell(cell)
+        """
+        if cell:
+            self.__current_cell = cell
+
+
+class Instruct(Enum):
+    """List diffrents instructions types."""
+
+    NEIGH_CELL = "NEIGHTBOR_CELL"
+    CUR_CELL = "CURRENT_CELL"
+
+    CUR_WALL = "CURRENT_WALL"
+    NEIGH_WALL = "NEIGHBOR_WALL"
