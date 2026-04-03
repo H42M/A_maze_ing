@@ -1,3 +1,6 @@
+"""Manage config object."""
+
+
 from Logs import Log, LogType
 from Errors import ConfigError
 from .ConfigChecker import ConfigChecker
@@ -7,12 +10,27 @@ import os
 
 
 class Config:
+    """Config Object."""
+
     def __init__(self, logs: Log, width: Optional[int] = None,
-                 height: Optional[int] = None, entry: Optional[tuple] = None,
-                 exit: Optional[tuple] = None,
+                 height: Optional[int] = None,
+                 entry: Optional[tuple[int, int]] = None,
+                 exit: Optional[tuple[int, int]] = None,
                  output_file: Optional[str] = None,
                  perfect: Optional[bool] = None,
                  config_path: Optional[str] = None) -> None:
+        """Initialize Config instance.
+
+        Args:
+            logs (Log): Log manager.
+            width (int): Maze width.
+            height (int): Maze height.
+            entry (tuple[int, int]): entry coordinates.
+            exit (tuple[int, int]):  exit coordinates.
+
+        Example:
+            >>> config = Config()
+        """
         self.__config: dict[str, Any] = {
             "WIDTH": width,
             "HEIGHT": height,
@@ -27,6 +45,18 @@ class Config:
             self.parse_config_file(config_path)
 
     def parse_config_file(self, config_path: str) -> None:
+        """Parse configuration and check results.
+
+        Args:
+            config_path (str): path of config file.
+
+        Raises:
+            ConfigError: if config file is not correct.
+
+        Example:
+            >>> calculate_bmi(70, 1.75)
+            22.86
+        """
         if not os.path.isfile(config_path):
             raise ConfigError(f"Config file doesnt exist: {config_path}")
 
@@ -70,7 +100,81 @@ class Config:
                             LogType.LOGSUCESS)
 
     def print_config(self) -> None:
+        """Print the current configuration.
+
+        Example:
+            >>> config.print_config()
+            <config printed>
+        """
         print("*******************")
         for key, value in self.__config.items():
             print(f" * {key}: {value}")
         print("*******************")
+
+    # Getters
+    @property
+    def width(self) -> int:
+        """Gets the maze width.
+
+        Returns:
+            Optional[int]: The maze width, or None if not set.
+        """
+        return int(self.__config["WIDTH"])
+
+    @property
+    def height(self) -> int:
+        """Gets the maze height.
+
+        Returns:
+            Optional[int]: The maze height, or None if not set.
+        """
+        return int(self.__config["HEIGHT"])
+
+    @property
+    def entry(self) -> Optional[tuple[int, int]]:
+        """Gets the entry point coordinates.
+
+        Returns:
+            Optional[tuple[int, int]]: The (x, y) entry coordinates,
+            or None if not set.
+        """
+        return tuple(self.__config["ENTRY"])
+
+    @property
+    def exit(self) -> Optional[tuple[int, int]]:
+        """Gets the exit point coordinates.
+
+        Returns:
+            Optional[tuple[int, int]]: The (x, y) exit coordinates,
+            or None if not set.
+        """
+        return tuple(self.__config["EXIT"])
+
+    @property
+    def output_file(self) -> Optional[str]:
+        """Gets the output file path.
+
+        Returns:
+            Optional[str]: The output file path, or None if not set.
+        """
+        return str(self.__config["OUTPUT_FILE"])
+
+    @property
+    def perfect(self) -> bool:
+        """Gets the perfect maze flag.
+
+        Returns:
+            Optional[bool]: True if the maze should be perfect,
+            False otherwise, or None if not set.
+        """
+        return bool(self.__config["PERFECT"])
+
+    @property
+    def config(self) -> dict[str, Any]:
+        """Gets the full configuration dictionary.
+
+        Returns:
+            dict[str, Any]: The complete configuration with all keys
+            and values.
+        """
+        return self.__config

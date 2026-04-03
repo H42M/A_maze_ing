@@ -7,11 +7,11 @@ clean:
 	rm -rf .mypy_cache
 
 run:
-	./.venv/bin/python main.py
+	./.venv/bin/python a_maze_ing.py config.txt
 	make clean
 
 lint:
-	flake8 . --extend-ignore=D --exclude=.venv,.env
+	flake8 . --exclude=.venv,.env
 	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
