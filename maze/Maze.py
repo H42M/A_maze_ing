@@ -4,6 +4,7 @@
 from .Cell import Cell
 from Logs import Log
 from config.Config import Config
+from Errors import MazeError
 
 from typing import Optional
 
@@ -24,12 +25,21 @@ class Maze:
         Example:
             >>> maze = Maze(5, 5, (2,2), (5,5))
         """
+        if not config.exit:
+            raise MazeError("Exit config not set")
+        if not config.width:
+            raise MazeError("Width config not set")
+        if not config.height:
+            raise MazeError("Height config not set")
+        if not config.entry:
+            raise MazeError("Entry config not set")
+
         self.__logs = logs
-        self._width = config.width
-        self._height = config.height
-        self._entry = config.entry
-        self._exit = config.exit
-        self._perfect = config.perfect
+        self._width: int = config.width
+        self._height: int = config.height
+        self._entry: tuple[int, int] = config.entry
+        self._exit: tuple[int, int] = config.exit
+        self._perfect: bool = config.perfect
         self._maze = self.default_maze()
 
     def default_maze(self) -> list[list[Cell]]:
@@ -159,9 +169,7 @@ class Maze:
             >>> print(maze.width)
             5
         """
-        if self._width:
-            return self._width
-        return -1
+        return self._width
 
     @property
     def height(self) -> int:
@@ -179,7 +187,7 @@ class Maze:
         return -1
 
     @property
-    def exit(self) -> tuple[int, int]:
+    def exit(self) -> Cell:
         """Gets the exit coordinates.
 
         Returns:
@@ -189,12 +197,15 @@ class Maze:
             >>> print(maze.exit)
             (2, 2)
         """
-        if self._exit:
-            return self._exit
-        return (-1, -1)
+
+        cell_exit = self.get_cell(self._exit[0], self._exit[1])
+        if cell_exit:
+            return cell_exit
+        else:
+            raise MazeError("Exit cell has not found")
 
     @property
-    def entry(self) -> tuple[int, int]:
+    def entry(self) -> Cell:
         """Gets the maze entry coordinates.
 
         Returns:
@@ -204,9 +215,11 @@ class Maze:
             >>> print(maze.width)
             5
         """
-        if self._entry:
-            return self._entry
-        return (-1, -1)
+        cell_entry = self.get_cell(self._entry[0], self._entry[1])
+        if cell_entry:
+            return cell_entry
+        else:
+            raise MazeError("Entry Cell has not found")
 
     @property
     def perfect(self) -> bool:

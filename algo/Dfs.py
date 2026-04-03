@@ -3,7 +3,7 @@
 
 from maze import Maze, Cell
 from Logs import Log
-from Errors import DFSError
+from Errors import DFSError, MazeError
 from display.Display import Display
 
 from typing import Optional, Any
@@ -43,12 +43,11 @@ class Dfs:
         Example:
             >>> maze = Maze(5, 5, (2,2), (5,5))
         """
-        startx, starty = maze_obj.entry
-        current_cell = maze_obj.get_cell(startx, starty)
-        if current_cell:
-            self.__current_cell = current_cell
-        else:
-            raise DFSError("Starting Cell doesn't exist")
+        try:
+            self.__current_cell = maze_obj.entry
+        except MazeError as e:
+            raise DFSError(e)
+
         random.seed(self.__seed)
         os.system("clear")
         Display.print_maze_v2(maze_obj)
@@ -56,13 +55,12 @@ class Dfs:
 
         while (len(maze_obj.available_cells()) > 0):
             self.__current_cell.visited = True
-            cur_cell_pos = (self.__current_cell.x, self.__current_cell.y)
 
             if (self.__current_cell not in self.__traveled and
-                    cur_cell_pos != maze_obj.exit):
+                    self.__current_cell != maze_obj.exit):
                 self.__traveled.append(self.__current_cell)
 
-            if cur_cell_pos == maze_obj.exit:
+            if self.__current_cell == maze_obj.exit:
                 self.__current_cell = self.get_first_pos_av(maze_obj)
 
             av_options = self.get_available_options(
@@ -78,7 +76,6 @@ class Dfs:
 
                 os.system("clear")
                 Display.print_maze_v2(maze_obj)
-                print(f"Cell remaining: {len(maze_obj.available_cells())}")
                 sleep(0.1)
             else:
                 current_index = self.__traveled.index(self.__current_cell)

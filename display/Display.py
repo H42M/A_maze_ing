@@ -32,9 +32,9 @@ class Display:
                     print("█", end="")
                 else:
                     print(" ", end="")
-                if x == maze_obj.entry[0] and y == maze_obj.entry[1]:
+                if x == maze_obj.entry.x and y == maze_obj.entry.y:
                     color = FOND_ROUGE
-                elif x == maze_obj.exit[0] and y == maze_obj.exit[1]:
+                elif x == maze_obj.exit.x and y == maze_obj.exit.y:
                     color = FOND_VERT
                 elif maze_obj.get_cell(x, y).visited:
                     color = FOND_BLEU
@@ -63,8 +63,8 @@ class Display:
         maze = maze_obj.maze_list
         height = len(maze)
         width = len(maze[0]) if height else 0
-        ex, ey = maze_obj.entry
-        xx, xy = maze_obj.exit
+        ex, ey = maze_obj.entry.pos
+        xx, xy = maze_obj.exit.pos
 
         # ── Couleurs ANSI ────────────────────────────────────────────────────
         R = "\033[0m"

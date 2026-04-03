@@ -28,6 +28,19 @@ class Cell:
         self._y = y
 
     @property
+    def pos(self) -> tuple[int, int]:
+        """Gets the pos of the Cell in the maze.
+
+        Returns:
+            tuple[int, int]: pos of the cell.
+
+        Example:
+            >>> print(cell.pos)
+            (5, 3)
+        """
+        return (self.x, self.y)
+
+    @property
     def x(self) -> int:
         """Gets the x pos of the Cell in the maze.
 

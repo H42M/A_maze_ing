@@ -160,7 +160,7 @@ class Config:
         return str(self.__config["OUTPUT_FILE"])
 
     @property
-    def perfect(self) -> Optional[bool]:
+    def perfect(self) -> bool:
         """Gets the perfect maze flag.
 
         Returns:
