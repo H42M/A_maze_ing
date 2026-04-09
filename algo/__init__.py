@@ -1,6 +1,6 @@
 """Module algo."""
 
 
-from .Dfs import Dfs
+from .Dfs import Dfs, Instruct
 
-__all__ = ["Dfs"]
+__all__ = ["Dfs", "Instruct"]

@@ -8,7 +8,7 @@ from Errors import MazeError
 from algo.Dfs import Dfs, Instruct
 
 
-from typing import Optional
+from typing import Optional, Union
 import os
 from time import sleep
 import random
@@ -46,6 +46,7 @@ class Maze:
         self._exit: tuple[int, int] = config.exit
         self._perfect: bool = config.perfect
         self._maze = self.default_maze()
+        self.__soluce: list[Cell] = []
 
     def default_maze(self) -> list[list[Cell]]:
         """Generate a maze with default value (all walls closed).
@@ -86,7 +87,8 @@ class Maze:
                     available_cells.append(cell)
         return available_cells
 
-    def generate_maze(self, seed: Optional[int] = None):
+    def generate_maze(self, seed: Optional[int] = None,
+                      animate: Optional[float] = None):
         """Build comlplete random maze based on his seed.
 
         Returns:
@@ -100,7 +102,7 @@ class Maze:
         if not seed:
             seed = random.randint(1000, 1000000)
         dfs = Dfs(self.__logs, self.entry, self, seed)
-        instruct = dfs.get_instruct()
+        instruct = dfs.get_build_instruct()
 
         while (instruct):
             setattr(instruct[Instruct.CUR_CELL],
@@ -109,12 +111,37 @@ class Maze:
                     instruct[Instruct.NEIGH_WALL], False)
 
             dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
-            instruct = dfs.get_instruct()
+            instruct = dfs.get_build_instruct()
+            if animate:
+                os.system("clear")
+                Display.print_maze(self)
+                sleep(animate)
+
+        os.system("clear")
+
+    def resolve(self, seed: Optional[int] = False) -> None:
+        from display import Display
+
+        if not seed:
+            seed = random.randint(1000, 1000000)
+        self.__reset_visited()
+        dfs = Dfs(self.__logs, self.entry, self, seed)
+        instruct = dfs.get_res_instruct()
+        while (instruct):
+            if instruct[Instruct.NEIGH_CELL] == self.exit:
+                print("Exit found")
+                return
+            print(f"neigh pos: {instruct[Instruct.NEIGH_CELL].pos}")
+            dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
+            instruct = dfs.get_res_instruct()
             os.system("clear")
             Display.print_maze(self)
             sleep(0.1)
 
-        os.system("clear")
+    def __reset_visited(self) -> None:
+        for y in self._maze:
+            for cell in y:
+                cell.visited = False
 
     def generate_42(self, starting_cell: Cell) -> None:
         """Generate 42 logo in maze.
@@ -192,6 +219,20 @@ class Maze:
             return self.maze_list[y][x]
         except Exception:
             return None
+
+    def get_soluce(self) -> list[Cell]:
+        return self.__soluce
+
+    def add_to_soluce(self, cell: Cell):
+        self.__soluce.append(cell)
+
+    def remove_to_soluce(self, elm: Union[int, Cell]):
+        if isinstance(elm, int):
+            self.__soluce.pop(elm)
+        elif isinstance(elm, Cell):
+            if elm in self.__soluce:
+                index = self.__soluce.index(elm)
+                self.__soluce.pop(index)
 
     @property
     def width(self) -> int:
