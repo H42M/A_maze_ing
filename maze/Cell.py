@@ -23,9 +23,10 @@ class Cell:
         self._s: bool = s
         self._e: bool = e
         self._n: bool = n
-        self._visited: bool = False
         self._x = x
         self._y = y
+        self._visited: bool = False
+        self._42: bool = False
 
     @property
     def pos(self) -> tuple[int, int]:
@@ -249,3 +250,33 @@ class Cell:
         if not isinstance(value, bool):
             raise TypeError("Cell state must be a boolean.")
         self._visited = value
+
+    @property
+    def is42(self) -> bool:
+        """Gets the state of the cell.
+
+        Returns:
+            bool: True if the has visited.
+
+        Example:
+            >>> print(cell.visited)
+            True
+        """
+        return self._42
+
+    @is42.setter
+    def is42(self, value: bool) -> None:
+        """Set the state of the cell.
+
+        Args:
+            value (bool): New state of the cell.
+
+        Raises:
+            TypeError: If value is not a boolean.
+
+        Example:
+            >>> cell.n = True
+        """
+        if not isinstance(value, bool):
+            raise TypeError("Cell state must be a boolean.")
+        self._42 = value

@@ -45,7 +45,7 @@ class Maze:
         self._entry: tuple[int, int] = config.entry
         self._exit: tuple[int, int] = config.exit
         self._perfect: bool = config.perfect
-        self._maze = self.default_maze()
+        self._maze: list[list[Cell]] = self.default_maze()
         self.__soluce: list[Cell] = []
 
     def default_maze(self) -> list[list[Cell]]:
@@ -116,8 +116,15 @@ class Maze:
                 os.system("clear")
                 Display.print_maze(self)
                 sleep(animate)
-
-        os.system("clear")
+        if not self._perfect:
+            self.break_random_walls()
+            if animate:
+                print("Breaking some walls")
+                sleep(2)
+                os.system("clear")
+                Display.print_maze(self)
+                sleep(2)
+            os.system("clear")
 
     def resolve(self, seed: Optional[int] = False) -> None:
         from display import Display
@@ -153,6 +160,7 @@ class Maze:
             >>> maze.genrate_42()
         """
         starting_cell.visited = True
+        starting_cell.is42 = True
         cell: Optional[Cell] = starting_cell
         # Number 4:
         for _ in range(2):
@@ -160,47 +168,83 @@ class Maze:
                 cell = self.get_cell(cell.x, cell.y + 1)
                 if cell:
                     cell.visited = True
+                    cell.is42 = True
         for _ in range(2):
             if cell:
                 cell = self.get_cell(cell.x + 1, cell.y)
                 if cell:
                     cell.visited = True
+                    cell.is42 = True
         for _ in range(2):
             if cell:
                 cell = self.get_cell(cell.x, cell.y + 1)
                 if cell:
                     cell.visited = True
+                    cell.is42 = True
 
         # Number 2:
         cell = self.get_cell(starting_cell.x + 4, starting_cell.y)
         if cell:
             cell.visited = True
+            cell.is42 = True
 
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x + 1, cell.y)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x, cell.y + 1)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x - 1, cell.y)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x, cell.y + 1)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x + 1, cell.y)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
+
+    def break_random_walls(self) -> None:
+        neigh_map = {
+            'n': ('s', 0, -1),
+            's': ('n', 0, +1),
+            'e': ('w', +1, 0),
+            'w': ('e', -1, 0)
+        }
+
+        end_points: list[Cell] = []
+        for y in self._maze:
+            for cell in y:
+                if (sum([getattr(cell, w) for w in "nsew"]) >= 3 and
+                        not cell.is42):
+                    end_points.append(cell)
+        print(f"Walls to break: {len(end_points)}")
+
+        for cell in end_points:
+            walls_present = [w for w in "nsew" if getattr(cell, w)]
+            wall = random.choice(walls_present)
+
+            neigh_wall, dx, dy = neigh_map[wall]
+            neigh = self.get_cell(cell.x + dx, cell.y + dy)
+
+            if neigh and not neigh.is42:
+                setattr(cell, wall, False)
+                setattr(neigh, neigh_wall, False)
 
 # Getters / Setters
     def get_cell(self, x: int, y: int) -> Optional[Cell]:

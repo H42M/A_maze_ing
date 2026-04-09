@@ -31,12 +31,10 @@ if __name__ == "__main__":
         )
         if mid_cell:
             maze.generate_42(mid_cell)
-        maze.generate_maze()
+        maze.generate_maze(animate=0.05)
         Display.print_maze(maze)
         sleep(5)
         maze.resolve()
-        for cell in maze.get_soluce():
-            print(f"Chemin: {cell.pos}")
 
         config.print_config()
 
