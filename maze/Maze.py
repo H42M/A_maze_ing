@@ -5,8 +5,6 @@ from .Cell import Cell
 from Logs import Log
 from config.Config import Config
 from Errors import MazeError
-from algo.Dfs import Dfs, Instruct
-
 
 from typing import Optional, Union
 import os
@@ -99,6 +97,7 @@ class Maze:
             [Cell, Cell, ...]
         """
         from display.Display import Display
+        from algo.Dfs import Dfs, Instruct
         if not seed:
             seed = random.randint(1000, 1000000)
         dfs = Dfs(self.__logs, self.entry, self, seed)
@@ -133,6 +132,7 @@ class Maze:
             >>> maze.resolve()
             [Cell, Cell, ...]
         """
+        from algo.Dfs import Dfs, Instruct
         from display import Display
 
         if not seed:
@@ -251,6 +251,29 @@ class Maze:
             if neigh and not neigh.is42:
                 setattr(cell, wall, False)
                 setattr(neigh, neigh_wall, False)
+
+    def get_soluce_as_str(self) -> str:
+        """Get soluce path as str.
+
+        Returns:
+            str: Soluce path
+
+        Example:
+            >>> maze.get_soluce_as_str()
+            "WSSENW..."
+        """
+        final_str = ''
+        for i, cell in enumerate(self.__soluce):
+            if i < len(self.__soluce) - 2:
+                if self.__soluce[i + 1].x == cell.x + 1:
+                    final_str += 'E'
+                elif self.__soluce[i + 1].x == cell.x - 1:
+                    final_str += 'W'
+                elif self.__soluce[i + 1].y == cell.y - 1:
+                    final_str += 'N'
+                elif self.__soluce[i + 1].y == cell.y + 1:
+                    final_str += 'S'
+        return final_str
 
 # Getters / Setters
     def get_cell(self, x: int, y: int) -> Optional[Cell]:

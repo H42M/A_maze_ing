@@ -6,7 +6,6 @@ from maze.Maze import Maze
 from Logs import Log
 from Errors import DFSError
 
-
 from typing import Optional, Any
 import random
 from enum import Enum

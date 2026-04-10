@@ -5,7 +5,7 @@ from display.Display import Display
 from maze.Maze import Maze
 from Errors import ConfigError
 from Logs import Log
-
+from maze.Output import Output
 import sys
 from time import sleep
 
@@ -38,6 +38,8 @@ if __name__ == "__main__":
 
         config.print_config()
 
+        output = Output(maze)
+        output.write()
     except ConfigError as e:
         print(e)
 
