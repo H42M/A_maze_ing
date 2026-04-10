@@ -1,0 +1,7 @@
+*.txt
+
+/.mypy_cache/
+
+/.venv/
+
+.vscode/
