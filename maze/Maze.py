@@ -88,7 +88,7 @@ class Maze:
         return available_cells
 
     def generate_maze(self, seed: Optional[int] = None,
-                      animate: Optional[float] = None):
+                      animate: Optional[float] = None) -> None:
         """Build comlplete random maze based on his seed.
 
         Returns:
@@ -117,7 +117,7 @@ class Maze:
                 Display.print_maze(self)
                 sleep(animate)
         if not self._perfect:
-            self.break_random_walls()
+            self.__break_random_walls()
             if animate:
                 print("Breaking some walls")
                 sleep(2)
@@ -127,6 +127,12 @@ class Maze:
             os.system("clear")
 
     def resolve(self, seed: Optional[int] = False) -> None:
+        """Resolve current maze.
+
+        Example:
+            >>> maze.resolve()
+            [Cell, Cell, ...]
+        """
         from display import Display
 
         if not seed:
@@ -219,7 +225,7 @@ class Maze:
                         cell.visited = True
                         cell.is42 = True
 
-    def break_random_walls(self) -> None:
+    def __break_random_walls(self) -> None:
         neigh_map = {
             'n': ('s', 0, -1),
             's': ('n', 0, +1),
@@ -265,12 +271,35 @@ class Maze:
             return None
 
     def get_soluce(self) -> list[Cell]:
+        """Return the soluce path.
+
+        Returns:
+            list[Cell]: solution path.
+
+        Example:
+            >>> maze.get_soluce()
+            [...]
+        """
         return self.__soluce
 
-    def add_to_soluce(self, cell: Cell):
+    def add_to_soluce(self, cell: Cell) -> None:
+        """Add a cell to the soluce path.
+
+        Example:
+            >>> maze.add_to_soluce(Cell)
+        """
         self.__soluce.append(cell)
 
-    def remove_to_soluce(self, elm: Union[int, Cell]):
+    def remove_from_soluce(self, elm: Union[int, Cell]) -> None:
+        """Remove a cell from the soluce path.
+
+        Args:
+            Union[int, Cell]: cell's index to remove or Cell to remove
+
+        Example:
+            >>> maze.get_soluce()
+            [...]
+        """
         if isinstance(elm, int):
             self.__soluce.pop(elm)
         elif isinstance(elm, Cell):

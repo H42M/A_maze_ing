@@ -69,7 +69,8 @@ class Display:
             soluce = [cell.pos for cell in maze_obj.get_soluce()]
             if (x, y) in soluce:
                 return SOLUCE + " x " + R
-            if maze_obj.get_cell(x, y).visited:
+            cur_cell = maze_obj.get_cell(x, y)
+            if cur_cell and cur_cell.visited:
                 return " · " + R
                 # return VISITED + " · " + R
 
