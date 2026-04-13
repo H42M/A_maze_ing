@@ -4,7 +4,6 @@ from config.Config import Config
 from display.Display import Display
 from maze.Maze import Maze
 from Errors import ConfigError
-from Logs import Log
 from maze.Output import Output
 
 import sys
@@ -17,11 +16,10 @@ if __name__ == "__main__":
         exit(-1)
     conf_file = sys.argv[1]
 
-    logs = Log(verbose=True)
-    config = Config(logs=logs)
+    config = Config()
     try:
         config.parse_config_file(conf_file)
-        maze = Maze(logs, config)
+        maze = Maze(config)
         output = Output(maze)
         maze.generate_maze()
         maze.resolve_a_star()

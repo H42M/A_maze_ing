@@ -2,7 +2,6 @@
 
 
 from .Cell import Cell
-from Logs import Log
 from config.Config import Config
 from Errors import MazeError
 
@@ -15,7 +14,7 @@ import random
 class Maze:
     """Maze class."""
 
-    def __init__(self, logs: Log, config: Config) -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize a Maze class instance.
 
         Args:
@@ -37,7 +36,6 @@ class Maze:
         if not config.entry:
             raise MazeError("Entry config not set")
 
-        self.__logs = logs
         self._width: int = config.width
         self._height: int = config.height
         self._entry: tuple[int, int] = config.entry
@@ -113,7 +111,7 @@ class Maze:
         from algo.Dfs import Dfs, Instruct
         if not seed:
             seed = random.randint(1000, 1000000)
-        dfs = Dfs(self.__logs, self.entry, self, seed)
+        dfs = Dfs(self.entry, self, seed)
         instruct = dfs.get_build_instruct()
 
         while (instruct):

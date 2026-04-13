@@ -1,7 +1,6 @@
 """Manage config object."""
 
 
-from Logs import Log, LogType
 from Errors import ConfigError
 from .ConfigChecker import ConfigChecker
 
@@ -12,7 +11,7 @@ import os
 class Config:
     """Config Object."""
 
-    def __init__(self, logs: Log, width: Optional[int] = None,
+    def __init__(self, width: Optional[int] = None,
                  height: Optional[int] = None,
                  entry: Optional[tuple[int, int]] = None,
                  exit: Optional[tuple[int, int]] = None,
@@ -22,7 +21,6 @@ class Config:
         """Initialize Config instance.
 
         Args:
-            logs (Log): Log manager.
             width (int): Maze width.
             height (int): Maze height.
             entry (tuple[int, int]): entry coordinates.
@@ -39,7 +37,6 @@ class Config:
             "OUTPUT_FILE": output_file,
             "PERFECT": perfect
         }
-        self.__logs = logs
 
         if config_path:
             self.parse_config_file(config_path)
@@ -65,13 +62,9 @@ class Config:
                 if line.strip()[0] != "#":
                     key, value = line.split("=", maxsplit=1)
                     if key.strip() not in self.__config:
-                        error_str = f"Unexpected parameter: {key}"
-                        self.__logs.add_log(error_str, LogType.LOGERROR)
-                        raise ConfigError()
+                        raise ConfigError(f"Unexpected parameter: {key}")
                     if " " in line:
-                        error_str = f"Unexpected space on line: {line}"
-                        self.__logs.add_log(error_str, LogType.LOGERROR)
-                        raise ConfigError()
+                        raise ConfigError(f"Unexpected space on line: {line}")
 
                     if key in ["WIDTH", "HEIGHT"]:
                         self.__config[key] = int(value)
@@ -96,8 +89,6 @@ class Config:
             ConfigChecker.check_full_config(self.__config)
         except ConfigError as e:
             raise ConfigError(e)
-        self.__logs.add_log("Config Successfully Parsed!",
-                            LogType.LOGSUCESS)
 
     def print_config(self) -> None:
         """Print the current configuration.

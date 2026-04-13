@@ -3,7 +3,6 @@
 
 from maze.Cell import Cell
 from maze.Maze import Maze
-from Logs import Log
 from Errors import DFSError
 
 from typing import Optional, Any
@@ -14,7 +13,7 @@ from enum import Enum
 class Dfs:
     """Dfs algorithm class."""
 
-    def __init__(self, logs: Log, entry: Cell, maze: Maze,
+    def __init__(self, entry: Cell, maze: Maze,
                  seed: int) -> None:
         """Initialize a DFS class instance.
 
@@ -27,8 +26,7 @@ class Dfs:
             >>> maze = Maze(5, 5, (2,2), (5,5))
         """
         random.seed(seed)
-        self.__seed = seed
-        self.__logs = logs
+
         self.__maze = maze
         self.__current_cell: Cell = entry
         self.__traveled: list[Cell] = []
