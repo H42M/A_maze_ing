@@ -6,7 +6,7 @@ from maze.Cell import Cell
 from algo.Dfs import Instruct
 
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 import heapq
 
 
@@ -25,7 +25,7 @@ class A_Star:
         self.__maze = maze
         self.__traveled: list[Cell] = []
 
-    def solve(self) -> list[Cell]:
+    def solve(self, animate: Optional[float] = None) -> list[Cell]:
         """Solve the current maze.
 
         Returns:
@@ -42,18 +42,17 @@ class A_Star:
 
         while heap:
             f, g, _, cell, path = heapq.heappop(heap)
-            import time
-            from display.Display import Display
-            import os
-            self.__maze.add_to_soluce(cell)
-            os.system("clear")
-            print(f"Cell {cell.pos}: {f}, {g}")
-            Display.print_maze(self.__maze)
-            time.sleep(0.5)
+            if animate:
+                import time
+                from display.Display import Display
+                import os
+                self.__maze.add_to_soluce(cell)
+                os.system("clear")
+                Display.print_maze(self.__maze)
+                print(f"Cell {cell.pos}: {f}, {g}")
+                time.sleep(animate)
 
             if cell == self.__maze.exit:
-                print("Exit found!")
-                time.sleep(5)
                 return path
             if cell not in visited:
                 visited.add(cell)

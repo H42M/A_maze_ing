@@ -6,11 +6,9 @@ from maze.Maze import Maze
 from Errors import ConfigError
 from Logs import Log
 from maze.Output import Output
-import sys
-from time import sleep
 
-LOGO_42_W = 7
-LOGO_42_H = 5
+import sys
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -23,22 +21,34 @@ if __name__ == "__main__":
     config = Config(logs=logs)
     try:
         config.parse_config_file(conf_file)
-
         maze = Maze(logs, config)
-        mid_cell = maze.get_cell(
-            int((config.width - LOGO_42_W) / 2),
-            int((config.height - LOGO_42_H) / 2),
-        )
-        if mid_cell:
-            maze.generate_42(mid_cell)
         maze.generate_maze()
         Display.print_maze(maze)
-        sleep(5)
-        maze.resolve_a_star()
-
-        config.print_config()
-
         output = Output(maze)
+        choice = 0
+        while (choice != 4):
+            print("=== A-Maze-Ing ===")
+            print("1. Re-generate a new maze")
+            print("2. Show / Hide path from entry to exit")
+            print("3. Rotate maze colors")
+            print("4. Quit")
+            try:
+                choice = int(input("Choice ? (1-4): "))
+                if choice > 4 or choice < 1:
+                    raise ValueError
+
+                if choice == 1:
+                    maze.reset()
+                    maze.generate_maze()
+                    Display.print_maze(maze)
+
+                if choice == 2:
+                    maze.resolve_a_star()
+                    Display.print_maze(maze)
+
+            except Exception:
+                print("Invalid input, must be a valid int between 1 and 4")
+
         output.write()
     except ConfigError as e:
         print(e)

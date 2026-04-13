@@ -43,8 +43,10 @@ class Maze:
         self._entry: tuple[int, int] = config.entry
         self._exit: tuple[int, int] = config.exit
         self._perfect: bool = config.perfect
-        self._maze: list[list[Cell]] = self.default_maze()
         self.__soluce: list[Cell] = []
+        self._maze: list[list[Cell]] = []
+
+        self._maze = self.default_maze()
 
     def default_maze(self) -> list[list[Cell]]:
         """Generate a maze with default value (all walls closed).
@@ -66,6 +68,17 @@ class Maze:
                 for x in range(self._width):
                     row.append(Cell(x, y))
                 maze.append(row)
+        self._maze = maze
+
+        # __ 42 Logo ______
+        LOGO_42_W = 7
+        LOGO_42_H = 5
+        mid_cell = self.get_cell(
+            int((self.width - LOGO_42_W) / 2),
+            int((self.height - LOGO_42_H) / 2),
+        )
+        if mid_cell:
+            self.generate_42(mid_cell)
         return maze
 
     def available_cells(self) -> list[Cell]:
@@ -118,12 +131,11 @@ class Maze:
         if not self._perfect:
             self.__break_random_walls()
             if animate:
-                print("Breaking some walls")
                 sleep(2)
                 os.system("clear")
                 Display.print_maze(self)
                 sleep(2)
-            os.system("clear")
+            # os.system("clear")
 
     def resolve(self, seed: Optional[int] = False) -> None:
         """Resolve current maze.
@@ -142,16 +154,14 @@ class Maze:
         instruct = dfs.get_res_instruct()
         while (instruct):
             if instruct[Instruct.NEIGH_CELL] == self.exit:
-                print("Exit found")
                 return
-            print(f"neigh pos: {instruct[Instruct.NEIGH_CELL].pos}")
             dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
             instruct = dfs.get_res_instruct()
             os.system("clear")
             Display.print_maze(self)
             sleep(0.1)
 
-    def resolve_a_star(self) -> None:
+    def resolve_a_star(self, animate: Optional[float] = None) -> None:
         """Resolve current maze thanks to A* algo.
 
         Example:
@@ -161,10 +171,9 @@ class Maze:
         from display.Display import Display
 
         astar = A_Star(self)
-        self.__soluce = astar.solve()
+        self.__soluce = astar.solve(animate)
         os.system("clear")
         Display.print_maze(self)
-        sleep(0.1)
 
     def __reset_visited(self) -> None:
         for y in self._maze:
@@ -254,7 +263,6 @@ class Maze:
                 if (sum([getattr(cell, w) for w in "nsew"]) >= 3 and
                         not cell.is42):
                     end_points.append(cell)
-        print(f"Walls to break: {len(end_points)}")
 
         for cell in end_points:
             walls_present = [w for w in "nsew" if getattr(cell, w)]
@@ -266,6 +274,16 @@ class Maze:
             if neigh and not neigh.is42:
                 setattr(cell, wall, False)
                 setattr(neigh, neigh_wall, False)
+
+    def reset(self) -> None:
+        """Reset the current maze.
+
+        Example:
+            >>> maze.reset()
+        """
+        self.__reset_visited()
+        self._maze = self.default_maze()
+        self.__soluce = []
 
     def get_soluce_as_str(self) -> str:
         """Get soluce path as str.

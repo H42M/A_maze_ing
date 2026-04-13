@@ -14,6 +14,8 @@ class Display:
         Example:
         >>> maze.print_maze()
         """
+        import os
+        os.system('clear')
         maze = maze_obj.maze_list
         height = len(maze)
         width = len(maze[0]) if height else 0
