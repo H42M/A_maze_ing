@@ -1,14 +1,5 @@
-from typing import Tuple, Self, TypedDict
+from typing import Tuple, Self
 from pydantic import BaseModel, Field, model_validator
-
-
-class CleanConfig(TypedDict):
-    width: int
-    height: int
-    entry: tuple[int, int]
-    exit: tuple[int, int]
-    output_file: str
-    perfect: bool
 
 
 class MazeConfig(BaseModel):
