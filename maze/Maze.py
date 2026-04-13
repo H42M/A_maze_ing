@@ -131,10 +131,8 @@ class Maze:
         if not self._perfect:
             self.__break_random_walls()
             if animate:
-                sleep(2)
                 os.system("clear")
                 Display.print_maze(self)
-                sleep(2)
         self.__reset_visited()
 
     def resolve_a_star(self, animate: Optional[float] = None) -> None:

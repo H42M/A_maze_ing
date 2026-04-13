@@ -29,15 +29,17 @@ if __name__ == "__main__":
         output.write()
         choice = 0
         soluce = False
-        while (choice != 5):
+        animation = False
+        while (choice != 6):
             print("=== A-Maze-Ing ===")
             print("1. Re-generate a new random maze")
             print("2. Re-Generate a new maze with seed")
             print("3. Show / Hide path from entry to exit")
-            print("4. Rotate maze colors")
-            print("5. Quit")
+            print("4. Toggle / Disable animation")
+            print("5. Rotate maze colors")
+            print("6. Quit")
             try:
-                choice = int(input("Choice ? (1-5): "))
+                choice = int(input("Choice ? (1-6): "))
                 if choice > 4 or choice < 1:
                     raise ValueError
 
@@ -52,10 +54,12 @@ if __name__ == "__main__":
                                 print("Invalid seed provided")
                     else:
                         seed = random.randint(1000, 1000000)
-
                     maze.reset()
-                    maze.generate_maze(seed=seed)
-                    maze.resolve_a_star()
+                    maze.generate_maze(seed=seed, animate=animation)
+                    resolve_anim = False
+                    if animation and soluce:
+                        resolve_anim = animation
+                    maze.resolve_a_star(animate=resolve_anim)
                     Display.print_maze(maze, print_soluce=soluce)
                     output.write()
 
@@ -66,8 +70,19 @@ if __name__ == "__main__":
                         soluce = True
                     Display.print_maze(maze, print_soluce=soluce)
 
+                if choice == 4:
+                    while (True):
+                        try:
+                            animation = float(input("Enter animation speed "
+                                                    "(0 = disable): "))
+                            if animation > 0.2:
+                                print("Animation speed too slow (min 0.2)")
+                            break
+                        except Exception:
+                            print("Invalid animation speed")
+
             except Exception:
-                print("Invalid input, must be a valid int between 1 and 4")
+                print("Invalid input, must be a valid int between 1 and 6")
 
         output.write()
     except ConfigError as e:

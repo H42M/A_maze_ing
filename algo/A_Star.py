@@ -48,7 +48,7 @@ class A_Star:
                 import os
                 self.__maze.add_to_soluce(cell)
                 os.system("clear")
-                Display.print_maze(self.__maze)
+                Display.print_maze(self.__maze, print_soluce=True)
                 print(f"Cell {cell.pos}: {f}, {g}")
                 time.sleep(animate)
 
