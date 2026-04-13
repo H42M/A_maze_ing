@@ -1,5 +1,14 @@
-from typing import Tuple, Self
+from typing import Tuple, Self, TypedDict
 from pydantic import BaseModel, Field, model_validator
+
+
+class CleanConfig(TypedDict):
+    width: int
+    height: int
+    entry: tuple[int, int]
+    exit: tuple[int, int]
+    output_file: str
+    perfect: bool
 
 
 class MazeConfig(BaseModel):
@@ -13,7 +22,7 @@ class MazeConfig(BaseModel):
 
     def bounds_check(self, position: Tuple[int, int]) -> bool:
         x, y = position
-        return 0 < x < self.width and 0 < y < self.height
+        return 0 <= x < self.width and 0 <= y < self.height
 
     @model_validator(mode="after")
     def entry_and_exit_validation(self) -> Self:

@@ -1,19 +1,19 @@
-import config_parsing
-import maze_config
+from config_parsing import MazeConfigLoader
+from maze_config import MazeConfig
 
 
 class Maze:
-    config: maze_config.MazeConfig
+    config: MazeConfig
 
-    def load_config(self) -> dict[str, str | None]:
-        cfg = config_parsing.MazeConfigParser.default_parser()
-        print(cfg)
-        return cfg
-        # self.config = maze_config.MazeConfig(**cfg)
+    def load_config(self) -> None:
+        try:
+            loader = MazeConfigLoader("config.txt")
+        except FileNotFoundError:
+            loader = MazeConfigLoader("default_config.txt")
+        self.config = loader.load()
 
 
 if __name__ == "__main__":
     maze = Maze()
-    cfg = maze.load_config()
-    for k, v in cfg.items():
-        print(k, v)
+    maze.load_config()
+    print(maze.config)
