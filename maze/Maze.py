@@ -135,31 +135,7 @@ class Maze:
                 os.system("clear")
                 Display.print_maze(self)
                 sleep(2)
-            # os.system("clear")
-
-    def resolve(self, seed: Optional[int] = False) -> None:
-        """Resolve current maze.
-
-        Example:
-            >>> maze.resolve()
-            [Cell, Cell, ...]
-        """
-        from algo.Dfs import Dfs, Instruct
-        from display import Display
-
-        if not seed:
-            seed = random.randint(1000, 1000000)
         self.__reset_visited()
-        dfs = Dfs(self.__logs, self.entry, self, seed)
-        instruct = dfs.get_res_instruct()
-        while (instruct):
-            if instruct[Instruct.NEIGH_CELL] == self.exit:
-                return
-            dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
-            instruct = dfs.get_res_instruct()
-            os.system("clear")
-            Display.print_maze(self)
-            sleep(0.1)
 
     def resolve_a_star(self, animate: Optional[float] = None) -> None:
         """Resolve current maze thanks to A* algo.
@@ -297,7 +273,7 @@ class Maze:
         """
         final_str = ''
         for i, cell in enumerate(self.__soluce):
-            if i < len(self.__soluce) - 2:
+            if i < len(self.__soluce) - 1:
                 if self.__soluce[i + 1].x == cell.x + 1:
                     final_str += 'E'
                 elif self.__soluce[i + 1].x == cell.x - 1:

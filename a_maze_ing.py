@@ -22,9 +22,11 @@ if __name__ == "__main__":
     try:
         config.parse_config_file(conf_file)
         maze = Maze(logs, config)
-        maze.generate_maze()
-        Display.print_maze(maze)
         output = Output(maze)
+        maze.generate_maze()
+        maze.resolve_a_star()
+        Display.print_maze(maze)
+        output.write()
         choice = 0
         soluce = False
         while (choice != 5):
@@ -55,6 +57,7 @@ if __name__ == "__main__":
                     maze.generate_maze(seed=seed)
                     maze.resolve_a_star()
                     Display.print_maze(maze, print_soluce=soluce)
+                    output.write()
 
                 if choice == 3:
                     if soluce:
