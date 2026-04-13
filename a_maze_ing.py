@@ -5,8 +5,12 @@ from display.Display import Display
 from maze.Maze import Maze
 from Errors import ConfigError
 from Logs import Log
-
+from maze.Output import Output
 import sys
+from time import sleep
+
+LOGO_42_W = 7
+LOGO_42_H = 5
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -22,16 +26,20 @@ if __name__ == "__main__":
 
         maze = Maze(logs, config)
         mid_cell = maze.get_cell(
-            int((config.width - 7) / 2),
-            int((config.height - 5) / 2),
+            int((config.width - LOGO_42_W) / 2),
+            int((config.height - LOGO_42_H) / 2),
         )
         if mid_cell:
             maze.generate_42(mid_cell)
         maze.generate_maze()
         Display.print_maze(maze)
+        sleep(5)
+        maze.resolve_a_star()
 
         config.print_config()
 
+        output = Output(maze)
+        output.write()
     except ConfigError as e:
         print(e)
 

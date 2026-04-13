@@ -5,6 +5,7 @@ install:
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	rm -rf .mypy_cache
+	rm output.txt
 
 run:
 	./.venv/bin/python a_maze_ing.py config.txt

@@ -26,6 +26,7 @@ class Display:
         ENTRY = "\033[1;37;41m"   # blanc gras / fond rouge   → départ
         EXIT_C = "\033[1;37;42m"   # blanc gras / fond vert    → arrivée
         VISITED = "\033[34;40m"     # bleu / fond noir          → chemin visité
+        SOLUCE = "\033[0;33m"         # Jaune -> Solution
 
         # ── Prédicats de murs ────────────────────────────────────────────────
         def h_wall(r: int, c: int) -> bool:
@@ -65,7 +66,11 @@ class Display:
                 return ENTRY + " S " + R
             if x == xx and y == xy:
                 return EXIT_C + " E " + R
-            if maze_obj.get_cell(x, y).visited:
+            soluce = [cell.pos for cell in maze_obj.get_soluce()]
+            if (x, y) in soluce:
+                return SOLUCE + " x " + R
+            cur_cell = maze_obj.get_cell(x, y)
+            if cur_cell and cur_cell.visited:
                 return " · " + R
                 # return VISITED + " · " + R
 

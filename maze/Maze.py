@@ -5,10 +5,8 @@ from .Cell import Cell
 from Logs import Log
 from config.Config import Config
 from Errors import MazeError
-from algo.Dfs import Dfs, Instruct
 
-
-from typing import Optional
+from typing import Optional, Union
 import os
 from time import sleep
 import random
@@ -45,7 +43,8 @@ class Maze:
         self._entry: tuple[int, int] = config.entry
         self._exit: tuple[int, int] = config.exit
         self._perfect: bool = config.perfect
-        self._maze = self.default_maze()
+        self._maze: list[list[Cell]] = self.default_maze()
+        self.__soluce: list[Cell] = []
 
     def default_maze(self) -> list[list[Cell]]:
         """Generate a maze with default value (all walls closed).
@@ -86,7 +85,8 @@ class Maze:
                     available_cells.append(cell)
         return available_cells
 
-    def generate_maze(self, seed: Optional[int] = None):
+    def generate_maze(self, seed: Optional[int] = None,
+                      animate: Optional[float] = None) -> None:
         """Build comlplete random maze based on his seed.
 
         Returns:
@@ -97,10 +97,11 @@ class Maze:
             [Cell, Cell, ...]
         """
         from display.Display import Display
+        from algo.Dfs import Dfs, Instruct
         if not seed:
             seed = random.randint(1000, 1000000)
         dfs = Dfs(self.__logs, self.entry, self, seed)
-        instruct = dfs.get_instruct()
+        instruct = dfs.get_build_instruct()
 
         while (instruct):
             setattr(instruct[Instruct.CUR_CELL],
@@ -109,12 +110,66 @@ class Maze:
                     instruct[Instruct.NEIGH_WALL], False)
 
             dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
-            instruct = dfs.get_instruct()
+            instruct = dfs.get_build_instruct()
+            if animate:
+                os.system("clear")
+                Display.print_maze(self)
+                sleep(animate)
+        if not self._perfect:
+            self.__break_random_walls()
+            if animate:
+                print("Breaking some walls")
+                sleep(2)
+                os.system("clear")
+                Display.print_maze(self)
+                sleep(2)
+            os.system("clear")
+
+    def resolve(self, seed: Optional[int] = False) -> None:
+        """Resolve current maze.
+
+        Example:
+            >>> maze.resolve()
+            [Cell, Cell, ...]
+        """
+        from algo.Dfs import Dfs, Instruct
+        from display import Display
+
+        if not seed:
+            seed = random.randint(1000, 1000000)
+        self.__reset_visited()
+        dfs = Dfs(self.__logs, self.entry, self, seed)
+        instruct = dfs.get_res_instruct()
+        while (instruct):
+            if instruct[Instruct.NEIGH_CELL] == self.exit:
+                print("Exit found")
+                return
+            print(f"neigh pos: {instruct[Instruct.NEIGH_CELL].pos}")
+            dfs.set_current_cell(instruct[Instruct.NEIGH_CELL])
+            instruct = dfs.get_res_instruct()
             os.system("clear")
             Display.print_maze(self)
             sleep(0.1)
 
+    def resolve_a_star(self) -> None:
+        """Resolve current maze thanks to A* algo.
+
+        Example:
+            >>> maze.resolve()
+        """
+        from algo.A_Star import A_Star
+        from display.Display import Display
+
+        astar = A_Star(self)
+        self.__soluce = astar.solve()
         os.system("clear")
+        Display.print_maze(self)
+        sleep(0.1)
+
+    def __reset_visited(self) -> None:
+        for y in self._maze:
+            for cell in y:
+                cell.visited = False
 
     def generate_42(self, starting_cell: Cell) -> None:
         """Generate 42 logo in maze.
@@ -126,6 +181,7 @@ class Maze:
             >>> maze.genrate_42()
         """
         starting_cell.visited = True
+        starting_cell.is42 = True
         cell: Optional[Cell] = starting_cell
         # Number 4:
         for _ in range(2):
@@ -133,47 +189,106 @@ class Maze:
                 cell = self.get_cell(cell.x, cell.y + 1)
                 if cell:
                     cell.visited = True
+                    cell.is42 = True
         for _ in range(2):
             if cell:
                 cell = self.get_cell(cell.x + 1, cell.y)
                 if cell:
                     cell.visited = True
+                    cell.is42 = True
         for _ in range(2):
             if cell:
                 cell = self.get_cell(cell.x, cell.y + 1)
                 if cell:
                     cell.visited = True
+                    cell.is42 = True
 
         # Number 2:
         cell = self.get_cell(starting_cell.x + 4, starting_cell.y)
         if cell:
             cell.visited = True
+            cell.is42 = True
 
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x + 1, cell.y)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x, cell.y + 1)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x - 1, cell.y)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x, cell.y + 1)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
             for _ in range(2):
                 if cell:
                     cell = self.get_cell(cell.x + 1, cell.y)
                     if cell:
                         cell.visited = True
+                        cell.is42 = True
+
+    def __break_random_walls(self) -> None:
+        neigh_map = {
+            'n': ('s', 0, -1),
+            's': ('n', 0, +1),
+            'e': ('w', +1, 0),
+            'w': ('e', -1, 0)
+        }
+
+        end_points: list[Cell] = []
+        for y in self._maze:
+            for cell in y:
+                if (sum([getattr(cell, w) for w in "nsew"]) >= 3 and
+                        not cell.is42):
+                    end_points.append(cell)
+        print(f"Walls to break: {len(end_points)}")
+
+        for cell in end_points:
+            walls_present = [w for w in "nsew" if getattr(cell, w)]
+            wall = random.choice(walls_present)
+
+            neigh_wall, dx, dy = neigh_map[wall]
+            neigh = self.get_cell(cell.x + dx, cell.y + dy)
+
+            if neigh and not neigh.is42:
+                setattr(cell, wall, False)
+                setattr(neigh, neigh_wall, False)
+
+    def get_soluce_as_str(self) -> str:
+        """Get soluce path as str.
+
+        Returns:
+            str: Soluce path
+
+        Example:
+            >>> maze.get_soluce_as_str()
+            "WSSENW..."
+        """
+        final_str = ''
+        for i, cell in enumerate(self.__soluce):
+            if i < len(self.__soluce) - 2:
+                if self.__soluce[i + 1].x == cell.x + 1:
+                    final_str += 'E'
+                elif self.__soluce[i + 1].x == cell.x - 1:
+                    final_str += 'W'
+                elif self.__soluce[i + 1].y == cell.y - 1:
+                    final_str += 'N'
+                elif self.__soluce[i + 1].y == cell.y + 1:
+                    final_str += 'S'
+        return final_str
 
 # Getters / Setters
     def get_cell(self, x: int, y: int) -> Optional[Cell]:
@@ -192,6 +307,43 @@ class Maze:
             return self.maze_list[y][x]
         except Exception:
             return None
+
+    def get_soluce(self) -> list[Cell]:
+        """Return the soluce path.
+
+        Returns:
+            list[Cell]: solution path.
+
+        Example:
+            >>> maze.get_soluce()
+            [...]
+        """
+        return self.__soluce
+
+    def add_to_soluce(self, cell: Cell) -> None:
+        """Add a cell to the soluce path.
+
+        Example:
+            >>> maze.add_to_soluce(Cell)
+        """
+        self.__soluce.append(cell)
+
+    def remove_from_soluce(self, elm: Union[int, Cell]) -> None:
+        """Remove a cell from the soluce path.
+
+        Args:
+            Union[int, Cell]: cell's index to remove or Cell to remove
+
+        Example:
+            >>> maze.get_soluce()
+            [...]
+        """
+        if isinstance(elm, int):
+            self.__soluce.pop(elm)
+        elif isinstance(elm, Cell):
+            if elm in self.__soluce:
+                index = self.__soluce.index(elm)
+                self.__soluce.pop(index)
 
     @property
     def width(self) -> int:
