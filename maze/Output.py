@@ -8,7 +8,7 @@ from maze.Maze import Maze
 class Output:
     """Output class for maze."""
 
-    def __init__(self, maze: Maze) -> None:
+    def __init__(self, maze: Maze, output_file: str) -> None:
         """Initialize an Output class instance.
 
         Args:
@@ -18,6 +18,7 @@ class Output:
             >>> astar = A_Star(maze)
         """
         self.__maze = maze
+        self.__output_file = output_file
 
     def write(self) -> None:
         """Write maze's output.
@@ -25,7 +26,7 @@ class Output:
         Example:
             >>> astar = A_Star(maze)
         """
-        with open('output.txt', 'w') as f:
+        with open(self.__output_file, 'w') as f:
 
             f.write(self.__get_hexa_maze())
             f.write("\n\n")

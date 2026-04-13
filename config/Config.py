@@ -142,7 +142,7 @@ class Config:
         return tuple(self.__config["EXIT"])
 
     @property
-    def output_file(self) -> Optional[str]:
+    def output_file(self) -> str:
         """Gets the output file path.
 
         Returns:

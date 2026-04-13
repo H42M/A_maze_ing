@@ -20,7 +20,7 @@ if __name__ == "__main__":
     try:
         config.parse_config_file(conf_file)
         maze = Maze(config)
-        output = Output(maze)
+        output = Output(maze, config.output_file)
         maze.generate_maze()
         maze.resolve_a_star()
         Display.print_maze(maze)
