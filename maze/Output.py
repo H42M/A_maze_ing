@@ -1,14 +1,30 @@
+"""Output module."""
+
+
 from maze.Maze import Maze
 # from maze.Cell import Cell
 
 
 class Output:
-    """Output class for maze"""
+    """Output class for maze."""
 
     def __init__(self, maze: Maze) -> None:
+        """Initialize an Output class instance.
+
+        Args:
+            maze (Maze): Current maze to write
+
+        Example:
+            >>> astar = A_Star(maze)
+        """
         self.__maze = maze
 
-    def write(self):
+    def write(self) -> None:
+        """Write maze's output.
+
+        Example:
+            >>> astar = A_Star(maze)
+        """
         with open('output.txt', 'w') as f:
 
             f.write(self.__get_hexa_maze())

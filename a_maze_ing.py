@@ -31,10 +31,10 @@ if __name__ == "__main__":
         )
         if mid_cell:
             maze.generate_42(mid_cell)
-        maze.generate_maze(animate=0.05)
+        maze.generate_maze()
         Display.print_maze(maze)
         sleep(5)
-        maze.resolve()
+        maze.resolve_a_star()
 
         config.print_config()
 

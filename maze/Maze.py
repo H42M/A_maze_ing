@@ -151,6 +151,21 @@ class Maze:
             Display.print_maze(self)
             sleep(0.1)
 
+    def resolve_a_star(self) -> None:
+        """Resolve current maze thanks to A* algo.
+
+        Example:
+            >>> maze.resolve()
+        """
+        from algo.A_Star import A_Star
+        from display.Display import Display
+
+        astar = A_Star(self)
+        self.__soluce = astar.solve()
+        os.system("clear")
+        Display.print_maze(self)
+        sleep(0.1)
+
     def __reset_visited(self) -> None:
         for y in self._maze:
             for cell in y:
