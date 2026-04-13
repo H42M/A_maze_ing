@@ -26,6 +26,7 @@ if __name__ == "__main__":
         Display.print_maze(maze)
         output = Output(maze)
         choice = 0
+        soluce = False
         while (choice != 4):
             print("=== A-Maze-Ing ===")
             print("1. Re-generate a new maze")
@@ -40,11 +41,15 @@ if __name__ == "__main__":
                 if choice == 1:
                     maze.reset()
                     maze.generate_maze()
-                    Display.print_maze(maze)
+                    maze.resolve_a_star()
+                    Display.print_maze(maze, print_soluce=soluce)
 
                 if choice == 2:
-                    maze.resolve_a_star()
-                    Display.print_maze(maze)
+                    if soluce:
+                        soluce = False
+                    else:
+                        soluce = True
+                    Display.print_maze(maze, print_soluce=soluce)
 
             except Exception:
                 print("Invalid input, must be a valid int between 1 and 4")

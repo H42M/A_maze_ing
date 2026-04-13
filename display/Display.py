@@ -8,7 +8,7 @@ class Display:
     """Manage the maze display."""
 
     @classmethod
-    def print_maze(cls, maze_obj: 'Maze') -> None:
+    def print_maze(cls, maze_obj: Maze, print_soluce: bool = False) -> None:
         """Print current maze with box-drawing characters and ANSI colours.
 
         Example:
@@ -63,13 +63,13 @@ class Display:
             return _CORNER.get((int(u), int(ri), int(d), int(le)), "?")
 
         # ── Contenu de cellule (3 caractères) ───────────────────────────────
-        def cell_str(x: int, y: int) -> str:
+        def cell_str(x: int, y: int, print_soluce: bool) -> str:
             if x == ex and y == ey:
                 return ENTRY + " S " + R
             if x == xx and y == xy:
                 return EXIT_C + " E " + R
             soluce = [cell.pos for cell in maze_obj.get_soluce()]
-            if (x, y) in soluce:
+            if (x, y) in soluce and print_soluce:
                 return SOLUCE + " x " + R
             cur_cell = maze_obj.get_cell(x, y)
             if cur_cell and cur_cell.visited:
@@ -93,7 +93,7 @@ class Display:
                 row = ""
                 for c in range(width):
                     row += WALL + ("│" if v_wall(r, c) else " ") + R
-                    row += cell_str(c, r)
+                    row += cell_str(c, r, print_soluce)
                 row += WALL + ("│" if v_wall(r, width) else " ") + R
                 lines.append(row)
 
