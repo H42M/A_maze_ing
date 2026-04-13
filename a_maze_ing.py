@@ -27,24 +27,36 @@ if __name__ == "__main__":
         output = Output(maze)
         choice = 0
         soluce = False
-        while (choice != 4):
+        while (choice != 5):
             print("=== A-Maze-Ing ===")
-            print("1. Re-generate a new maze")
-            print("2. Show / Hide path from entry to exit")
-            print("3. Rotate maze colors")
-            print("4. Quit")
+            print("1. Re-generate a new random maze")
+            print("2. Re-Generate a new maze with seed")
+            print("3. Show / Hide path from entry to exit")
+            print("4. Rotate maze colors")
+            print("5. Quit")
             try:
-                choice = int(input("Choice ? (1-4): "))
+                choice = int(input("Choice ? (1-5): "))
                 if choice > 4 or choice < 1:
                     raise ValueError
 
-                if choice == 1:
+                if choice == 1 or choice == 2:
+                    import random
+                    if choice == 2:
+                        while (True):
+                            try:
+                                seed = int(input("Enter a valid seed: "))
+                                break
+                            except Exception:
+                                print("Invalid seed provided")
+                    else:
+                        seed = random.randint(1000, 1000000)
+
                     maze.reset()
-                    maze.generate_maze()
+                    maze.generate_maze(seed=seed)
                     maze.resolve_a_star()
                     Display.print_maze(maze, print_soluce=soluce)
 
-                if choice == 2:
+                if choice == 3:
                     if soluce:
                         soluce = False
                     else:
