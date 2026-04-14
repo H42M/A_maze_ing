@@ -6,8 +6,9 @@ CONFIG ?= config.txt
 PY_FILES := a_maze_ing.py \
 	config_parsing.py \
 	maze_config.py \
-	maze_generator.py
-	
+	maze_generator.py \
+	maze_terminal.py
+
 # 	PY_FILES := $(shell git ls-files '*.py')
 
 .PHONY: install run debug clean lint lint-strict
