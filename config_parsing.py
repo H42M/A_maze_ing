@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
 from typing import Dict
 from maze_config import MazeConfig
+from pathlib import Path
 
 
 class MazeConfigLoader:
@@ -9,15 +10,11 @@ class MazeConfigLoader:
         self.config: Dict[str, str | None] = {}
 
     def read_config(self) -> None:
-        config: Dict[str, str | None] = {}
+        config_path = Path(self.path)
 
-        try:
-            config = dotenv_values(self.path)
-        except FileNotFoundError:
-            print(
-                "config.txt not found, generating maze with default_config..."
-                )
-        self.config = config
+        if not config_path.is_file():
+            raise FileNotFoundError(f"{self.path} not found")
+        self.config = dotenv_values(self.path)
 
     def clean_config(self) -> MazeConfig:
         cfg = self.config
