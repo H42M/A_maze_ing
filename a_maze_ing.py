@@ -1,6 +1,7 @@
 from config_parsing import MazeConfigLoader
 from maze_config import MazeConfig
 from maze_generator import MazeGenerator
+from maze_terminal import render_maze
 
 
 class Maze:
@@ -23,5 +24,9 @@ if __name__ == "__main__":
     maze = Maze()
     maze.load_config()
     print(maze.config)
+
     maze.load_generator()
-    print(maze.generator.grid)
+    maze.generator.remove_wall(3, 3, 4, 3)
+    maze.generator.remove_wall(3, 3, 3, 4)
+    print(render_maze(maze.generator.grid, maze.config.entry,
+                      maze.config.exit))

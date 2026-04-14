@@ -1,17 +1,19 @@
 from typing import Tuple, Self
 from pydantic import BaseModel, Field, model_validator
 
+Coordinate = Tuple[int, int]
+
 
 class MazeConfig(BaseModel):
     width: int = Field(gt=0)
     height: int = Field(gt=0)
-    entry: Tuple[int, int]
-    exit: Tuple[int, int]
+    entry: Coordinate
+    exit: Coordinate
     output_file: str = Field(min_length=1)
     perfect: bool
     seed: int | None = None
 
-    def bounds_check(self, position: Tuple[int, int]) -> bool:
+    def bounds_check(self, position: Coordinate) -> bool:
         x, y = position
         return 0 <= x < self.width and 0 <= y < self.height
 
