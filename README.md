@@ -132,8 +132,20 @@ Each cell is encoded as a **single hexadecimal digit** representing which walls 
 | South | 2   | 4     |
 | West  | 3   | 8     |
 
-A cell with all 4 walls closed has value `8 + 4 + 2 + 1 = 15` → `F`.  
+A cell with all 4 walls closed has value `8 + 4 + 2 + 1 = 15` → `F`.
+```bash
+#Result: 
+┌───┐
+│   │
+└───┘
+```
 A cell open to the South and West has value `1 + 2` → `3`.
+```bash
+#Result:
+────┐
+    │
+	╵
+```
 
 **Example output (`maze.txt`):**
 ```
