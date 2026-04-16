@@ -1,6 +1,8 @@
 from maze_config import MazeConfig
 from enum import IntFlag
 from typing import List
+import random
+from maze_config import Coordinate
 
 
 class Wall(IntFlag):
@@ -18,6 +20,8 @@ class MazeGenerator:
     def __init__(self, config: MazeConfig) -> None:
         self.config = config
         self.grid = self.create_grid()
+        self.visited = self.create_visited_grid()
+        self.rng = random.Random(self.config.seed)
 
     def create_grid(self) -> Grid:
         grid: Grid = [[Wall.ALL for _ in range(self.config.width)]
@@ -53,3 +57,29 @@ class MazeGenerator:
         elif x1 == x2 + 1:
             grid[y1][x1] &= ~Wall.WEST
             grid[y2][x2] &= ~Wall.EAST
+
+    def create_visited_grid(self) -> list[list[bool]]:
+        return [[False for _ in range(self.config.width)]
+                for _ in range(self.config.height)]
+
+    def get_next_free_cells(self, x: int, y: int) -> list[Coordinate]:
+        if not self.is_within_bounds(x, y):
+            raise ValueError("not within bounds")
+
+        not_visited: list[Coordinate] = []
+        candidates = [
+            (x, y + 1),
+            (x + 1, y),
+            (x, y - 1),
+            (x - 1, y),
+        ]
+
+        for nx, ny in candidates:
+            if self.is_within_bounds(nx, ny) and not self.visited[ny][nx]:
+                not_visited.append((nx, ny))
+
+        return not_visited
+    
+    def generate_perfect(self) -> None:
+        current: Coordinate = (0, 0)
+        self.visited[current[1]][current[0]] = True

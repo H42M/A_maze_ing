@@ -25,6 +25,7 @@ class MazeConfigLoader:
         exit_raw = cfg.get("EXIT")
         output_file = cfg.get("OUTPUT_FILE")
         perfect_raw = cfg.get("PERFECT")
+        seed_raw = cfg.get("SEED")
 
         if width_raw is None:
             raise ValueError("Missing WIDTH")
@@ -57,6 +58,7 @@ class MazeConfigLoader:
             exit=(int(exit_x), int(exit_y)),
             output_file=output_file,
             perfect=perfect,
+            seed=None if seed_raw is None else int(seed_raw)
         )
 
     def load(self) -> MazeConfig:
