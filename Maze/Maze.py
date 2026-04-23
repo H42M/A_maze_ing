@@ -16,13 +16,11 @@ class Maze:
         self.__entry = config.entry
         self.__exit = config.exit
 
-        self.__cell_nb_bloc = GameState.get_cell_nb_bloc()
         self.__cell_size = GameState.get_cell_size()
         self.__wall_thickness = GameState.get_wall_thickness()
         self.__gap = GameState.get_gap()
 
         self.__is_maze_generated = False
-        self.__render_maze: list[RenderObj] = []
         self.__color: tuple[int, int, int] = (255, 255, 0)
         self.__maze_lst = self.__empty_maze()
         self.__dfs = DFS(self)
@@ -40,6 +38,9 @@ class Maze:
         return maze
 
     def generate_anim(self):
+        if self.__is_maze_generated:
+            return True
+
         instruct = self.__dfs.get_instruct()
         if instruct:
             print(instruct._cell.pos)
@@ -48,39 +49,9 @@ class Maze:
             instruct._cell.set_render_cell()
             instruct._neigh.set_render_cell()
             return False
-        # self.__render_maze = self.get_render_maze()
+
         self.__is_maze_generated = True
         return True
-    # def get_render_maze(self) -> list[RenderObj]:
-    #     if self.__is_maze_generated and len(self.__render_maze) > 0:
-    #         return self.__render_maze
-
-    #     # Background
-    #     render_maze: list[RenderObj] = []
-
-    #     # Maze Background
-
-    #     for y in self.__maze_lst:
-    #         for cell in y:
-    #             # Entry / Exit
-    #             if cell == self.entry or cell == self.exit:
-    #                 posx = (cell.pos[0] * self.__cell_size[0]) + self.__gap[0]
-    #                 posy = cell.pos[1] * self.__cell_size[1] + self.__gap[1]
-
-    #                 cell_color = {
-    #                     self.entry: (0, 255, 0), self.exit: (255, 0, 0)
-    #                     }
-    #                 render_maze.append(RenderObj(
-    #                     pos=(posx + GameState.bloc_size[0],
-    #                          posy + GameState.bloc_size[1]),
-    #                     size=(self.__cell_size[0] - GameState.bloc_size[0],
-    #                           self.__cell_size[1] - GameState.bloc_size[1]),
-    #                     color=cell_color[cell],
-    #                     collision=False
-    #                 ))
-    #             # Cells
-    #             render_maze.extend(cell.get_render_cell())
-    #     return render_maze
 
     def render(self, screen: pygame.Surface):
         # Render Background:
@@ -94,7 +65,14 @@ class Maze:
 
         for row in self.__maze_lst:
             for cell in row:
-                cell.render(screen)
+                render_exit = False
+                render_soluce = False
+                if (cell in self.__soluce and cell != self.exit and
+                        cell != self.entry):
+                    render_soluce = True
+                if cell == self.exit:
+                    render_exit = True
+                cell.render(screen, render_exit, render_soluce)
 
     def get_cell(self, coord: tuple[int, int]):
         x, y = coord
@@ -102,13 +80,14 @@ class Maze:
             return self.__maze_lst[y][x]
         return None
 
-    def set_color(self, color: Union[str, tuple[int, int, int]]):
-        from render.RenderBloc import Bloc
-        if isinstance(color, str):
-            Bloc.load_image(color)
+    def set_color(self, color: Union[tuple[int, int, int],
+                                     pygame.Surface]):
         for row in self.__maze_lst:
             for cell in row:
-                cell.color = color
+                if isinstance(color, pygame.Surface):
+                    cell.wall_texture = color
+                else:
+                    cell.color = color
         self.__render_maze = []
 
     def solve(self):
@@ -141,6 +120,10 @@ class Maze:
     @property
     def cell_size(self):
         return self.__cell_size
+
+    @property
+    def maze_lst(self):
+        return self.__maze_lst
 
     @property
     def wall_thickness(self):

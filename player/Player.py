@@ -1,14 +1,14 @@
 import pygame
-from typing import Optional
+from typing import Optional, Union
 
 from Maze.Maze import Maze
-from render.RenderObj import RenderObj
 from render.RenderBloc import Bloc
 from Config.GameState import GameState
 
 
 class Player:
-    def __init__(self, maze: Maze, player_skin: Optional[str] = None) -> None:
+    def __init__(self, maze: Maze, player_skin: Optional
+                 [Union[str, pygame.Surface]] = None) -> None:
         self.__maze = maze
         self.__speed = 3
         self.__size = GameState.bloc_size
@@ -28,15 +28,18 @@ class Player:
         self.__skin_path = player_skin
 
     def render(self, screen):
-        if self.__skin_path:
-            color = self.__skin_path
-            Bloc.load_image(color)
-        else:
-            color = (255, 0, 0)
+        if isinstance(self.__skin_path, pygame.Surface):
+            render_player = Bloc(
+                pos=(int(self.__pos.x), int(self.__pos.y)),
+                color=(255, 255, 255),
+                texture=self.__skin_path
+            )
+            render_player.render(screen)
+            return
 
         render_player = Bloc(
             pos=(int(self.__pos.x), int(self.__pos.y)),
-            color=color
+            color=(255, 0, 0)
         )
         render_player.render(screen)
 
@@ -54,39 +57,23 @@ class Player:
         if keys[pygame.K_DOWN]:
             new_pos.y += self.__speed
 
-        # if not self.__check_collision(new_pos, render_maze):
-        self.__pos = new_pos
+        if not self.__check_collision(new_pos):
+            self.__pos = new_pos
 
-    def __check_collision(self, pos: pygame.Vector2,
-                          render_maze: list[RenderObj]) -> bool:
-        # Hitbox du joueur à la nouvelle position
+    def __check_collision(self, pos: pygame.Vector2) -> bool:
         player_rect = pygame.Rect(pos.x, pos.y, *self.__size)
 
-        # On vérifie chaque mur du labyrinthe
-        for wall in render_maze:
-            if wall.collision:
-                wall_rect = pygame.Rect(
-                    wall._pos[0],
-                    wall._pos[1],
-                    wall._size[0],
-                    wall._size[1]
-                )
-                if player_rect.colliderect(wall_rect):
-                    return True  # collision détectée
-
-        return False  # pas de collision
-
-    def __load_skin(self, skin_path):
-        import os
-        try:
-            if os.path.isfile(skin_path):
-                image = pygame.image.load(skin_path)
-                self.__skin = pygame.transform.scale(image, self.__size)
-                print(f"Skin loaded: {skin_path}", flush=True)
-                return True
-            else:
-                print(f"Skin image not found: {skin_path}", flush=True)
-                return False
-        except Exception as e:
-            print(f"Error loading Skin: {e}", flush=True)
-            return False
+        for row in self.__maze.maze_lst:
+            for cell in row:
+                render_cell = cell.get_render_cell()
+                for wall in render_cell:
+                    if wall.collision:
+                        wall_rect = pygame.Rect(
+                            wall._pos[0],
+                            wall._pos[1],
+                            wall._size[0],
+                            wall._size[1]
+                        )
+                        if player_rect.colliderect(wall_rect):
+                            return True
+        return False

@@ -18,7 +18,7 @@ if __name__ == "__main__":
             wall_thickness=5
             )
         maze = Maze(config)
-        player = Player(maze, 'srcs/mario.png')
+        player = Player(maze, GameState.player_texture)
 
     except ConfigError as e:
         print(f"[CONFIG ERROR] {e}")
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     maze_over = False
     # maze.set_color((255, 255, 0))
-    maze.set_color('srcs/mario-cloud.png')
+    maze.set_color(GameState.wall_texture)
     while True:
         if not render.handle_events():
             break

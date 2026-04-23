@@ -4,6 +4,8 @@ et accessibles partout dans le programme
 """
 
 from Config.Config import Config
+from Errors import ConfigError
+import pygame
 
 
 class GameState:
@@ -18,6 +20,12 @@ class GameState:
     gap: tuple[int, int] = (0, 0)
     wall_thickness: int = 5
 
+    wall_texture: pygame.Surface
+    player_texture: pygame.Surface
+    soluce_texture: pygame.Surface
+    bg_texture: pygame.Surface
+    exit_texture: pygame.Surface
+
     @classmethod
     def initialize(cls, config: Config, screen_size: tuple[int, int],
                    cell_nb_bloc: int, wall_thickness: int = 5):
@@ -31,11 +39,42 @@ class GameState:
         cls.gap = (cls.cell_size[0] * 2, cls.cell_size[1] * 2)
         cls.wall_thickness = wall_thickness
         cls.screen_size = screen_size
+        cls.__load_textures('MARIO')
+
         print("GameState initialized:", flush=True)
         print(f"  Cell size: {cls.cell_size}", flush=True)
         print(f"  Bloc size: {cls.bloc_size}", flush=True)
         print(f"  Gap: {cls.gap}", flush=True)
         print(f"  Wall thickness: {cls.wall_thickness}", flush=True)
+
+    @classmethod
+    def __load_textures(cls, theme: str):
+        texture_path = {
+            'wall_texture': '',
+            'player_texture': '',
+            'soluce_texture': '',
+            'bg_texture': '',
+            'exit_texture': ''
+        }
+
+        if theme.upper() == 'MARIO':
+            texture_path['wall_texture'] = 'srcs/mario-cloud.png'
+            texture_path['player_texture'] = 'srcs/mario.png'
+            texture_path['soluce_texture'] = 'srcs/mario-coin.png'
+            texture_path['bg_texture'] = 'srcs/mario-cloud-bg-1.png'
+            texture_path['exit_texture'] = 'srcs/mario-flag-1.png'
+        else:
+            return
+
+        import os
+        for key, value in texture_path.items():
+            if len(value) > 5 and os.path.isfile(value):
+                try:
+                    setattr(cls, key, pygame.image.load(value))
+                except Exception as e:
+                    print(f"Error loading image {value}: {e}", flush=True)
+            else:
+                raise ConfigError(f"Impossible to load texture: {value}")
 
     @staticmethod
     def __process_cell_size(screen_size: tuple[int, int],
