@@ -34,7 +34,7 @@ class DFS:
         neigh_list = self.__get_neigh()
         av_neighs = []
         for wall, neigh in neigh_list.items():
-            if neigh not in self.__visited:
+            if neigh not in self.__visited and not neigh.is42:
                 av_neighs.append(Instruct(
                     cell=self.__cell,
                     wall=wall,
@@ -43,7 +43,7 @@ class DFS:
                 ))
         return av_neighs
 
-    def __get_neigh(self):
+    def __get_neigh(self) -> dict[str, Cell]:
         neigh_list = {}
         infos: dict[str, tuple[int, int]] = {
             'n': (0, -1),

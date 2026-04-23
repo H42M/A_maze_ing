@@ -23,6 +23,7 @@ class Maze:
         self.__is_maze_generated = False
         self.__color: tuple[int, int, int] = (255, 255, 0)
         self.__maze_lst = self.__empty_maze()
+        self.__set_42_logo()
         self.__dfs = DFS(self)
 
         self.__soluce: list[Cell] = []
@@ -100,6 +101,72 @@ class Maze:
     def add_to_soluce(self, cell: Cell) -> None:
         if self.get_cell(cell.pos):
             self.__soluce.append(cell)
+
+    def __set_42_logo(self) -> None:
+        """Generate 42 logo in maze.
+
+        Args:
+            cell (Cell): 42 logo Start.
+
+        Example:
+            >>> maze.genrate_42()
+        """
+        starting_cell = self.get_cell((
+            (self.__width - 7) // 2,
+            (self.__height - 5) // 2
+        ))
+        if not starting_cell:
+            return
+
+        starting_cell.is42 = True
+        cell = starting_cell
+        # Number 4:
+        for _ in range(2):
+            if cell:
+                cell = self.get_cell((cell.x, cell.y + 1))
+                if cell:
+                    cell.is42 = True
+        for _ in range(2):
+            if cell:
+                cell = self.get_cell((cell.x + 1, cell.y))
+                if cell:
+                    cell.is42 = True
+        for _ in range(2):
+            if cell:
+                cell = self.get_cell((cell.x, cell.y + 1))
+                if cell:
+                    cell.is42 = True
+
+        # Number 2:
+        cell = self.get_cell((starting_cell.x + 4, starting_cell.y))
+        if cell:
+            cell.is42 = True
+
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell((cell.x + 1, cell.y))
+                    if cell:
+                        cell.is42 = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell((cell.x, cell.y + 1))
+                    if cell:
+                        cell.is42 = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell((cell.x - 1, cell.y))
+                    if cell:
+                        cell.is42 = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell((cell.x, cell.y + 1))
+                    if cell:
+                        cell.is42 = True
+            for _ in range(2):
+                if cell:
+                    cell = self.get_cell((cell.x + 1, cell.y))
+                    if cell:
+                        cell.is42 = True
 
     @property
     def entry(self) -> Cell:

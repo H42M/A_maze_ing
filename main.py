@@ -10,13 +10,14 @@ if __name__ == "__main__":
         parser = ParserConfig('settings.txt')
         config = parser.init_config()
 
-        render = Render(background_image='srcs/mario-cloud-bg-1.png')
+        render = Render()
         GameState.initialize(
             config,
             render.screen.get_size(),
             cell_nb_bloc=3,
             wall_thickness=5
             )
+        render.load_background(GameState.bg_texture)
         maze = Maze(config)
         player = Player(maze, GameState.player_texture)
 

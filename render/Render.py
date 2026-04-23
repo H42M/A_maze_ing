@@ -1,38 +1,26 @@
 import pygame
-import os
-from typing import Optional
 
 
 class Render:
 
-    def __init__(self, background_image: Optional[str] = None) -> None:
+    def __init__(self) -> None:
         pygame.init()
         self.__screen_size = (800, 800)
         self.__screen_name = "Hello World"
         self.__clock = pygame.time.Clock()
         self.__screen = pygame.display.set_mode(
             self.__screen_size,
-            pygame.RESIZABLE
+            # pygame.RESIZABLE
         )
         pygame.display.set_caption(self.__screen_name)
 
-        # Charger le background
-        self.__background = None
-        if background_image:
-            self.load_background(background_image)
-
-    def load_background(self, image_path: str) -> bool:
+    def load_background(self, bg: pygame.Surface) -> bool:
         """Charger une image comme background"""
         try:
-            if os.path.isfile(image_path):
-                image = pygame.image.load(image_path)
-                self.__background = pygame.transform.scale(image,
-                                                           self.__screen_size)
-                print(f"Background loaded: {image_path}", flush=True)
-                return True
-            else:
-                print(f"Background image not found: {image_path}", flush=True)
-                return False
+
+            self.__background = pygame.transform.scale(bg,
+                                                       self.__screen_size)
+            return True
         except Exception as e:
             print(f"Error loading background: {e}", flush=True)
             return False

@@ -14,6 +14,7 @@ class Cell:
         self.x = x
         self.y = y
         self.pos = (self.x, self.y)
+        self.__is42 = False
 
         self.__render_cell: list[Bloc] = []
         self.__color: tuple[int, int, int] = color
@@ -121,6 +122,14 @@ class Cell:
     @w.setter
     def w(self, value):
         self._w = value
+
+    @property
+    def is42(self) -> bool:
+        return self.__is42
+
+    @is42.setter
+    def is42(self, value):
+        self.__is42 = value
 
     @property
     def color(self):

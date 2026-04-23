@@ -58,11 +58,13 @@ class GameState:
         }
 
         if theme.upper() == 'MARIO':
-            texture_path['wall_texture'] = 'srcs/mario-cloud.png'
-            texture_path['player_texture'] = 'srcs/mario.png'
-            texture_path['soluce_texture'] = 'srcs/mario-coin.png'
-            texture_path['bg_texture'] = 'srcs/mario-cloud-bg-1.png'
-            texture_path['exit_texture'] = 'srcs/mario-flag-1.png'
+            path = 'srcs/mario'
+            path_cloud = path + '/mario-cloud'
+            texture_path['wall_texture'] = path_cloud + '/mario-cloud.png'
+            texture_path['player_texture'] = path + '/mario.png'
+            texture_path['soluce_texture'] = path + '/mario-coin.png'
+            texture_path['bg_texture'] = path_cloud + '/mario-cloud-bg-1.png'
+            texture_path['exit_texture'] = path + '/mario-flag-1.png'
         else:
             return
 
