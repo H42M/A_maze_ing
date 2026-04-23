@@ -1,0 +1,72 @@
+"""
+Stockage des données calculées une fois au démarrage
+et accessibles partout dans le programme
+"""
+
+from Config.Config import Config
+
+
+class GameState:
+    """Singleton pour stocker les données globales du jeu"""
+
+    _instance = None\
+
+
+    cell_size: tuple[int, int] = (55, 65)
+    cell_nb_bloc: int = 3
+    bloc_size: tuple[int, int] = (0, 0)
+    gap: tuple[int, int] = (0, 0)
+    wall_thickness: int = 5
+
+    @classmethod
+    def initialize(cls, config: Config, screen_size: tuple[int, int],
+                   cell_nb_bloc: int, wall_thickness: int = 5):
+        """Initialiser les données une seule fois"""
+        cls.cell_size = cls.__process_cell_size(screen_size,
+                                                cell_nb_bloc,
+                                                config)
+        cls.cell_nb_bloc = cell_nb_bloc
+        cls.bloc_size = (cls.cell_size[0] // cell_nb_bloc,
+                         cls.cell_size[1] // cell_nb_bloc)
+        cls.gap = (cls.cell_size[0] * 2, cls.cell_size[1] * 2)
+        cls.wall_thickness = wall_thickness
+        cls.screen_size = screen_size
+        print("GameState initialized:", flush=True)
+        print(f"  Cell size: {cls.cell_size}", flush=True)
+        print(f"  Bloc size: {cls.bloc_size}", flush=True)
+        print(f"  Gap: {cls.gap}", flush=True)
+        print(f"  Wall thickness: {cls.wall_thickness}", flush=True)
+
+    @staticmethod
+    def __process_cell_size(screen_size: tuple[int, int],
+                            cell_nb_bloc: int, config: Config):
+        cell_by_screen = (screen_size[0] // (config.width + 4),
+                          screen_size[1] // (config.height + 4))
+
+        return (round(cell_by_screen[0] / cell_nb_bloc) * cell_nb_bloc,
+                round(cell_by_screen[1] / cell_nb_bloc) * cell_nb_bloc)
+
+    @classmethod
+    def get_cell_size(cls) -> tuple[int, int]:
+        """Obtenir la taille de chaque cellule"""
+        return cls.cell_size
+
+    @classmethod
+    def get_bloc_size(cls) -> tuple[int, int]:
+        """Obtenir la taille de chaque bloc"""
+        return cls.bloc_size
+
+    @classmethod
+    def get_gap(cls) -> tuple[int, int]:
+        """Obtenir l'espace de centrage du labyrinthe"""
+        return cls.gap
+
+    @classmethod
+    def get_cell_nb_bloc(cls) -> int:
+        """Obtenir le nombre de blocs par cellule"""
+        return cls.cell_nb_bloc
+
+    @classmethod
+    def get_wall_thickness(cls) -> int:
+        """Obtenir l'épaisseur des murs"""
+        return cls.wall_thickness

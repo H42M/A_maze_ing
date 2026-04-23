@@ -1,11 +1,9 @@
 """A Star Algorythm module."""
 
 
-from maze.Maze import Maze
-from maze.Cell import Cell
-from algo.Dfs import Instruct
+from Maze.Maze import Maze
+from Maze.Cell import Cell
 
-from enum import Enum
 from typing import Any, Optional
 import heapq
 
@@ -43,14 +41,8 @@ class A_Star:
         while heap:
             f, g, _, cell, path = heapq.heappop(heap)
             if animate:
-                import time
-                from display.Display import Display
-                import os
                 self.__maze.add_to_soluce(cell)
-                os.system("clear")
-                Display.print_maze(self.__maze, print_soluce=True)
                 print(f"Cell {cell.pos}: {f}, {g}")
-                time.sleep(animate)
 
             if cell == self.__maze.exit:
                 return path
@@ -58,7 +50,7 @@ class A_Star:
                 visited.add(cell)
 
             for option in self.__get_av_options(cell):
-                neigh = option[Instruct.NEIGH_CELL]
+                neigh = option['neigh_cell']
                 if neigh not in visited:
                     new_g = g + 1
                     new_f = new_g + self.__get_h(neigh)
@@ -75,11 +67,11 @@ class A_Star:
         options = self.__get_options(cell)
         av_options = []
         for option in options:
-            if isinstance(option[Instruct.NEIGH_CELL], Cell):
-                neigh = option[Instruct.NEIGH_CELL]
-                cur_cell = option[Instruct.CUR_CELL]
-                cell_wall = option[Instruct.CUR_WALL]
-                neigh_wall = option[Instruct.NEIGH_WALL]
+            if isinstance(option['neigh_cell'], Cell):
+                neigh = option['neigh_cell']
+                cur_cell = option['cell']
+                cell_wall = option['wall']
+                neigh_wall = option['neigh_wall']
                 if (not getattr(cur_cell, cell_wall) and
                         not getattr(neigh, neigh_wall) and
                         neigh not in self.__traveled):
@@ -87,34 +79,30 @@ class A_Star:
         return av_options
 
     def __get_options(self, cell: Cell
-                      ) -> list[dict[Enum, Any]]:
+                      ) -> list[dict[str, Any]]:
         return [
                 {
-                    Instruct.NEIGH_CELL: self.__maze.get_cell(cell.x - 1,
-                                                              cell.y),
-                    Instruct.CUR_CELL: cell,
-                    Instruct.CUR_WALL: "w",
-                    Instruct.NEIGH_WALL: "e"
+                    'neigh_cell': self.__maze.get_cell((cell.x - 1, cell.y)),
+                    'cell': cell,
+                    'wall': "w",
+                    'neigh_wall': "e"
                  },
                 {
-                    Instruct.NEIGH_CELL: self.__maze.get_cell(cell.x + 1,
-                                                              cell.y),
-                    Instruct.CUR_CELL: cell,
-                    Instruct.CUR_WALL: "e",
-                    Instruct.NEIGH_WALL: "w"
+                    'neigh_cell': self.__maze.get_cell((cell.x + 1, cell.y)),
+                    'cell': cell,
+                    'wall': "e",
+                    'neigh_wall': "w"
                  },
                 {
-                    Instruct.NEIGH_CELL: self.__maze.get_cell(cell.x,
-                                                              cell.y - 1),
-                    Instruct.CUR_CELL: cell,
-                    Instruct.CUR_WALL: "n",
-                    Instruct.NEIGH_WALL: "s"
+                    'neigh_cell': self.__maze.get_cell((cell.x, cell.y - 1)),
+                    'cell': cell,
+                    'wall': "n",
+                    'neigh_wall': "s"
                  },
                 {
-                    Instruct.NEIGH_CELL: self.__maze.get_cell(cell.x,
-                                                              cell.y + 1),
-                    Instruct.CUR_CELL: cell,
-                    Instruct.CUR_WALL: "s",
-                    Instruct.NEIGH_WALL: "n"
+                    'neigh_cell': self.__maze.get_cell((cell.x, cell.y + 1)),
+                    'cell': cell,
+                    'wall': "s",
+                    'neigh_wall': "n"
                  },
             ]
