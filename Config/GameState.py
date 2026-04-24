@@ -39,7 +39,9 @@ class GameState:
         cls.gap = (cls.cell_size[0] * 2, cls.cell_size[1] * 2 + 80)
         cls.wall_thickness = wall_thickness
         cls.screen_size = screen_size
-        cls.__load_textures('MARIO')
+        cls.themes_list: list[str] = ['MARIO', 'METROID']
+        cls.current_theme = 0
+        cls.__load_textures(cls.themes_list[0])
 
         print("GameState initialized:", flush=True)
         print(f"  Cell size: {cls.cell_size}", flush=True)
@@ -65,6 +67,14 @@ class GameState:
             texture_path['soluce_texture'] = path + '/mario-coin.png'
             texture_path['bg_texture'] = path_cloud + '/mario-cloud-bg-1.png'
             texture_path['exit_texture'] = path + '/mario-flag-1.png'
+        
+        elif theme.upper() == 'METROID':
+            path = 'srcs/metroid'
+            texture_path['wall_texture'] = path + '/lava-bloc.png'
+            texture_path['player_texture'] = path + '/metroid-samus.png'
+            texture_path['soluce_texture'] = path + '/enemy.png'
+            texture_path['bg_texture'] = path + '/bg.jpg'
+            texture_path['exit_texture'] = path + '/enemy.png'
         else:
             return
 
@@ -80,12 +90,23 @@ class GameState:
 
     @staticmethod
     def __process_cell_size(screen_size: tuple[int, int],
-                            cell_nb_bloc: int, config: Config):
+                            cell_nb_bloc: int, config: Config
+                            ) -> tuple[int, int]:
         cell_by_screen = (screen_size[0] // (config.width + 4),
                           screen_size[1] // (config.height + 4))
 
         return (round(cell_by_screen[0] / cell_nb_bloc) * cell_nb_bloc,
                 round(cell_by_screen[1] / cell_nb_bloc) * cell_nb_bloc)
+
+    @classmethod
+    def set_theme(cls, theme: str) -> None:
+        if theme in cls.themes_list:
+            cls.current_theme = cls.themes_list.index(theme)
+            cls.set_theme(theme)
+
+    @classmethod
+    def get_themes(cls) -> list[str]:
+        return cls.themes_list
 
     @classmethod
     def get_cell_size(cls) -> tuple[int, int]:

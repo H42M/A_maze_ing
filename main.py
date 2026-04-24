@@ -1,5 +1,5 @@
 from render.Render import Render
-from render.RenderButtons import ToggleButton, Button
+from render.RenderButtons import ToggleButton, Button, SelectButton
 from Maze.Maze import Maze
 from Config.ParserConfig import ParserConfig
 from player.Player import Player
@@ -31,7 +31,13 @@ if __name__ == "__main__":
             Button('Generer a nouveau',
                    pos=(210, 10),
                    size=(200, 60),
-                   callback=[maze.reset, player.reset_pos])
+                   callback=[maze.reset, player.reset_pos]),
+            SelectButton('Choisir un theme',
+                         pos=(450, 10),
+                         size=(200, 60),
+                         callback=GameState.set_theme,
+                         options=GameState.get_themes()
+                         )
         ]
 
     except ConfigError as e:

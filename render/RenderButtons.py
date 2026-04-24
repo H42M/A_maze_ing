@@ -109,3 +109,41 @@ class ToggleButton(Button):
 
         pos_tuple = (int(self._pos.x), int(self._pos.y))
         screen.blit(self._surface, pos_tuple)
+
+
+class SelectButton(Button):
+    def __init__(self, text: str,
+                 pos: tuple[int, int],
+                 size: tuple[int, int],
+                 callback: Callable,
+                 options: list[str]
+                 ) -> None:
+        super().__init__(text, pos, size, (0, 0, 255), callback)
+        self.__options = options
+        self.selected_opt: int = 0
+
+    def render(self, screen: pygame.Surface):
+        # Changer la couleur si survolée
+        current_color = self._hover_color if self._is_hovered \
+                                            else self._color
+        if not current_color:
+            current_color = (255, 255, 255)
+        self._surface.fill(current_color)
+
+        text_surface = self._font.render(self._text, True, (0, 0, 0))
+        text_rect = text_surface.get_rect(center=(self._size[0] // 2,
+                                                  self._size[1] // 2))
+        self._surface.blit(text_surface, text_rect)
+
+        option_surface = self._font.render(self.__options[self.selected_opt],
+                                           True, (0, 0, 0))
+        option_rect = option_surface.get_rect(center=(self._size[0] // 2,
+                                                      self._size[1] // 2))
+        self._surface.blit(option_surface, option_rect)
+
+        pos_tuple = (int(self._pos.x), int(self._pos.y))
+        screen.blit(self._surface, pos_tuple)
+
+    def execute(self) -> None:
+        if self._callback and isinstance(self._callback, Callable):
+            self._callback(self.selected_opt)
