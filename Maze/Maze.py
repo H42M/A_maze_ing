@@ -5,11 +5,12 @@ from Maze.Cell import Cell
 from render.RenderObj import RenderObj
 from Config.GameState import GameState
 
-from typing import Union
+from typing import Union, Optional
 
 
 class Maze:
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config, color: Union[tuple[int, int, int],
+                                                    pygame.Surface]) -> None:
         from Maze.algo.Dfs import DFS
         self.__width = config.width
         self.__height = config.height
@@ -21,13 +22,13 @@ class Maze:
         self.__gap = GameState.get_gap()
 
         self.__is_maze_generated = False
-        self.__color: tuple[int, int, int] = (255, 255, 0)
+        self.__color: Union[tuple[int, int, int], pygame.Surface] = color
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
         self.__dfs = DFS(self)
 
         self.__soluce: list[Cell] = []
-        self.__display_soluce = True
+        self.__display_soluce = False
 
     def __empty_maze(self) -> list[list[Cell]]:
         maze = []
@@ -68,9 +69,10 @@ class Maze:
             for cell in row:
                 render_exit = False
                 render_soluce = False
-                if (cell in self.__soluce and cell != self.exit and
-                        cell != self.entry):
-                    render_soluce = True
+                if self.__display_soluce:
+                    if (cell in self.__soluce and cell != self.exit and
+                            cell != self.entry):
+                        render_soluce = True
                 if cell == self.exit:
                     render_exit = True
                 cell.render(screen, render_exit, render_soluce)
@@ -101,6 +103,12 @@ class Maze:
     def add_to_soluce(self, cell: Cell) -> None:
         if self.get_cell(cell.pos):
             self.__soluce.append(cell)
+
+    def reset(self):
+        self.__is_maze_generated = False
+        self.__maze_lst = self.__empty_maze()
+        self.__set_42_logo()
+        self.__soluce = []
 
     def __set_42_logo(self) -> None:
         """Generate 42 logo in maze.
@@ -168,6 +176,17 @@ class Maze:
                     if cell:
                         cell.is42 = True
 
+    def set_display_soluce(self, value: Optional[bool] = None):
+        if value is None:
+            self.__display_soluce = not self.__display_soluce
+        else:
+            self.__display_soluce = value
+        for cell in self.__soluce:
+            cell.set_render_cell()
+
+    def get_display_soluce(self):
+        return self.__display_soluce
+
     @property
     def entry(self) -> Cell:
         entry = self.get_cell(self.__entry)
@@ -207,3 +226,15 @@ class Maze:
     @color.setter
     def color(self, value):
         self.__color = value
+
+    @property
+    def display_soluce(self):
+        return self.__display_soluce
+
+    @property
+    def is_maze_generated(self):
+        return self.__is_maze_generated
+
+    @is_maze_generated.setter
+    def is_maze_generated(self, value):
+        self.__is_maze_generated = value

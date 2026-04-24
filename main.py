@@ -1,4 +1,5 @@
 from render.Render import Render
+from render.RenderButtons import ToggleButton, Button
 from Maze.Maze import Maze
 from Config.ParserConfig import ParserConfig
 from player.Player import Player
@@ -18,8 +19,20 @@ if __name__ == "__main__":
             wall_thickness=5
             )
         render.load_background(GameState.bg_texture)
-        maze = Maze(config)
+        maze = Maze(config, GameState.wall_texture)
         player = Player(maze, GameState.player_texture)
+        btns = [
+            ToggleButton('Afficher la solution',
+                         (10, 10),
+                         (200, 60),
+                         maze.set_display_soluce,
+                         maze.get_display_soluce,
+                         ),
+            Button('Generer a nouveau',
+                   pos=(210, 10),
+                   size=(200, 60),
+                   callback=[maze.reset, player.reset_pos])
+        ]
 
     except ConfigError as e:
         print(f"[CONFIG ERROR] {e}")
@@ -28,21 +41,18 @@ if __name__ == "__main__":
         print(f"[OTHER ERROR] {e}")
         exit()
 
-    maze_over = False
-    # maze.set_color((255, 255, 0))
-    maze.set_color(GameState.wall_texture)
     while True:
-        if not render.handle_events():
+        if not render.handle_events(btns):
             break
         render.clear()
-        if not maze_over:
+        [btn.render(render.screen) for btn in btns]
+        if not maze.is_maze_generated:
             if maze.generate_anim():
-                maze_over = True
                 maze.solve()
 
         maze.render(render.screen)
 
-        if maze_over:
+        if maze.is_maze_generated:
             player.get_keys()
             player.render(render.screen)
         render.flip()

@@ -20,7 +20,7 @@ class RenderObj:
         self.__surface = pygame.Surface(self.__size)
         self.__surface.fill(self.__color)
 
-    def render(self, screen):
+    def render(self, screen: pygame.Surface):
         self._surface.fill(self._color)
         pos_tuple = (int(self._pos.x), int(self._pos.y))
         screen.blit(self._surface, pos_tuple)

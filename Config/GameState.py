@@ -36,7 +36,7 @@ class GameState:
         cls.cell_nb_bloc = cell_nb_bloc
         cls.bloc_size = (cls.cell_size[0] // cell_nb_bloc,
                          cls.cell_size[1] // cell_nb_bloc)
-        cls.gap = (cls.cell_size[0] * 2, cls.cell_size[1] * 2)
+        cls.gap = (cls.cell_size[0] * 2, cls.cell_size[1] * 2 + 80)
         cls.wall_thickness = wall_thickness
         cls.screen_size = screen_size
         cls.__load_textures('MARIO')

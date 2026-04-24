@@ -31,7 +31,6 @@ class Player:
         if isinstance(self.__skin_path, pygame.Surface):
             render_player = Bloc(
                 pos=(int(self.__pos.x), int(self.__pos.y)),
-                color=(255, 255, 255),
                 texture=self.__skin_path
             )
             render_player.render(screen)
@@ -77,3 +76,17 @@ class Player:
                         if player_rect.colliderect(wall_rect):
                             return True
         return False
+
+    def reset_pos(self):
+        if self.__maze.entry:
+            half_width = int(GameState.cell_size[0] / 2)
+            half_height = int(GameState.cell_size[1] / 2)
+            self.__pos = pygame.Vector2(
+                (self.__maze.entry.x * GameState.cell_size[0]) +
+                self.__maze.gap[0] + half_width,
+                (self.__maze.entry.y * GameState.cell_size[1]) +
+                self.__maze.gap[1] + half_height
+            )
+        else:
+            print("Error: Maze entry point is not defined.")
+            self.__pos = pygame.Vector2(0, 0)

@@ -1,12 +1,12 @@
 from render.RenderBloc import Bloc
-from typing import Optional
+from typing import Optional, Union
 from Config.GameState import GameState
 import pygame
 
 
 class Cell:
     def __init__(self, x: int, y: int,
-                 color: tuple[int, int, int]) -> None:
+                 color: Union[tuple[int, int, int], pygame.Surface]) -> None:
         self._n = True
         self._s = True
         self._e = True
@@ -17,8 +17,12 @@ class Cell:
         self.__is42 = False
 
         self.__render_cell: list[Bloc] = []
-        self.__color: tuple[int, int, int] = color
+        self.__color: Optional[tuple[int, int, int]] = None
         self.__wall_texture: Optional[pygame.Surface] = None
+        if isinstance(color, pygame.Surface):
+            self.__wall_texture = color
+        else:
+            self.__color = color
 
         self.__soluce_block: bool = False
         self.__soluce_loaded: bool = False
@@ -89,7 +93,6 @@ class Cell:
             Bloc((xpos, ypos), texture=item,
                  collision=False)
         )
-        print(f"coin set at {xpos}, {ypos}")
 
     @property
     def n(self) -> bool:
@@ -148,8 +151,7 @@ class Cell:
     @soluce_block.setter
     def soluce_block(self, value):
         self.__soluce_block = value
-        if not self.soluce_block:
-            self.__render_cell = []
+        self.__render_cell = []
 
     @property
     def wall_texture(self):
