@@ -1,5 +1,7 @@
 from render.Render import Render
 from render.RenderButtons import ToggleButton, Button, SelectButton
+from render.RenderDiv import RenderDiv
+
 from Maze.Maze import Maze
 from Config.ParserConfig import ParserConfig
 from player.Player import Player
@@ -35,16 +37,17 @@ if __name__ == "__main__":
         print(textures)
         bg_tex = textures.get('background')
         wall_tex = textures.get('wall')
+        exit_tex = textures.get('exit')
+        soluce_tex = textures.get('checkpoint')
         player_tex = textures.get('player')
 
         if bg_tex:
             render.load_background(bg_tex)
 
-        if wall_tex:
-            maze = Maze(config, wall_tex)
+        if wall_tex and exit_tex and soluce_tex:
+            maze = Maze(config, wall_tex, exit_tex, soluce_tex)
         else:
-            maze = Maze(config, (100, 100, 100))
-            print('Wall Texture not loaded')
+            raise ConfigError("Maze texture unloaded")
 
         if player_tex:
             player = Player(maze, player_tex)
@@ -56,11 +59,13 @@ if __name__ == "__main__":
         def update_maze_texture(theme_name: str):
             # Mettre à jour GameState avec les nouvelles textures du thème
             GameState.set_theme(theme_name)
-            
+
             new_textures = theme_manager.get_all_textures()
             new_wall = new_textures.get('wall')
-            if new_wall:
-                maze.update_texture(new_wall)
+            new_exit = new_textures.get('exit')
+            new_soluce = new_textures.get('checkpoint')
+            if new_wall and new_exit and new_soluce:
+                maze.update_texture(new_wall, new_exit, new_soluce)
 
         # Enregistrer la mise à jour du Player
         def update_player_texture(theme_name: str):
@@ -74,10 +79,8 @@ if __name__ == "__main__":
 
         btns = [
             ToggleButton('Afficher la solution',
-                         (10, 10),
-                         (200, 60),
-                         maze.set_display_soluce,
-                         maze.get_display_soluce,
+                         callback=maze.set_display_soluce,
+                         callback_state=maze.get_display_soluce,
                          ),
             Button('Generer a nouveau',
                    pos=(210, 10),
@@ -90,6 +93,11 @@ if __name__ == "__main__":
                          options=theme_manager.get_available_themes()
                          )
         ]
+        btn_div = RenderDiv(
+            pos=(0, 10),
+            size=(render.screen.get_size()[0], 50),
+            gap=50)
+        btn_div.add(btns)
 
     except ConfigError as e:
         print(f"[CONFIG ERROR] {e}")
@@ -102,7 +110,7 @@ if __name__ == "__main__":
         if not render.handle_events(btns):
             break
         render.clear()
-        [btn.render(render.screen) for btn in btns]
+        btn_div.render(render.screen)
         if not maze.is_maze_generated:
             if maze.generate_anim():
                 maze.solve()

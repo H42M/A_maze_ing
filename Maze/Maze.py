@@ -9,8 +9,10 @@ from typing import Union, Optional
 
 
 class Maze:
-    def __init__(self, config: Config, color: Union[tuple[int, int, int],
-                                                    pygame.Surface]) -> None:
+    def __init__(self, config: Config,
+                 wall_tex: Union[tuple[int, int, int], pygame.Surface],
+                 exit_tex: Union[tuple[int, int, int], pygame.Surface],
+                 sol_tex: Union[tuple[int, int, int], pygame.Surface]) -> None:
         from Maze.algo.Dfs import DFS
         self.__width = config.width
         self.__height = config.height
@@ -21,21 +23,24 @@ class Maze:
         self.__wall_thickness = GameState.get_wall_thickness()
         self.__gap = GameState.get_gap()
 
+        self.__wall_tex: Union[tuple[int, int, int], pygame.Surface] = wall_tex
+        self.__exit_tex: Union[tuple[int, int, int], pygame.Surface] = exit_tex
+        self.__sol_tex: Union[tuple[int, int, int], pygame.Surface] = sol_tex
         self.__is_maze_generated = False
-        self.__color: Union[tuple[int, int, int], pygame.Surface] = color
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
         self.__dfs = DFS(self)
 
         self.__soluce: list[Cell] = []
         self.__display_soluce = False
+        self.set_textures(wall_tex, exit_tex, sol_tex)
 
     def __empty_maze(self) -> list[list[Cell]]:
         maze = []
         for y in range(self.__height):
             row = []
             for x in range(self.__width):
-                row.append(Cell(x, y, self.__color,))
+                row.append(Cell(x, y, self.__wall_tex,))
             maze.append(row)
         return maze
 
@@ -67,15 +72,7 @@ class Maze:
 
         for row in self.__maze_lst:
             for cell in row:
-                render_exit = False
-                render_soluce = False
-                if self.__display_soluce:
-                    if (cell in self.__soluce and cell != self.exit and
-                            cell != self.entry):
-                        render_soluce = True
-                if cell == self.exit:
-                    render_exit = True
-                cell.render(screen, render_exit, render_soluce)
+                cell.render(screen)
 
     def get_cell(self, coord: tuple[int, int]):
         x, y = coord
@@ -83,27 +80,40 @@ class Maze:
             return self.__maze_lst[y][x]
         return None
 
-    def set_color(self, color: Union[tuple[int, int, int],
-                                     pygame.Surface]):
+    def set_textures(self,
+                     wall: Union[tuple[int, int, int], pygame.Surface],
+                     exit: Union[tuple[int, int, int], pygame.Surface],
+                     soluce: Union[tuple[int, int, int], pygame.Surface]):
         for row in self.__maze_lst:
             for cell in row:
-                if isinstance(color, pygame.Surface):
-                    cell.wall_texture = color
+                if isinstance(wall, pygame.Surface):
+                    cell.wall_texture = wall
+                    if cell == self.exit and isinstance(exit, pygame.Surface):
+                        cell.set_exit_texture(exit)
+                    elif cell in self.__soluce and isinstance(soluce,
+                                                              pygame.Surface):
+                        print('Cell texture set')
+                        cell.set_soluce_texture(soluce)
                 else:
-                    cell.color = color
-        self.__render_maze = []
+                    cell.color = wall
+        self.__wall_tex = wall
+        self.__exit_tex = exit
+        self.__sol_tex = soluce
 
-    def update_texture(self, texture: pygame.Surface) -> None:
+    def update_texture(self, wall: pygame.Surface,
+                       exit: pygame.Surface,
+                       soluce: pygame.Surface) -> None:
         """Mettre à jour la texture des murs du thème"""
-        if texture:
-            self.set_color(texture)
+        self.set_textures(wall, exit, soluce)
 
     def solve(self):
         from Maze.algo.AStar import A_Star
         astar = A_Star(self)
         self.__soluce = astar.solve()
         print("Soluce: ")
-        [print(cell.pos) for cell in self.__soluce]
+        for cell in self.__soluce:
+            cell.display_soluce = self.__display_soluce
+        self.set_textures(self.__wall_tex, self.__exit_tex, self.__sol_tex)
 
     def add_to_soluce(self, cell: Cell) -> None:
         if self.get_cell(cell.pos):
@@ -187,7 +197,7 @@ class Maze:
         else:
             self.__display_soluce = value
         for cell in self.__soluce:
-            cell.set_render_cell()
+            cell.display_soluce = self.__display_soluce
 
     def get_display_soluce(self):
         return self.__display_soluce

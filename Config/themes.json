@@ -30,20 +30,5 @@
       "secondary_color": "#00AA00",
       "background_music": "srcs/metroid/metroid-theme.mp3"
     }
-  },
-  "CUSTOM": {
-    "name": "Custom Theme",
-    "description": "Your custom theme",
-    "assets": {
-      "wall": "srcs/custom/wall.png",
-      "player": "srcs/custom/player.png",
-      "checkpoint": "srcs/custom/checkpoint.png",
-      "background": "srcs/custom/background.png",
-      "exit": "srcs/custom/exit.png"
-    },
-    "config": {
-      "primary_color": "#FFFFFF",
-      "secondary_color": "#000000"
-    }
   }
 }

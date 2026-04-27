@@ -57,7 +57,6 @@ class GameState:
     def __load_textures(cls, theme: str):
         """Charger les textures via ThemeManager"""
         if cls.theme_manager:
-            cls.theme_manager.set_theme(theme)
             textures = cls.theme_manager.get_all_textures()
 
             # Mapper les noms des textures
@@ -100,11 +99,9 @@ class GameState:
             themes = cls.theme_manager.get_available_themes()
             if 0 <= theme < len(themes):
                 theme_name = themes[theme]
-                if cls.theme_manager.set_theme(theme_name):
-                    cls.__load_textures(theme_name)
+                cls.__load_textures(theme_name)
         else:
-            if cls.theme_manager.set_theme(theme):
-                cls.__load_textures(theme)
+            cls.__load_textures(theme)
 
     @classmethod
     def get_themes(cls) -> list[str]:

@@ -6,7 +6,7 @@ class Render:
 
     def __init__(self) -> None:
         pygame.init()
-        self.__screen_size = (800, 800)
+        self.__screen_size = (1000, 1000)
         self.__screen_name = "Hello World"
         self.__clock = pygame.time.Clock()
         self.__screen = pygame.display.set_mode(

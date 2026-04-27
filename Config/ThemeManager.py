@@ -56,7 +56,7 @@ class ThemeManager:
             True si succes, False sinon
         """
         if theme_name not in self.themes:
-            print(f"✗ Theme '{theme_name}' non trouve", flush=True)
+            print(f"Theme '{theme_name}' non trouve", flush=True)
             return False
 
         if not self._load_theme_textures(theme_name):
@@ -96,7 +96,7 @@ class ThemeManager:
         return self.current_theme_data.get(
             'loaded_assets', {}).get(texture_name)
 
-    def get_all_textures(self) -> dict:
+    def get_all_textures(self) -> dict[str, pygame.Surface]:
         """Recuperer toutes les textures du Theme actuel"""
         if not self.current_theme_data:
             print('No texture to return')

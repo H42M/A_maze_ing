@@ -17,42 +17,45 @@ class Cell:
         self.__is42 = False
 
         self.__render_cell: list[Bloc] = []
+
         self.__color: Optional[tuple[int, int, int]] = None
         self.__wall_texture: Optional[pygame.Surface] = None
+        self.__entry_texture: Optional[pygame.Surface] = None
+        self.__exit_texture: Optional[pygame.Surface] = None
+        self.__soluce_texture: Optional[pygame.Surface] = None
         if isinstance(color, pygame.Surface):
             self.__wall_texture = color
         else:
             self.__color = color
 
-        self.__soluce_block: bool = False
+        self.__display_soluce: bool = False
         self.__soluce_loaded: bool = False
         self.__exit_loaded: bool = False
 
-    def render(self, screen: pygame.Surface,
-               render_exit: bool = False, render_soluce: bool = False) -> None:
-        self.get_render_cell(render_exit, render_soluce)
+    def render(self, screen: pygame.Surface) -> None:
+        self.get_render_cell()
         for elm in self.__render_cell:
             elm.render(screen)
 
-    def get_render_cell(self, render_exit: bool = False,
-                        render_soluce: bool = False):
+    def get_render_cell(self):
         if len(self.__render_cell) == 0:
             self.set_render_cell()
 
-        if render_soluce and not self.__soluce_loaded:
-            self.__set_render_item(GameState.soluce_texture)
+        if (self.__soluce_texture and not self.__soluce_loaded and
+                self.__display_soluce):
+            self.__set_render_item(self.__soluce_texture)
+            print('Soluce displayed')
             self.__soluce_loaded = True
-        if render_exit and not self.__exit_loaded:
-            self.__set_render_item(GameState.exit_texture)
+        if self.__exit_texture and not self.__exit_loaded:
+            print('Exit displayed')
+            self.__set_render_item(self.__exit_texture)
             self.__exit_loaded = True
             print("Exit loaded")
 
         return self.__render_cell
 
     def set_render_cell(self):
-        self.__render_cell = []
-        self.__exit_loaded = False
-        self.__soluce_loaded = False
+        self.reset_render()
 
         size = GameState.get_cell_size()
 
@@ -93,6 +96,23 @@ class Cell:
             Bloc((xpos, ypos), texture=item,
                  collision=False)
         )
+
+    def set_entry_texture(self, entry_texture: pygame.Surface):
+        self.__entry_texture = entry_texture
+        self.reset_render()
+
+    def set_exit_texture(self, entry_texture: pygame.Surface):
+        self.__exit_texture = entry_texture
+        self.reset_render()
+
+    def set_soluce_texture(self, soluce_texture: pygame.Surface):
+        self.__soluce_texture = soluce_texture
+        self.reset_render()
+
+    def reset_render(self):
+        self.__render_cell = []
+        self.__exit_loaded = False
+        self.__soluce_loaded = False
 
     @property
     def n(self) -> bool:
@@ -145,13 +165,13 @@ class Cell:
         self.__render_cell = []
 
     @property
-    def soluce_block(self) -> bool:
-        return self.__soluce_block
+    def display_soluce(self) -> bool:
+        return self.__display_soluce
 
-    @soluce_block.setter
-    def soluce_block(self, value):
-        self.__soluce_block = value
-        self.__render_cell = []
+    @display_soluce.setter
+    def display_soluce(self, value) -> None:
+        self.__display_soluce = value
+        self.reset_render()
 
     @property
     def wall_texture(self):
