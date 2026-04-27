@@ -90,3 +90,8 @@ class Player:
         else:
             print("Error: Maze entry point is not defined.")
             self.__pos = pygame.Vector2(0, 0)
+
+    def update_texture(self, texture: pygame.Surface) -> None:
+        """Mettre à jour la texture du joueur au changement"""
+        if texture:
+            self.__skin_path = texture

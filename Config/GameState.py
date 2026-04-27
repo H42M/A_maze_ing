@@ -4,15 +4,14 @@ et accessibles partout dans le programme
 """
 
 from Config.Config import Config
-from Errors import ConfigError
 import pygame
+from typing import Union
 
 
 class GameState:
     """Singleton pour stocker les données globales du jeu"""
 
-    _instance = None\
-
+    _instance = None
 
     cell_size: tuple[int, int] = (55, 65)
     cell_nb_bloc: int = 3
@@ -26,10 +25,14 @@ class GameState:
     bg_texture: pygame.Surface
     exit_texture: pygame.Surface
 
+    theme_manager = None
+
     @classmethod
     def initialize(cls, config: Config, screen_size: tuple[int, int],
                    cell_nb_bloc: int, wall_thickness: int = 5):
         """Initialiser les données une seule fois"""
+        from Config.ThemeManager import ThemeManager
+
         cls.cell_size = cls.__process_cell_size(screen_size,
                                                 cell_nb_bloc,
                                                 config)
@@ -39,9 +42,10 @@ class GameState:
         cls.gap = (cls.cell_size[0] * 2, cls.cell_size[1] * 2 + 80)
         cls.wall_thickness = wall_thickness
         cls.screen_size = screen_size
-        cls.themes_list: list[str] = ['MARIO', 'METROID']
-        cls.current_theme = 0
-        cls.__load_textures(cls.themes_list[0])
+
+        # Initialiser ThemeManager
+        cls.theme_manager = ThemeManager()
+        cls.theme_manager.load_themes_config('Config/themes.json')
 
         print("GameState initialized:", flush=True)
         print(f"  Cell size: {cls.cell_size}", flush=True)
@@ -51,47 +55,34 @@ class GameState:
 
     @classmethod
     def __load_textures(cls, theme: str):
-        texture_path = {
-            'wall_texture': '',
-            'player_texture': '',
-            'soluce_texture': '',
-            'bg_texture': '',
-            'exit_texture': ''
-        }
+        """Charger les textures via ThemeManager"""
+        if cls.theme_manager:
+            cls.theme_manager.set_theme(theme)
+            textures = cls.theme_manager.get_all_textures()
 
-        if theme.upper() == 'MARIO':
-            path = 'srcs/mario'
-            path_cloud = path + '/mario-cloud'
-            texture_path['wall_texture'] = path_cloud + '/mario-cloud.png'
-            texture_path['player_texture'] = path + '/mario.png'
-            texture_path['soluce_texture'] = path + '/mario-coin.png'
-            texture_path['bg_texture'] = path_cloud + '/mario-cloud-bg-1.png'
-            texture_path['exit_texture'] = path + '/mario-flag-1.png'
-        
-        elif theme.upper() == 'METROID':
-            path = 'srcs/metroid'
-            texture_path['wall_texture'] = path + '/lava-bloc.png'
-            texture_path['player_texture'] = path + '/metroid-samus.png'
-            texture_path['soluce_texture'] = path + '/enemy.png'
-            texture_path['bg_texture'] = path + '/bg.jpg'
-            texture_path['exit_texture'] = path + '/enemy.png'
-        else:
-            return
+            # Mapper les noms des textures
+            wall = textures.get('wall')
+            player = textures.get('player')
+            checkpoint = textures.get('checkpoint')
+            background = textures.get('background')
+            exit_tex = textures.get('exit')
 
-        import os
-        for key, value in texture_path.items():
-            if len(value) > 5 and os.path.isfile(value):
-                try:
-                    setattr(cls, key, pygame.image.load(value))
-                except Exception as e:
-                    print(f"Error loading image {value}: {e}", flush=True)
-            else:
-                raise ConfigError(f"Impossible to load texture: {value}")
+            if wall is not None:
+                cls.wall_texture = wall
+            if player is not None:
+                cls.player_texture = player
+            if checkpoint is not None:
+                cls.soluce_texture = checkpoint
+            if background is not None:
+                cls.bg_texture = background
+            if exit_tex is not None:
+                cls.exit_texture = exit_tex
 
     @staticmethod
-    def __process_cell_size(screen_size: tuple[int, int],
-                            cell_nb_bloc: int, config: Config
-                            ) -> tuple[int, int]:
+    def __process_cell_size(
+            screen_size: tuple[int, int],
+            cell_nb_bloc: int,
+            config: Config) -> tuple[int, int]:
         cell_by_screen = (screen_size[0] // (config.width + 4),
                           screen_size[1] // (config.height + 4))
 
@@ -99,14 +90,28 @@ class GameState:
                 round(cell_by_screen[1] / cell_nb_bloc) * cell_nb_bloc)
 
     @classmethod
-    def set_theme(cls, theme: str) -> None:
-        if theme in cls.themes_list:
-            cls.current_theme = cls.themes_list.index(theme)
-            cls.set_theme(theme)
+    def set_theme(cls, theme: Union[str, int]) -> None:
+        """Changer le thème via ThemeManager"""
+        if cls.theme_manager is None:
+            print("✗ ThemeManager not initialized", flush=True)
+            return
+
+        if isinstance(theme, int):
+            themes = cls.theme_manager.get_available_themes()
+            if 0 <= theme < len(themes):
+                theme_name = themes[theme]
+                if cls.theme_manager.set_theme(theme_name):
+                    cls.__load_textures(theme_name)
+        else:
+            if cls.theme_manager.set_theme(theme):
+                cls.__load_textures(theme)
 
     @classmethod
     def get_themes(cls) -> list[str]:
-        return cls.themes_list
+        """Retourner la liste des thèmes disponibles"""
+        if cls.theme_manager:
+            return cls.theme_manager.get_available_themes()
+        return []
 
     @classmethod
     def get_cell_size(cls) -> tuple[int, int]:

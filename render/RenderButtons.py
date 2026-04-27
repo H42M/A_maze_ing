@@ -146,4 +146,9 @@ class SelectButton(Button):
 
     def execute(self) -> None:
         if self._callback and isinstance(self._callback, Callable):
-            self._callback(self.selected_opt)
+            self.selected_opt += 1
+            if self.selected_opt >= len(self.__options):
+                self.selected_opt = 0
+
+            self._callback(self.__options[self.selected_opt])
+            print(self.__options[self.selected_opt])

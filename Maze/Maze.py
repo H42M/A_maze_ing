@@ -93,6 +93,11 @@ class Maze:
                     cell.color = color
         self.__render_maze = []
 
+    def update_texture(self, texture: pygame.Surface) -> None:
+        """Mettre à jour la texture des murs du thème"""
+        if texture:
+            self.set_color(texture)
+
     def solve(self):
         from Maze.algo.AStar import A_Star
         astar = A_Star(self)

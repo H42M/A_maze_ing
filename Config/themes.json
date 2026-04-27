@@ -1,0 +1,49 @@
+{
+  "MARIO": {
+    "name": "Mario Theme",
+    "description": "Super Mario themed maze",
+    "assets": {
+      "wall": "srcs/mario/mario-cloud/mario-cloud.png",
+      "player": "srcs/mario/mario.png",
+      "checkpoint": "srcs/mario/mario-coin.png",
+      "background": "srcs/mario/mario-cloud/mario-cloud-bg-1.png",
+      "exit": "srcs/mario/mario-flag-1.png"
+    },
+    "config": {
+      "primary_color": "#FF0000",
+      "secondary_color": "#FFD700",
+      "background_music": "srcs/mario/mario-theme.mp3"
+    }
+  },
+  "METROID": {
+    "name": "Metroid Theme",
+    "description": "Metroid Samus themed maze",
+    "assets": {
+      "wall": "srcs/metroid/lava-bloc.png",
+      "player": "srcs/metroid/metroid-samus.png",
+      "checkpoint": "srcs/metroid/enemy.png",
+      "background": "srcs/metroid/bg.jpg",
+      "exit": "srcs/metroid/enemy.png"
+    },
+    "config": {
+      "primary_color": "#FF6600",
+      "secondary_color": "#00AA00",
+      "background_music": "srcs/metroid/metroid-theme.mp3"
+    }
+  },
+  "CUSTOM": {
+    "name": "Custom Theme",
+    "description": "Your custom theme",
+    "assets": {
+      "wall": "srcs/custom/wall.png",
+      "player": "srcs/custom/player.png",
+      "checkpoint": "srcs/custom/checkpoint.png",
+      "background": "srcs/custom/background.png",
+      "exit": "srcs/custom/exit.png"
+    },
+    "config": {
+      "primary_color": "#FFFFFF",
+      "secondary_color": "#000000"
+    }
+  }
+}

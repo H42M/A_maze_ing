@@ -160,3 +160,4 @@ class Cell:
     @wall_texture.setter
     def wall_texture(self, value):
         self.__wall_texture = value
+        self.__render_cell = []

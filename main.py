@@ -5,6 +5,7 @@ from Config.ParserConfig import ParserConfig
 from player.Player import Player
 from Errors import ConfigError
 from Config.GameState import GameState
+from Config.ThemeManager import ThemeManager
 
 if __name__ == "__main__":
     try:
@@ -17,10 +18,60 @@ if __name__ == "__main__":
             render.screen.get_size(),
             cell_nb_bloc=3,
             wall_thickness=5
-            )
-        render.load_background(GameState.bg_texture)
-        maze = Maze(config, GameState.wall_texture)
-        player = Player(maze, GameState.player_texture)
+        )
+
+        # Initialiser le thème
+        theme_manager = ThemeManager()
+        theme_manager.load_themes_config('Config/themes.json')
+
+        # Charger le thème par défaut
+        default_theme = 'MARIO'
+        if not theme_manager.set_theme(default_theme):
+            raise ConfigError(
+                f"Impossible de charger le theme: {default_theme}")
+
+        # Récupérer les textures du thème
+        textures = theme_manager.get_all_textures()
+        print(textures)
+        bg_tex = textures.get('background')
+        wall_tex = textures.get('wall')
+        player_tex = textures.get('player')
+
+        if bg_tex:
+            render.load_background(bg_tex)
+
+        if wall_tex:
+            maze = Maze(config, wall_tex)
+        else:
+            maze = Maze(config, (100, 100, 100))
+            print('Wall Texture not loaded')
+
+        if player_tex:
+            player = Player(maze, player_tex)
+        else:
+            player = Player(maze, None)
+            print('Playeer Texture not loaded')
+
+        # Enregistrer la mise à jour du Maze pour les changements
+        def update_maze_texture(theme_name: str):
+            # Mettre à jour GameState avec les nouvelles textures du thème
+            GameState.set_theme(theme_name)
+            
+            new_textures = theme_manager.get_all_textures()
+            new_wall = new_textures.get('wall')
+            if new_wall:
+                maze.update_texture(new_wall)
+
+        # Enregistrer la mise à jour du Player
+        def update_player_texture(theme_name: str):
+            new_textures = theme_manager.get_all_textures()
+            new_player = new_textures.get('player')
+            if new_player:
+                player.update_texture(new_player)
+
+        theme_manager.register_observer(update_maze_texture)
+        theme_manager.register_observer(update_player_texture)
+
         btns = [
             ToggleButton('Afficher la solution',
                          (10, 10),
@@ -35,8 +86,8 @@ if __name__ == "__main__":
             SelectButton('Choisir un theme',
                          pos=(450, 10),
                          size=(200, 60),
-                         callback=GameState.set_theme,
-                         options=GameState.get_themes()
+                         callback=theme_manager.set_theme,
+                         options=theme_manager.get_available_themes()
                          )
         ]
 
