@@ -79,7 +79,23 @@ class MazeGenerator:
                 not_visited.append((nx, ny))
 
         return not_visited
-    
+
     def generate_perfect(self) -> None:
-        current: Coordinate = (0, 0)
+        self.grid = self.create_grid()
+        self.visited = self.create_visited_grid()
+        stack: list[Coordinate] = []
+        current: Coordinate = self.config.entry
         self.visited[current[1]][current[0]] = True
+        stack.append(current)
+
+        while stack:
+            top_cell = stack[-1]
+            next_cells = self.get_next_free_cells(top_cell[0], top_cell[1])
+            if next_cells:
+                next_cell = self.rng.choice(next_cells)
+                self.remove_wall(top_cell[0], top_cell[1], next_cell[0],
+                                 next_cell[1])
+                self.visited[next_cell[1]][next_cell[0]] = True
+                stack.append(next_cell)
+            else:
+                stack.pop()
