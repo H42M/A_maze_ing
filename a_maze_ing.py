@@ -32,8 +32,35 @@ if __name__ == "__main__":
 
     maze.load_generator()
     maze.generator.generate_perfect()
-    path = solve_shortest_path(maze.generator.grid,
-                               maze.config.entry,
-                               maze.config.exit)
-    print(render_maze(maze.generator.grid, maze.config.entry,
-                      maze.config.exit, path))
+
+    show_path = False
+    status_message = ""
+    while True:
+        path = solve_shortest_path(maze.generator.grid,
+                                   maze.config.entry,
+                                   maze.config.exit)
+        print(render_maze(
+              maze.generator.grid,
+              maze.config.entry,
+              maze.config.exit,
+              path if show_path else None,
+              ))
+        print()
+        print("0: regenerate maze")
+        print("1: show/hide shortest path")
+        print("2: quit")
+
+        if status_message:
+            print("\n", status_message)
+            print()
+
+        choice = input("> ").strip()
+
+        if choice == "0":
+            maze.generator.generate_perfect()
+        elif choice == "1":
+            show_path = not show_path
+        elif choice == "2":
+            break
+        else:
+            status_message = "Invalid choice"
