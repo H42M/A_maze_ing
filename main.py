@@ -4,6 +4,7 @@ from render.RenderDiv import RenderDiv, RenderWindow
 from render.RenderText import RenderText
 
 from Maze.Maze import Maze
+from Maze.Output import Output
 from Config.ParserConfig import ParserConfig
 from player.Player import Player
 from Errors import ConfigError
@@ -128,6 +129,8 @@ if __name__ == "__main__":
         if not maze.is_maze_generated:
             if maze.generate_anim():
                 maze.solve()
+                ouput = Output(maze)
+                ouput.write()
 
         maze.render(render.screen)
 

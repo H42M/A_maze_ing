@@ -227,6 +227,10 @@ class Maze:
         return self.__maze_lst
 
     @property
+    def soluce(self) -> list[Cell]:
+        return self.__soluce
+
+    @property
     def wall_thickness(self):
         return self.__wall_thickness
 
