@@ -2,8 +2,49 @@ from maze_config import Coordinate
 from maze_generator import Grid, Wall
 
 
-def render_maze(grid: Grid, entry: Coordinate, exit: Coordinate) -> str:
+def get_direction(start: Coordinate, end: Coordinate) -> str:
+    x1, y1 = start
+    x2, y2 = end
+    if x2 == x1 + 1 and y2 == y1:
+        return "E"
+    if x2 == x1 - 1 and y2 == y1:
+        return "W"
+    if y2 == y1 + 1 and x2 == x1:
+        return "S"
+    if y2 == y1 - 1 and x2 == x1:
+        return "N"
+    raise ValueError("Path contains non-adjacent cells")
+
+
+def opposite(direction: str) -> str:
+    opposites = {
+        "N": "S",
+        "E": "W",
+        "S": "N",
+        "W": "E",
+    }
+    return opposites[direction]
+
+
+def build_path_connections(
+        path: list[Coordinate]) -> dict[Coordinate, set[str]]:
+    connections: dict[Coordinate, set[str]] = {}
+    for current, next_cell in zip(path, path[1:]):
+        direction = get_direction(current, next_cell)
+        if current not in connections:
+            connections[current] = set()
+        if next_cell not in connections:
+            connections[next_cell] = set()
+        connections[current].add(direction)
+        connections[next_cell].add(opposite(direction))
+    return connections
+
+
+def render_maze(grid: Grid, entry: Coordinate, exit: Coordinate,
+                path: list[Coordinate] | None = None) -> str:
     lines: list[str] = []
+    path_connections = build_path_connections(path) if path else {}
+    path_cells = set(path) if path is not None else set()
     if not grid:
         return ""
 
@@ -26,15 +67,29 @@ def render_maze(grid: Grid, entry: Coordinate, exit: Coordinate) -> str:
                 content = " E "
             elif (x, y) == exit:
                 content = " X "
+            elif (x, y) in path_cells:
+                content = " • "
             else:
                 content = "   "
             inner_maze.append(content)
-            inner_maze.append("│" if cell & Wall.EAST else " ")
+            directions = path_connections.get((x, y), set())
+            if cell & Wall.EAST:
+                inner_maze.append("│")
+            elif "E" in directions:
+                inner_maze.append("•")
+            else:
+                inner_maze.append(" ")
         lines.append("".join(inner_maze))
         if y != len(grid) - 1:
             sep_parts: list[str] = ["├"]
             for x, cell in enumerate(row):
-                sep_parts.append("───" if cell & Wall.SOUTH else "   ")
+                directions = path_connections.get((x, y), set())
+                if cell & Wall.SOUTH:
+                    sep_parts.append("───")
+                elif "S" in directions:
+                    sep_parts.append(" • ")
+                else:
+                    sep_parts.append("   ")
                 if x == len(row) - 1:
                     sep_parts.append("┤")
                 else:

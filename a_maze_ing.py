@@ -32,8 +32,8 @@ if __name__ == "__main__":
 
     maze.load_generator()
     maze.generator.generate_perfect()
-    print(render_maze(maze.generator.grid, maze.config.entry,
-                      maze.config.exit))
     path = solve_shortest_path(maze.generator.grid,
                                maze.config.entry,
                                maze.config.exit)
+    print(render_maze(maze.generator.grid, maze.config.entry,
+                      maze.config.exit, path))
