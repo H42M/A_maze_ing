@@ -1,6 +1,7 @@
 from render.Render import Render
 from render.RenderButtons import ToggleButton, Button, SelectButton
-from render.RenderDiv import RenderDiv
+from render.RenderDiv import RenderDiv, RenderWindow
+from render.RenderText import RenderText
 
 from Maze.Maze import Maze
 from Config.ParserConfig import ParserConfig
@@ -55,9 +56,7 @@ if __name__ == "__main__":
             player = Player(maze, None)
             print('Playeer Texture not loaded')
 
-        # Enregistrer la mise à jour du Maze pour les changements
         def update_maze_texture(theme_name: str):
-            # Mettre à jour GameState avec les nouvelles textures du thème
             GameState.set_theme(theme_name)
 
             new_textures = theme_manager.get_all_textures()
@@ -67,7 +66,6 @@ if __name__ == "__main__":
             if new_wall and new_exit and new_soluce:
                 maze.update_texture(new_wall, new_exit, new_soluce)
 
-        # Enregistrer la mise à jour du Player
         def update_player_texture(theme_name: str):
             new_textures = theme_manager.get_all_textures()
             new_player = new_textures.get('player')
@@ -76,6 +74,15 @@ if __name__ == "__main__":
 
         theme_manager.register_observer(update_maze_texture)
         theme_manager.register_observer(update_player_texture)
+
+        title_div = RenderDiv(
+            pos=(0, 0),
+            size=(render.screen.get_size()[0], 50),
+            gap=50
+        )
+        title_div.add(
+            RenderText((0, 0), (0, 0), 'A_MAZE_ING', font_size=50)
+        )
 
         btns = [
             ToggleButton('Afficher la solution',
@@ -94,7 +101,7 @@ if __name__ == "__main__":
                          )
         ]
         btn_div = RenderDiv(
-            pos=(0, 10),
+            pos=(200, 500),
             size=(render.screen.get_size()[0], 50),
             gap=50)
         btn_div.add(btns)
@@ -106,11 +113,18 @@ if __name__ == "__main__":
         print(f"[OTHER ERROR] {e}")
         exit()
 
+    window = RenderWindow(
+        pos=(0, 0),
+        size=(render.screen.get_size()[0], GameState.gap[1]),
+        gap=10
+    )
+    window.add([title_div, btn_div])
+
     while True:
         if not render.handle_events(btns):
             break
         render.clear()
-        btn_div.render(render.screen)
+        window.render(render.screen)
         if not maze.is_maze_generated:
             if maze.generate_anim():
                 maze.solve()

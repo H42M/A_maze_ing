@@ -19,8 +19,8 @@
     "name": "Metroid Theme",
     "description": "Metroid Samus themed maze",
     "assets": {
-      "wall": "srcs/metroid/lava-bloc.png",
-      "player": "srcs/metroid/metroid-samus.png",
+      "wall": "srcs/metroid/bloc.png",
+      "player": "srcs/metroid/samus.png",
       "checkpoint": "srcs/metroid/enemy.png",
       "background": "srcs/metroid/bg.jpg",
       "exit": "srcs/metroid/enemy.png"

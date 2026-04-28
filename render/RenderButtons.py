@@ -41,21 +41,24 @@ class Button(RenderObj):
     def _brighten(self, color: tuple[int, int, int], amount: int
                   ) -> tuple[int, int, int]:
         """Éclaircit une couleur RGB d'un montant donné."""
-        brighten = tuple(min(255, c + amount) for c in color)
-        return brighten
+        r, g, b = color
+        return (min(255, r + amount), min(255, g + amount),
+                min(255, b + amount))
 
     def _darken(self, color: tuple[int, int, int], amount: int
                 ) -> tuple[int, int, int]:
         """Assombrit une couleur RGB d'un montant donné."""
-        darken = tuple(max(0, c - amount) for c in color)
-        return darken
+        r, g, b = color
+        return (max(0, r - amount), max(0, g - amount), max(0, b - amount))
 
-    def _apply_hover(self, color: tuple[int, int, int]) -> tuple[int, int, int]:
+    def _apply_hover(self, color: tuple[int, int, int]
+                     ) -> tuple[int, int, int]:
         """Retourne la couleur éclaircie si le bouton est survolé."""
         return (self._brighten(color, self.HOVER_BRIGHTNESS)
                 if self._is_hovered else color)
 
-    def _get_border_color(self, base_color: tuple[int, int, int]) -> tuple[int, int, int]:
+    def _get_border_color(self, base_color: tuple[int, int, int]
+                          ) -> tuple[int, int, int]:
         """Retourne une couleur plus sombre pour la bordure."""
         return self._darken(base_color, self.BORDER_DARKEN)
 
@@ -266,5 +269,6 @@ class SelectButton(Button):
         """Passe à l'option suivante et appelle le callback avec la valeur."""
         if not self._callback:
             return
-        self.selected_opt = (self.selected_opt + 1) % len(self._options)
-        self._callback(self.selected_value)
+        if isinstance(self._callback, Callable):
+            self.selected_opt = (self.selected_opt + 1) % len(self._options)
+            self._callback(self.selected_value)
