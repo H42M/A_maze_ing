@@ -41,7 +41,11 @@ def build_path_connections(
 
 
 def render_maze(grid: Grid, entry: Coordinate, exit: Coordinate,
-                path: list[Coordinate] | None = None) -> str:
+                path: list[Coordinate] | None = None,
+                wall_color: str = "",
+                path_color: str = "",
+                reset_color: str = "",) -> str:
+
     lines: list[str] = []
     path_connections = build_path_connections(path) if path else {}
     path_cells = set(path) if path is not None else set()
@@ -49,61 +53,64 @@ def render_maze(grid: Grid, entry: Coordinate, exit: Coordinate,
         return ""
 
     # render top line
-    top_parts: list[str] = ["┌"]
+    top_parts: list[str] = [f"{wall_color}┌{reset_color}"]
     for x, cell in enumerate(grid[0]):
-        top_parts.append("───" if cell & Wall.NORTH else "   ")
+        top_parts.append(f"{wall_color}───{reset_color}"
+                         if cell & Wall.NORTH else "   ")
         if x == len(grid[0]) - 1:
-            top_parts.append("┐")
+            top_parts.append(f"{wall_color}┐{reset_color}")
         else:
-            top_parts.append("┬")
+            top_parts.append(f"{wall_color}┬{reset_color}")
     lines.append("".join(top_parts))
 
     # render inner maze
     for y, row in enumerate(grid):
         inner_maze: list[str] = []
-        inner_maze.append("│" if row[0] & Wall.WEST else " ")
+        inner_maze.append(f"{wall_color}│{reset_color}"
+                          if row[0] & Wall.WEST else " ")
         for x, cell in enumerate(row):
             if (x, y) == entry:
                 content = " E "
             elif (x, y) == exit:
                 content = " X "
             elif (x, y) in path_cells:
-                content = " • "
+                content = f"{path_color} • {reset_color}"
             else:
                 content = "   "
             inner_maze.append(content)
             directions = path_connections.get((x, y), set())
             if cell & Wall.EAST:
-                inner_maze.append("│")
+                inner_maze.append(f"{wall_color}│{reset_color}")
             elif "E" in directions:
-                inner_maze.append("•")
+                inner_maze.append(f"{path_color}•{reset_color}")
             else:
                 inner_maze.append(" ")
         lines.append("".join(inner_maze))
         if y != len(grid) - 1:
-            sep_parts: list[str] = ["├"]
+            sep_parts: list[str] = [f"{wall_color}├{reset_color}"]
             for x, cell in enumerate(row):
                 directions = path_connections.get((x, y), set())
                 if cell & Wall.SOUTH:
-                    sep_parts.append("───")
+                    sep_parts.append(f"{wall_color}───{reset_color}")
                 elif "S" in directions:
-                    sep_parts.append(" • ")
+                    sep_parts.append(f"{path_color} • {reset_color}")
                 else:
                     sep_parts.append("   ")
                 if x == len(row) - 1:
-                    sep_parts.append("┤")
+                    sep_parts.append(f"{wall_color}┤{reset_color}")
                 else:
-                    sep_parts.append("┼")
+                    sep_parts.append(f"{wall_color}┼{reset_color}")
             lines.append("".join(sep_parts))
 
     # render bottom line
-    bottom_parts: list[str] = ["└"]
+    bottom_parts: list[str] = [f"{wall_color}└{reset_color}"]
     for x, cell in enumerate(grid[-1]):
-        bottom_parts.append("───" if cell & Wall.SOUTH else "   ")
+        bottom_parts.append(f"{wall_color}───{reset_color}"
+                            if cell & Wall.SOUTH else "   ")
         if x == len(grid[-1]) - 1:
-            bottom_parts.append("┘")
+            bottom_parts.append(f"{wall_color}┘{reset_color}")
         else:
-            bottom_parts.append("┴")
+            bottom_parts.append(f"{wall_color}┴{reset_color}")
     lines.append("".join(bottom_parts))
 
     return "\n".join(lines)
