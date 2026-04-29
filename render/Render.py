@@ -116,7 +116,7 @@ class Render:
 
         return True
 
-    def clear(self):
+    def clear(self) -> None:
         """Clear the screen with background or black color.
 
         Fills the screen with either the loaded background or black color.
@@ -126,7 +126,7 @@ class Render:
         else:
             self.__screen.fill((0, 0, 0))
 
-    def flip(self):
+    def flip(self) -> None:
         """Update the display and control frame rate.
 
         Updates the pygame display and limits the frame rate to 60 FPS.
@@ -134,7 +134,7 @@ class Render:
         self.__clock.tick(60)
         pygame.display.flip()
 
-    def get_screen_size(self):
+    def get_screen_size(self) -> tuple[int, int]:
         """Get the current screen dimensions.
 
         Returns:
@@ -142,7 +142,7 @@ class Render:
         """
         return self.__screen.get_size()
 
-    def quit(self):
+    def quit(self) -> None:
         """Cleanup pygame and exit.
 
         Closes pygame and releases resources.
@@ -150,5 +150,10 @@ class Render:
         pygame.quit()
 
     @property
-    def screen(self):
+    def screen(self) -> pygame.Surface:
+        """Get screen instance.
+
+        Returns:
+            pygame.Surface: Screen instance.
+        """
         return self.__screen

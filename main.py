@@ -63,8 +63,17 @@ if __name__ == "__main__":
             raise ConfigError("Player texture unloaded")
 
         def update_maze_texture(theme_name: str):
-            GameState.set_theme(theme_name)
+            """Update the maze textures based on the given theme.
 
+            Retrieves the wall, exit, and checkpoint textures from
+
+            the theme manager
+            and applies them to the maze.
+
+            Args:
+                theme_name (str): The name of the theme to apply to the maze.
+            """
+            GameState.set_theme(theme_name)
             new_textures = theme_manager.get_all_textures()
             new_wall = new_textures.get('wall')
             new_exit = new_textures.get('exit')
@@ -73,6 +82,14 @@ if __name__ == "__main__":
                 maze.update_texture(new_wall, new_exit, new_soluce)
 
         def update_player_texture(theme_name: str):
+            """Update the player texture based on the given theme.
+
+            Retrieves the player texture from the theme manager and applies it
+            to the player.
+
+            Args:
+                theme_name (str): The name of the theme to apply to the player.
+            """
             new_textures = theme_manager.get_all_textures()
             new_player = new_textures.get('player')
             if new_player:

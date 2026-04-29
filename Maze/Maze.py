@@ -26,6 +26,7 @@ class Maze:
         _Maze__entry (tuple[int, int]): Entry point coordinates.
         _Maze__exit (tuple[int, int]): Exit point coordinates.
     """
+
     def __init__(self, config: Config,
                  wall_tex: Union[tuple[int, int, int], pygame.Surface],
                  exit_tex: Union[tuple[int, int, int], pygame.Surface],

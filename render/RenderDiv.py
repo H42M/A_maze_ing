@@ -20,6 +20,7 @@ class RenderDiv(RenderObj):
         _content (list[RenderObj]): List of contained render objects.
         _gap (Optional[int]): Spacing between contained objects.
     """
+
     def __init__(self, pos: tuple[int, int],
                  size: tuple[int, int],
                  bg_color: Optional[tuple[int, int, int]] = None,
@@ -38,12 +39,22 @@ class RenderDiv(RenderObj):
         self._gap = gap
 
     def add(self, obj: Union[RenderObj, list[RenderObj]]) -> None:
+        """Add an object or list to the div.
+
+        Args:
+            obj (Union[RenderObj, list[RenderObj]]): Object to add.
+        """
         if isinstance(obj, list):
             self._content.extend(obj)
         else:
             self._content.append(obj)
 
     def render(self, screen: pygame.Surface):
+        """Render the div to the screen.
+
+        Args:
+            screen (pygame.Surface): current screen.
+        """
         total_width = self._size[0]
         if self._gap:
             nb_gap = len(self._content) + 1
@@ -73,6 +84,7 @@ class RenderWindow(RenderDiv):
     Organizes RenderDiv objects in a vertical layout with optional
     spacing and background color.
     """
+
     def __init__(self, pos: tuple[int, int],
                  size: tuple[int, int],
                  bg_color: Optional[tuple[int, int, int]] = None,
@@ -88,6 +100,11 @@ class RenderWindow(RenderDiv):
         super().__init__(pos, size, bg_color, gap)
 
     def add(self, obj: Union[RenderObj, list[RenderObj]]) -> None:
+        """Add an div to the div window.
+
+        Args:
+            obj (Union[RenderObj, list[RenderObj]]): object to add
+        """
         if isinstance(obj, list):
             for o in obj:
                 if isinstance(o, RenderDiv):
@@ -100,6 +117,11 @@ class RenderWindow(RenderDiv):
             print("Render window add incompatible obj")
 
     def render(self, screen: pygame.Surface):
+        """Render the div to the screen.
+
+        Args:
+            screen (pygame.Surface): current screen.
+        """
         total_height = self._size[1]
         if self._gap:
             nb_gap = (len(self._content)) + 1

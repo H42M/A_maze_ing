@@ -22,6 +22,7 @@ class DFS:
         _DFS__maze (Maze): The maze being generated.
         _DFS__cell (Cell): Current cell in the generation process.
     """
+
     def __init__(self, maze: Maze) -> None:
         """Initialize DFS maze generator.
 

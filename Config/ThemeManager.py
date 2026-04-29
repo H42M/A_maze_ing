@@ -30,11 +30,27 @@ class ThemeManager:
     _observers = []
 
     def __new__(cls):
+        """Create or return the unique instance of ThemeManager (Singleton).
+
+        Returns:
+            ThemeManager: The unique instance of the class.
+        """
         if cls._instance is None:
             cls._instance = super(ThemeManager, cls).__new__(cls)
         return cls._instance
 
     def __init__(self):
+        """Initialize the ThemeManager on its first instantiation.
+
+        Attributes:
+            themes (dict): Dictionary of available themes.
+            current_theme_name (str | None): Name of the currently
+            active theme.
+            current_theme_data (Any | None): Data of the currently
+            active theme.
+            initialized (bool): Flag indicating whether initialization
+            has already been performed.
+        """
         if not hasattr(self, 'initialized'):
             self.themes = {}
             self.current_theme_name = None

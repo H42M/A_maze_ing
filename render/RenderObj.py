@@ -21,6 +21,7 @@ class RenderObj:
         _RenderObj__surface (pygame.Surface): Rendered surface.
         _RenderObj__collision (bool): Whether object has collision.
     """
+
     def __init__(self, pos: Optional[tuple[int, int]] = None,
                  size: Optional[tuple[int, int]] = None,
                  color: Optional[tuple[int, int, int]] = None,
@@ -35,7 +36,6 @@ class RenderObj:
             collision (Optional[bool]): Whether object has collision.
                 Defaults to True.
         """
-
         self.__color = color
 
         self.__pos: Optional[pygame.Vector2] = None

@@ -207,6 +207,11 @@ class Button(RenderObj):
     # ------------------------------------------------------------------ #
 
     def render(self, screen: pygame.Surface) -> None:
+        """Render the current buttons's state.
+
+        Args:
+            screen (pygame.Surface): Render Screen
+        """
         color = self._resolve_color()
         if self._surface:
             self._draw_shadow(screen)
@@ -280,10 +285,20 @@ class Button(RenderObj):
 
     @property
     def text(self) -> str:
+        """Get the current button text.
+
+        Return:
+            str: current button text.
+        """
         return self._text
 
     @text.setter
     def text(self, value: str) -> None:
+        """Set the current button text.
+
+        Args:
+            value (str): current button text.
+        """
         self._text = value
 
 
@@ -401,6 +416,11 @@ class SelectButton(Button):
         return self._apply_hover(self._color)
 
     def render(self, screen: pygame.Surface) -> None:
+        """Render the current buttons's state.
+
+        Args:
+            screen (pygame.Surface): Render Screen
+        """
         if not self._surface:
             return
         color = self._resolve_color()

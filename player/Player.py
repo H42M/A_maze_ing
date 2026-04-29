@@ -25,6 +25,7 @@ class Player:
         _Player__pos (pygame.Vector2): Current position.
         _Player__skin_path (pygame.Surface): Player texture.
     """
+
     def __init__(self, maze: Maze, player_skin: Optional
                  [Union[str, pygame.Surface]] = None) -> None:
         """Initialize a player in a maze.

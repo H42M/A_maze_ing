@@ -21,6 +21,7 @@ class RenderText(RenderObj):
         _RenderText__font (pygame.font.Font): Font object.
         _RenderText__text (str): Text to render.
     """
+
     def __init__(self,
                  pos: tuple[int, int],
                  size: tuple[int, int],
