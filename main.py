@@ -54,8 +54,7 @@ if __name__ == "__main__":
         if player_tex:
             player = Player(maze, player_tex)
         else:
-            player = Player(maze, None)
-            print('Playeer Texture not loaded')
+            raise ConfigError("Player texture unloaded")
 
         def update_maze_texture(theme_name: str):
             GameState.set_theme(theme_name)

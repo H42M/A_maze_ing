@@ -8,10 +8,8 @@ class RenderObj:
                  color: Optional[tuple[int, int, int]] = None,
                  collision: Optional[bool] = True
                  ) -> None:
-        if color:
-            self.__color = color
-        else:
-            self.__color = (255, 255, 0)
+
+        self.__color = color
 
         self.__pos: Optional[pygame.Vector2] = None
         self.__size: Optional[tuple] = None
@@ -21,15 +19,17 @@ class RenderObj:
             self.__pos = pygame.Vector2(pos[0], pos[1])
             self.__size = size
             self.__surface = pygame.Surface(self.__size)
-            self.__surface.fill(self.__color)
+            if color:
+                self.__surface.fill(color)
 
         self.__collision = collision
 
     def render(self, screen: pygame.Surface):
         if self.__surface and self.__pos:
-            self.__surface.fill(self.__color)
             pos_tuple = (int(self.__pos.x), int(self.__pos.y))
             screen.blit(self.__surface, pos_tuple)
+            if self.__color:
+                self.__surface.fill(self.__color)
 
     @property
     def _color(self):
