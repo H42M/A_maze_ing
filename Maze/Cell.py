@@ -72,7 +72,7 @@ class Cell:
         for elm in self.__render_cell:
             elm.render(screen)
 
-    def get_render_cell(self):
+    def get_render_cell(self) -> list[Bloc]:
         """Get the list of render blocks for this cell.
 
         Generates render blocks if not already created, and handles
@@ -97,7 +97,7 @@ class Cell:
 
         return self.__render_cell
 
-    def set_render_cell(self):
+    def set_render_cell(self) -> None:
         """Generate and set all wall blocks for rendering.
 
         Creates individual block objects for each wall segment based on
@@ -132,7 +132,7 @@ class Cell:
                                       self.__color, self.__wall_texture))
         self.__render_cell = wall_bloc
 
-    def __set_render_item(self, item: pygame.Surface):
+    def __set_render_item(self, item: pygame.Surface) -> None:
         """Add a texture item to the render list.
 
         Args:
@@ -150,7 +150,7 @@ class Cell:
                  collision=False)
         )
 
-    def set_entry_texture(self, entry_texture: pygame.Surface):
+    def set_entry_texture(self, entry_texture: pygame.Surface) -> None:
         """Set the texture for the entry point.
 
         Args:
@@ -159,7 +159,7 @@ class Cell:
         self.__entry_texture = entry_texture
         self.reset_render()
 
-    def set_exit_texture(self, entry_texture: pygame.Surface):
+    def set_exit_texture(self, entry_texture: pygame.Surface) -> None:
         """Set the texture for the exit point.
 
         Args:
@@ -168,7 +168,7 @@ class Cell:
         self.__exit_texture = entry_texture
         self.reset_render()
 
-    def set_soluce_texture(self, soluce_texture: pygame.Surface):
+    def set_soluce_texture(self, soluce_texture: pygame.Surface) -> None:
         """Set the texture for the solution path indicator.
 
         Args:
@@ -177,7 +177,7 @@ class Cell:
         self.__soluce_texture = soluce_texture
         self.reset_render()
 
-    def reset_render(self):
+    def reset_render(self) -> None:
         """Reset all render blocks and state flags.
 
         Clears cached render blocks and resets texture loading flags.
@@ -196,7 +196,7 @@ class Cell:
         return self._n
 
     @n.setter
-    def n(self, value):
+    def n(self, value: bool) -> None:
         """Set whether north wall exists.
 
         Args:
@@ -214,7 +214,7 @@ class Cell:
         return self._s
 
     @s.setter
-    def s(self, value):
+    def s(self, value: bool) -> None:
         """Set whether south wall exists.
 
         Args:
@@ -232,7 +232,7 @@ class Cell:
         return self._e
 
     @e.setter
-    def e(self, value):
+    def e(self, value: bool) -> None:
         """Set whether east wall exists.
 
         Args:
@@ -250,7 +250,7 @@ class Cell:
         return self._w
 
     @w.setter
-    def w(self, value):
+    def w(self, value: bool) -> None:
         """Set whether west wall exists.
 
         Args:
@@ -268,7 +268,7 @@ class Cell:
         return self.__is42
 
     @is42.setter
-    def is42(self, value):
+    def is42(self, value: bool) -> None:
         """Set whether this cell is part of the 42 logo.
 
         Args:
@@ -277,7 +277,7 @@ class Cell:
         self.__is42 = value
 
     @property
-    def color(self):
+    def color(self) -> Optional[tuple[int, int, int]]:
         """Get the cell's color.
 
         Returns:
@@ -286,7 +286,7 @@ class Cell:
         return self.__color
 
     @color.setter
-    def color(self, value: tuple[int, int, int]):
+    def color(self, value: tuple[int, int, int]) -> None:
         """Set the cell's color and reset rendering.
 
         Args:
@@ -306,7 +306,7 @@ class Cell:
         return self.__display_soluce
 
     @display_soluce.setter
-    def display_soluce(self, value) -> None:
+    def display_soluce(self, value: bool) -> None:
         """Set whether to display solution path and update rendering.
 
         Args:
@@ -316,7 +316,7 @@ class Cell:
         self.reset_render()
 
     @property
-    def wall_texture(self):
+    def wall_texture(self) -> Optional[pygame.Surface]:
         """Get the cell's wall texture.
 
         Returns:
@@ -325,7 +325,7 @@ class Cell:
         return self.__wall_texture
 
     @wall_texture.setter
-    def wall_texture(self, value):
+    def wall_texture(self, value: pygame.Surface) -> None:
         """Set the cell's wall texture and reset rendering.
 
         Args:

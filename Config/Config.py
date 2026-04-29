@@ -26,7 +26,7 @@ class Config(BaseModel):
     entry: tuple[int, int]
 
     @model_validator(mode='after')
-    def check_coordinates(self):
+    def check_coordinates(self) -> "Config":
         """Validate that all coordinates are within maze bounds.
 
         Ensures that entry and exit coordinates are within the maze

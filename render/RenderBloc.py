@@ -39,7 +39,7 @@ class Bloc(RenderObj):
         self.__texture = texture
         self.__color = color
 
-    def render(self, screen):
+    def render(self, screen: pygame.Surface) -> None:
         """Render the block on the screen.
 
         Renders the block with texture if available, otherwise with color.

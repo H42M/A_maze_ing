@@ -53,7 +53,7 @@ class Player:
 
         self.__skin_path = player_skin
 
-    def render(self, screen):
+    def render(self, screen: pygame.Surface) -> None:
         """Render the player on the screen.
 
         Args:
@@ -73,7 +73,7 @@ class Player:
         )
         render_player.render(screen)
 
-    def get_keys(self):
+    def get_keys(self) -> None:
         """Handle keyboard input and update player position.
 
         Reads arrow key presses and moves the player, checking for
@@ -121,7 +121,7 @@ class Player:
                             return True
         return False
 
-    def reset_pos(self):
+    def reset_pos(self) -> None:
         """Reset player position to maze entry point.
 
         Moves the player back to the starting position.

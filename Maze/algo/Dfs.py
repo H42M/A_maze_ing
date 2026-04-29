@@ -8,6 +8,7 @@ from Maze.Maze import Maze
 from Maze.Cell import Cell
 
 import random
+from typing import Optional
 
 
 class DFS:
@@ -29,12 +30,12 @@ class DFS:
         Args:
             maze (Maze): The maze instance to generate.
         """
-        self.__visited = []
+        self.__visited: list[Cell] = []
         self.__maze = maze
         if maze.entry:
             self.__cell = maze.entry
 
-    def get_instruct(self):
+    def get_instruct(self) -> Optional["Instruct"]:
         """Get next instruction for maze generation step.
 
         Returns:
@@ -59,7 +60,7 @@ class DFS:
         self.__cell = instruct._neigh
         return instruct
 
-    def get_av_neigh(self):
+    def get_av_neigh(self) -> list["Instruct"]:
         """Get all available unvisited neighbors as instructions.
 
         Returns:
@@ -84,7 +85,7 @@ class DFS:
             dict[str, Cell]: Dictionary mapping directions ('n', 's', 'e', 'w')
                 to adjacent Cell objects.
         """
-        neigh_list = {}
+        neigh_list: dict[str, Cell] = {}
         infos: dict[str, tuple[int, int]] = {
             'n': (0, -1),
             's': (0, 1),
@@ -99,7 +100,7 @@ class DFS:
                 neigh_list[wall] = neigh_cell
         return neigh_list
 
-    def __opposite_wall(self, wall: str):
+    def __opposite_wall(self, wall: str) -> str:
         """Get the opposite wall direction.
 
         Args:
@@ -155,7 +156,7 @@ class Instruct:
         self.__neigh_wall = neigh_wall
 
     @property
-    def _cell(self):
+    def _cell(self) -> Cell:
         """Get the current cell.
 
         Returns:
@@ -164,7 +165,7 @@ class Instruct:
         return self.__cell
 
     @_cell.setter
-    def _cell(self, value):
+    def _cell(self, value: Cell) -> None:
         """Set the current cell.
 
         Args:
@@ -173,7 +174,7 @@ class Instruct:
         self.__cell = value
 
     @property
-    def _wall(self):
+    def _wall(self) -> str:
         """Get the wall identifier.
 
         Returns:
@@ -182,7 +183,7 @@ class Instruct:
         return self.__wall
 
     @_wall.setter
-    def _wall(self, value):
+    def _wall(self, value: str) -> None:
         """Set the wall identifier.
 
         Args:
@@ -191,7 +192,7 @@ class Instruct:
         self.__wall = value
 
     @property
-    def _neigh(self):
+    def _neigh(self) -> Cell:
         """Get the neighbor cell.
 
         Returns:
@@ -200,7 +201,7 @@ class Instruct:
         return self.__neigh
 
     @_neigh.setter
-    def _neigh(self, value):
+    def _neigh(self, value: Cell) -> None:
         """Set the neighbor cell.
 
         Args:
@@ -209,7 +210,7 @@ class Instruct:
         self.__neigh = value
 
     @property
-    def _neigh_wall(self):
+    def _neigh_wall(self) -> str:
         """Get the neighbor's wall identifier.
 
         Returns:
@@ -218,7 +219,7 @@ class Instruct:
         return self.__neigh_wall
 
     @_neigh_wall.setter
-    def _neigh_wall(self, value):
+    def _neigh_wall(self, value: str) -> None:
         """Set the neighbor's wall identifier.
 
         Args:

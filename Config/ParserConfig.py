@@ -6,6 +6,10 @@ and validate the parameters before creating a Config object.
 
 from Errors import ConfigError
 from typing import Union, cast
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from Config.Config import Config
 
 
 class ParserConfig:
@@ -31,9 +35,9 @@ class ParserConfig:
         self.__expected_data = [
             'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT'
         ]
-        self.__parsed_data = {}
+        self.__parsed_data: dict[str, Union[int, tuple[int, int]]] = {}
 
-    def init_config(self):
+    def init_config(self) -> Config:
         """Parse configuration file and return a Config object.
 
         Returns:
@@ -58,7 +62,7 @@ class ParserConfig:
 
         return config
 
-    def __parse_and_check(self):
+    def __parse_and_check(self) -> None:
         """Parse the file and validate all configuration values.
 
         Raises:
@@ -70,7 +74,7 @@ class ParserConfig:
         except ValueError as e:
             raise ValueError(f"[PARSER-CHECKER ERROR] {e}")
 
-    def __parse(self):
+    def __parse(self) -> None:
         """Parse key-value pairs from the configuration file.
 
         Reads the file line by line, skipping comments and empty lines.
@@ -106,7 +110,7 @@ class ParserConfig:
 
         self.__parsed_data = parsed_file
 
-    def __check_parsed(self):
+    def __check_parsed(self) -> None:
         """Validate that all required keys exist and have correct types.
 
         Ensures all expected configuration keys are present and validates

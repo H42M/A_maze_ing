@@ -6,7 +6,8 @@ UI elements with hover effects, shadows, and rounded borders.
 
 from render.RenderObj import RenderObj
 import pygame
-from typing import Callable, Optional, Union, Any
+from typing import Optional, Union, Any
+from collections.abc import Callable
 
 
 class Button(RenderObj):
@@ -453,6 +454,6 @@ class SelectButton(Button):
         """
         if not self._callback:
             return
-        if isinstance(self._callback, Callable):
+        if callable(self._callback):
             self.selected_opt = (self.selected_opt + 1) % len(self._options)
             self._callback(self.selected_value)

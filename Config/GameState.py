@@ -45,12 +45,13 @@ class GameState:
     soluce_texture: pygame.Surface
     bg_texture: pygame.Surface
     exit_texture: pygame.Surface
+    screen_size: tuple[int, int]
 
     theme_manager = None
 
     @classmethod
     def initialize(cls, config: Config, screen_size: tuple[int, int],
-                   cell_nb_bloc: int, wall_thickness: int = 5):
+                   cell_nb_bloc: int, wall_thickness: int = 5) -> None:
         """Initialize game state data (called once at startup).
 
         Calculates and stores all global game data based on the provided
@@ -86,7 +87,7 @@ class GameState:
         print(f"  Wall thickness: {cls.wall_thickness}", flush=True)
 
     @classmethod
-    def __load_textures(cls, theme: str):
+    def __load_textures(cls, theme: str) -> None:
         """Load textures for the specified theme from ThemeManager.
 
         Args:

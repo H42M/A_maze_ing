@@ -8,6 +8,7 @@ from render.Render import Render
 from render.RenderButtons import ToggleButton, Button, SelectButton
 from render.RenderDiv import RenderDiv, RenderWindow
 from render.RenderText import RenderText
+from render.RenderObj import RenderObj
 
 from Maze.Maze import Maze
 from Maze.Output import Output
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         else:
             raise ConfigError("Player texture unloaded")
 
-        def update_maze_texture(theme_name: str):
+        def update_maze_texture(theme_name: str) -> None:
             """Update the maze textures based on the given theme.
 
             Retrieves the wall, exit, and checkpoint textures from
@@ -81,7 +82,7 @@ if __name__ == "__main__":
             if new_wall and new_exit and new_soluce:
                 maze.update_texture(new_wall, new_exit, new_soluce)
 
-        def update_player_texture(theme_name: str):
+        def update_player_texture(theme_name: str) -> None:
             """Update the player texture based on the given theme.
 
             Retrieves the player texture from the theme manager and applies it
@@ -107,7 +108,7 @@ if __name__ == "__main__":
             RenderText((0, 0), (0, 0), 'A_MAZE_ING', font_size=50)
         )
 
-        btns = [
+        btns: list[RenderObj] = [
             ToggleButton('Afficher la solution',
                          callback=maze.set_display_soluce,
                          callback_state=maze.get_display_soluce,

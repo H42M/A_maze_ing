@@ -49,7 +49,7 @@ class RenderDiv(RenderObj):
         else:
             self._content.append(obj)
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: pygame.Surface) -> None:
         """Render the div to the screen.
 
         Args:
@@ -116,7 +116,7 @@ class RenderWindow(RenderDiv):
         else:
             print("Render window add incompatible obj")
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: pygame.Surface) -> None:
         """Render the div to the screen.
 
         Args:

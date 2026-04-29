@@ -8,7 +8,7 @@ themes change.
 import pygame
 import json
 import os
-from typing import Optional, Callable
+from typing import Optional, Callable, Any
 from Errors import ConfigError
 
 
@@ -27,9 +27,9 @@ class ThemeManager:
     """
 
     _instance = None
-    _observers = []
+    _observers: list[Callable] = []
 
-    def __new__(cls):
+    def __new__(cls) -> "ThemeManager":
         """Create or return the unique instance of ThemeManager (Singleton).
 
         Returns:
@@ -39,7 +39,7 @@ class ThemeManager:
             cls._instance = super(ThemeManager, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the ThemeManager on its first instantiation.
 
         Attributes:
@@ -52,8 +52,8 @@ class ThemeManager:
             has already been performed.
         """
         if not hasattr(self, 'initialized'):
-            self.themes = {}
-            self.current_theme_name = None
+            self.themes: dict[str, Any] = {}
+            self.current_theme_name: Optional[str] = None
             self.current_theme_data = None
             self.initialized = True
 
@@ -162,20 +162,20 @@ class ThemeManager:
             return {}
         return self.current_theme_data.get('loaded_assets', {})
 
-    def get_theme_config(self, key: str, default=None):
-        """Get a configuration value from the current theme.
+    # def get_theme_config(self, key: str, default=None) -> dict:
+    #     """Get a configuration value from the current theme.
 
-        Args:
-            key (str): Configuration key to retrieve.
-            default: Default value if key not found.
+    #     Args:
+    #         key (str): Configuration key to retrieve.
+    #         default: Default value if key not found.
 
-        Returns:
-            The configuration value or default if not found.
-        """
-        if not self.current_theme_data:
-            return default
-        return self.current_theme_data.get(
-            'config', {}).get(key, default)
+    #     Returns:
+    #         The configuration value or default if not found.
+    #     """
+    #     if not self.current_theme_data:
+    #         return default
+    #     return self.current_theme_data.get(
+    #         'config', {}).get(key, default)
 
     def get_available_themes(self) -> list[str]:
         """Get list of all available themes.

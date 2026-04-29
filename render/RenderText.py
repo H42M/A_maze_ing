@@ -46,7 +46,7 @@ class RenderText(RenderObj):
         self.__font = pygame.font.Font(None, self.__font_size)
         self.__text = text
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: pygame.Surface) -> None:
         """Render the text centered on the screen.
 
         Args:

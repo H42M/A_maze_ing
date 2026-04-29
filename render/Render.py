@@ -37,11 +37,13 @@ class Render:
             # pygame.RESIZABLE
         )
         pygame.display.set_caption(self.__screen_name)
-        self.__background = None
+        self.__background: Optional[pygame.Surface] = None
 
         # S'enregistrer pour les changements de theme
+        from Config.ThemeManager import ThemeManager
+        self.theme_manager: Optional[ThemeManager]
+
         try:
-            from Config.ThemeManager import ThemeManager
             self.theme_manager = ThemeManager()
             self.theme_manager.register_observer(
                 self.on_theme_changed)

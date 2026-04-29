@@ -51,7 +51,7 @@ class RenderObj:
 
         self.__collision = collision
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: pygame.Surface) -> None:
         """Render this object on the screen.
 
         Args:
@@ -64,7 +64,7 @@ class RenderObj:
                 self.__surface.fill(self.__color)
 
     @property
-    def _color(self):
+    def _color(self) -> Optional[tuple[int, int, int]]:
         """Get the object's color.
 
         Returns:
@@ -73,7 +73,7 @@ class RenderObj:
         return self.__color
 
     @_color.setter
-    def _color(self, value: tuple[int, int, int]):
+    def _color(self, value: tuple[int, int, int]) -> None:
         """Set the object's color.
 
         Args:
@@ -93,7 +93,7 @@ class RenderObj:
         return self.__pos
 
     @_pos.setter
-    def _pos(self, value: pygame.Vector2):
+    def _pos(self, value: pygame.Vector2) -> None:
         """Set the object's position.
 
         Args:
@@ -113,7 +113,7 @@ class RenderObj:
         return self.__size
 
     @_size.setter
-    def _size(self, value: tuple[int, int]):
+    def _size(self, value: tuple[int, int]) -> None:
         """Set the object's dimensions and recreate surface.
 
         Args:
@@ -123,7 +123,7 @@ class RenderObj:
         self.__surface = pygame.Surface(self.__size)
 
     @property
-    def _surface(self):
+    def _surface(self) -> Optional[pygame.Surface]:
         """Get the object's pygame surface.
 
         Returns:
@@ -132,7 +132,7 @@ class RenderObj:
         return self.__surface
 
     @_surface.setter
-    def _surface(self, value):
+    def _surface(self, value: pygame.Surface) -> None:
         """Set the object's pygame surface.
 
         Args:
@@ -141,7 +141,7 @@ class RenderObj:
         self.__surface = value
 
     @property
-    def collision(self):
+    def collision(self) -> Optional[bool]:
         """Get collision status.
 
         Returns:
@@ -150,7 +150,7 @@ class RenderObj:
         return self.__collision
 
     @collision.setter
-    def collision(self, value):
+    def collision(self, value: bool) -> None:
         """Set collision status.
 
         Args:
