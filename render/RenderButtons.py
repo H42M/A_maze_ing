@@ -40,7 +40,8 @@ class Button(RenderObj):
         pos: Optional[tuple[int, int]] = None,
         size: Optional[tuple[int, int]] = None,
         color: Optional[tuple[int, int, int]] = None,
-        callback: Optional[Union[Callable, list[Callable]]] = None,
+        callback: Optional[Union[Callable[..., Any],
+                                 list[Callable[..., Any]]]] = None,
     ) -> None:
         """Initialize a button.
 
@@ -268,7 +269,7 @@ class Button(RenderObj):
     #  Setters                                                             #
     # ------------------------------------------------------------------ #
 
-    def set_callback(self, callback: Callable) -> None:
+    def set_callback(self, callback: Callable[..., Any]) -> None:
         """Set or replace the button's callback function.
 
         Args:
@@ -331,7 +332,7 @@ class ToggleButton(Button):
     def __init__(
         self,
         text: str,
-        callback: Callable,
+        callback: Callable[..., Any],
         callback_state: Callable[[], bool],
         disable_color: tuple[int, int, int] | None = None,
         enable_color: tuple[int, int, int] | None = None,

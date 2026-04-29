@@ -39,7 +39,7 @@ class RenderObj:
         self.__color = color
 
         self.__pos: Optional[pygame.Vector2] = None
-        self.__size: Optional[tuple] = None
+        self.__size: Optional[tuple[int, int]] = None
         self.__surface: Optional[pygame.Surface] = None
 
         if pos and size:

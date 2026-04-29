@@ -27,7 +27,7 @@ class ThemeManager:
     """
 
     _instance = None
-    _observers: list[Callable] = []
+    _observers: list[Callable[[str], None]] = []
 
     def __new__(cls) -> "ThemeManager":
         """Create or return the unique instance of ThemeManager (Singleton).

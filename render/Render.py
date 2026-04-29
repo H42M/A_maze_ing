@@ -5,7 +5,10 @@ loading backgrounds, and managing theme changes.
 """
 
 import pygame
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from render.RenderObj import RenderObj
 
 
 class Render:
@@ -89,7 +92,7 @@ class Render:
             print(f"Error loading background: {e}", flush=True)
             return False
 
-    def handle_events(self, buttons: Optional[list] = None) -> bool:
+    def handle_events(self, buttons: Optional[list[RenderObj]] = None) -> bool:
         """Handle pygame events and button clicks.
 
         Args:
@@ -99,6 +102,7 @@ class Render:
         Returns:
             bool: False if quit event received, True otherwise.
         """
+        from render.RenderButtons import Button
         mouse_pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
@@ -108,13 +112,15 @@ class Render:
                 # Verifier si un bouton est clique
                 if buttons:
                     for button in buttons:
-                        if button.is_clicked(mouse_pos):
-                            button.execute()
+                        if isinstance(button, Button):
+                            if button.is_clicked(mouse_pos):
+                                button.execute()
 
         # Mettre à jour l'etat de survol des boutons
         if buttons:
             for button in buttons:
-                button.update_hover(mouse_pos)
+                if isinstance(button, Button):
+                    button.update_hover(mouse_pos)
 
         return True
 
