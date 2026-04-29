@@ -37,7 +37,7 @@ class ParserConfig:
         ]
         self.__parsed_data: dict[str, Union[int, tuple[int, int]]] = {}
 
-    def init_config(self) -> Config:
+    def init_config(self) -> "Config":
         """Parse configuration file and return a Config object.
 
         Returns:

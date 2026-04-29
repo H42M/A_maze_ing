@@ -92,7 +92,8 @@ class Render:
             print(f"Error loading background: {e}", flush=True)
             return False
 
-    def handle_events(self, buttons: Optional[list[RenderObj]] = None) -> bool:
+    def handle_events(self, buttons: Optional[list["RenderObj"]] = None
+                      ) -> bool:
         """Handle pygame events and button clicks.
 
         Args:
