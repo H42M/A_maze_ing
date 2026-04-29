@@ -1,3 +1,9 @@
+"""Main entry point for the A_MAZE_ING game application.
+
+This module initializes the game, loads configuration and themes,
+creates the maze and player, and runs the main game loop.
+"""
+
 from render.Render import Render
 from render.RenderButtons import ToggleButton, Button, SelectButton
 from render.RenderDiv import RenderDiv, RenderWindow

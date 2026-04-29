@@ -4,13 +4,21 @@ build:
 	.venv/bin/pip install -r requirements.txt
 
 clean:
-	rm -rf *__pycache__*
-	rm -rf */*__pycache__*
-	rm -rf */*/*__pycache__*
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type d -name .mypy_cache -exec rm -rf {} +
+	rm output.txt
 
 fclean:
 	make clean
 	rm -rf .venv
+
+lint:
+	flake8 . --exclude=.venv,.env
+	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+
+lint-strict:
+	flake8 . --exclude=.venv,.env
+	mypy . --exclude '\.venv|\.env' --strict
 
 run: build
 	.venv/bin/python main.py

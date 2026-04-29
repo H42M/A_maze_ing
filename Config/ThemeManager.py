@@ -1,6 +1,8 @@
-"""
-Gestionnaire centralise des Themes du jeu
-Permet de charger, changer et mettre à jour les Themes facilement
+"""Game theme manager module.
+
+Provides a singleton class for managing game themes, including loading
+theme configurations, managing textures, and notifying observers when
+themes change.
 """
 
 import pygame
@@ -11,7 +13,18 @@ from Errors import ConfigError
 
 
 class ThemeManager:
-    """Singleton pour gerer les Themes du jeu"""
+    """Singleton class for managing game themes.
+
+    Handles loading theme configurations from JSON files, loading and
+    caching textures, switching themes, and notifying observers about
+    theme changes through a callback system.
+
+    Attributes:
+        themes (dict): Loaded theme configurations.
+        current_theme_name (str): Name of currently active theme.
+        current_theme_data (dict): Data of currently active theme.
+        initialized (bool): Whether this instance was initialized.
+    """
 
     _instance = None
     _observers = []
@@ -31,7 +44,15 @@ class ThemeManager:
     def load_themes_config(
             self,
             config_path: str = 'Config/themes.json') -> None:
-        """Charger la configuration des Themes depuis un JSON"""
+        """Load theme configurations from a JSON file.
+
+        Args:
+            config_path (str): Path to the theme configuration JSON file.
+                Defaults to 'Config/themes.json'.
+
+        Raises:
+            ConfigError: If file not found or JSON parsing fails.
+        """
         try:
             with open(config_path, 'r') as f:
                 self.themes = json.load(f)
@@ -46,14 +67,16 @@ class ThemeManager:
                 f"Erreur de parsing JSON: {config_path}")
 
     def set_theme(self, theme_name: str) -> bool:
-        """
-        Changer le Theme actuel et notifier les observateurs
+        """Set the current theme and notify all observers.
+
+        Loads textures for the specified theme, sets it as active,
+        and calls all registered observer callbacks.
 
         Args:
-            theme_name: Nom du Theme à activer
+            theme_name (str): Name of the theme to activate.
 
         Returns:
-            True si succes, False sinon
+            bool: True if theme was successfully set, False otherwise.
         """
         if theme_name not in self.themes:
             print(f"Theme '{theme_name}' non trouve", flush=True)
@@ -72,6 +95,14 @@ class ThemeManager:
         return True
 
     def _load_theme_textures(self, theme_name: str) -> bool:
+        """Load all textures for a specific theme.
+
+        Args:
+            theme_name (str): Name of the theme to load textures for.
+
+        Returns:
+            bool: True if all textures loaded successfully, False otherwise.
+        """
         theme = self.themes[theme_name]
         textures = {}
 
@@ -90,38 +121,62 @@ class ThemeManager:
         return True
 
     def get_texture(self, texture_name: str) -> Optional[pygame.Surface]:
-        """Recuperer une texture du Theme actuel"""
+        """Get a single texture from the current theme.
+
+        Args:
+            texture_name (str): Name of the texture to retrieve.
+
+        Returns:
+            Optional[pygame.Surface]: The texture surface or None if not found.
+        """
         if not self.current_theme_data:
             return None
         return self.current_theme_data.get(
             'loaded_assets', {}).get(texture_name)
 
     def get_all_textures(self) -> dict[str, pygame.Surface]:
-        """Recuperer toutes les textures du Theme actuel"""
+        """Get all textures from the current theme.
+
+        Returns:
+            dict[str, pygame.Surface]: Dictionary mapping texture names
+                to pygame.Surface objects.
+        """
         if not self.current_theme_data:
             print('No texture to return')
             return {}
         return self.current_theme_data.get('loaded_assets', {})
 
     def get_theme_config(self, key: str, default=None):
-        """Recuperer une configuration du Theme actuel"""
+        """Get a configuration value from the current theme.
+
+        Args:
+            key (str): Configuration key to retrieve.
+            default: Default value if key not found.
+
+        Returns:
+            The configuration value or default if not found.
+        """
         if not self.current_theme_data:
             return default
         return self.current_theme_data.get(
             'config', {}).get(key, default)
 
     def get_available_themes(self) -> list[str]:
-        """Lister tous les Themes disponibles"""
+        """Get list of all available themes.
+
+        Returns:
+            list[str]: List of theme names.
+        """
         return list(self.themes.keys())
 
     def register_observer(
             self,
             callback: Callable[[str], None]) -> None:
-        """
-        Enregistrer un observateur pour être notifie
+        """Register a callback to be notified on theme changes.
 
         Args:
-            callback: Fonction à appeler avec (theme_name)
+            callback (Callable[[str], None]): Function to call with
+                theme_name when theme changes.
         """
         if callback not in self._observers:
             self._observers.append(callback)
@@ -129,12 +184,20 @@ class ThemeManager:
     def unregister_observer(
             self,
             callback: Callable[[str], None]) -> None:
-        """Retirer un observateur"""
+        """Unregister an observer callback.
+
+        Args:
+            callback (Callable[[str], None]): The callback to remove.
+        """
         if callback in self._observers:
             self._observers.remove(callback)
 
     def _notify_observers(self, theme_name: str) -> None:
-        """Notifier tous les observateurs du changement de Theme"""
+        """Notify all registered observers of a theme change.
+
+        Args:
+            theme_name (str): Name of the new active theme.
+        """
         for callback in self._observers:
             try:
                 callback(theme_name)

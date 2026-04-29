@@ -1,10 +1,33 @@
+"""Main render engine module.
+
+Provides the Render class for managing the pygame display, handling events,
+loading backgrounds, and managing theme changes.
+"""
+
 import pygame
 from typing import Optional
 
 
 class Render:
+    """Main rendering engine for the game.
+
+    Manages pygame display, screen updates, event handling, background
+    textures, and theme change notifications.
+
+    Attributes:
+        _Render__screen_size (tuple): Display dimensions.
+        _Render__screen_name (str): Window title.
+        _Render__clock (pygame.time.Clock): Game loop timer.
+        _Render__screen (pygame.Surface): Main display surface.
+        _Render__background (pygame.Surface): Current background texture.
+        theme_manager: Manager for theme handling.
+    """
 
     def __init__(self) -> None:
+        """Initialize the rendering engine with pygame.
+
+        Sets up the display, clock, and theme manager observer.
+        """
         pygame.init()
         self.__screen_size = (1000, 1000)
         self.__screen_name = "Hello World"
@@ -28,19 +51,33 @@ class Render:
             self.theme_manager = None
 
     def on_theme_changed(self, theme_name: str) -> None:
-        """Callback appele quand le theme change"""
+        """Handle theme change notification.
+
+        Args:
+            theme_name (str): Name of the new active theme.
+        """
         print(f"Render - Nouveau theme: {theme_name}", flush=True)
         self.__reload_theme_assets()
 
     def __reload_theme_assets(self) -> None:
-        """Recharger les assets du theme"""
+        """Reload theme assets from the theme manager.
+
+        Called when theme changes to update the background and other textures.
+        """
         if self.theme_manager:
             bg_texture = self.theme_manager.get_texture('background')
             if bg_texture:
                 self.load_background(bg_texture)
 
     def load_background(self, bg: pygame.Surface) -> bool:
-        """Charger une image comme background"""
+        """Load and scale a background image.
+
+        Args:
+            bg (pygame.Surface): The background surface to load.
+
+        Returns:
+            bool: True if loading succeeded, False otherwise.
+        """
         try:
 
             self.__background = pygame.transform.scale(bg,
@@ -51,11 +88,14 @@ class Render:
             return False
 
     def handle_events(self, buttons: Optional[list] = None) -> bool:
-        """
-        Gerer les evenements et les clics de boutons
+        """Handle pygame events and button clicks.
 
         Args:
-            buttons: liste des boutons à verifier
+            buttons (Optional[list]): List of button objects to check
+            for clicks.
+
+        Returns:
+            bool: False if quit event received, True otherwise.
         """
         mouse_pos = pygame.mouse.get_pos()
 
@@ -77,20 +117,36 @@ class Render:
         return True
 
     def clear(self):
-        """Effacer l'ecran avec le background ou une couleur"""
+        """Clear the screen with background or black color.
+
+        Fills the screen with either the loaded background or black color.
+        """
         if self.__background:
             self.__screen.blit(self.__background, (0, 0))
         else:
             self.__screen.fill((0, 0, 0))
 
     def flip(self):
+        """Update the display and control frame rate.
+
+        Updates the pygame display and limits the frame rate to 60 FPS.
+        """
         self.__clock.tick(60)
         pygame.display.flip()
 
     def get_screen_size(self):
+        """Get the current screen dimensions.
+
+        Returns:
+            tuple: Screen size (width, height).
+        """
         return self.__screen.get_size()
 
     def quit(self):
+        """Cleanup pygame and exit.
+
+        Closes pygame and releases resources.
+        """
         pygame.quit()
 
     @property

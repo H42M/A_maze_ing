@@ -1,6 +1,8 @@
-"""
-Stockage des données calculées une fois au démarrage
-et accessibles partout dans le programme
+"""GameState module for centralized game state management.
+
+Provides a singleton class that stores and manages all global game
+data calculated at startup, including cell sizes, textures, and theme
+information.
 """
 
 from Config.Config import Config
@@ -9,7 +11,26 @@ from typing import Union
 
 
 class GameState:
-    """Singleton pour stocker les données globales du jeu"""
+    """Singleton class for managing global game state.
+
+    This class stores and provides access to all global game data
+    including cell dimensions, textures, themes, and layout parameters.
+    Data is calculated once during initialization and accessible
+    throughout the entire program.
+
+    Attributes:
+        cell_size (tuple[int, int]): Size of each maze cell.
+        cell_nb_bloc (int): Number of blocks per cell.
+        bloc_size (tuple[int, int]): Size of each block.
+        gap (tuple[int, int]): Centering offset for the maze.
+        wall_thickness (int): Thickness of maze walls in pixels.
+        wall_texture (pygame.Surface): Texture for maze walls.
+        player_texture (pygame.Surface): Texture for the player.
+        soluce_texture (pygame.Surface): Texture for solution path.
+        bg_texture (pygame.Surface): Background texture.
+        exit_texture (pygame.Surface): Texture for the exit.
+        theme_manager: Manager instance for theme operations.
+    """
 
     _instance = None
 
@@ -30,7 +51,18 @@ class GameState:
     @classmethod
     def initialize(cls, config: Config, screen_size: tuple[int, int],
                    cell_nb_bloc: int, wall_thickness: int = 5):
-        """Initialiser les données une seule fois"""
+        """Initialize game state data (called once at startup).
+
+        Calculates and stores all global game data based on the provided
+        configuration and screen size. This method should only be called once.
+
+        Args:
+            config (Config): Maze configuration object.
+            screen_size (tuple[int, int]): Screen dimensions (width, height).
+            cell_nb_bloc (int): Number of blocks per cell.
+            wall_thickness (int): Thickness of maze walls in pixels.
+                Defaults to 5.
+        """
         from Config.ThemeManager import ThemeManager
 
         cls.cell_size = cls.__process_cell_size(screen_size,
@@ -55,7 +87,11 @@ class GameState:
 
     @classmethod
     def __load_textures(cls, theme: str):
-        """Charger les textures via ThemeManager"""
+        """Load textures for the specified theme from ThemeManager.
+
+        Args:
+            theme (str): Name of the theme to load textures for.
+        """
         if cls.theme_manager:
             textures = cls.theme_manager.get_all_textures()
 
@@ -82,6 +118,16 @@ class GameState:
             screen_size: tuple[int, int],
             cell_nb_bloc: int,
             config: Config) -> tuple[int, int]:
+        """Calculate the optimal cell size based on screen and maze dimensions.
+
+        Args:
+            screen_size (tuple[int, int]): Screen dimensions (width, height).
+            cell_nb_bloc (int): Number of blocks per cell.
+            config (Config): Maze configuration object.
+
+        Returns:
+            tuple[int, int]: Calculated cell size (width, height).
+        """
         cell_by_screen = (screen_size[0] // (config.width + 4),
                           screen_size[1] // (config.height + 4))
 
@@ -90,7 +136,12 @@ class GameState:
 
     @classmethod
     def set_theme(cls, theme: Union[str, int]) -> None:
-        """Changer le thème via ThemeManager"""
+        """Change the current theme and load its textures.
+
+        Args:
+            theme (Union[str, int]): Theme name or index to set.
+                If int, uses the index in available themes list.
+        """
         if cls.theme_manager is None:
             print("✗ ThemeManager not initialized", flush=True)
             return
@@ -105,32 +156,56 @@ class GameState:
 
     @classmethod
     def get_themes(cls) -> list[str]:
-        """Retourner la liste des thèmes disponibles"""
+        """Get the list of available themes.
+
+        Returns:
+            list[str]: List of available theme names.
+        """
         if cls.theme_manager:
             return cls.theme_manager.get_available_themes()
         return []
 
     @classmethod
     def get_cell_size(cls) -> tuple[int, int]:
-        """Obtenir la taille de chaque cellule"""
+        """Get the size of each maze cell.
+
+        Returns:
+            tuple[int, int]: Cell size (width, height).
+        """
         return cls.cell_size
 
     @classmethod
     def get_bloc_size(cls) -> tuple[int, int]:
-        """Obtenir la taille de chaque bloc"""
+        """Get the size of each block.
+
+        Returns:
+            tuple[int, int]: Block size (width, height).
+        """
         return cls.bloc_size
 
     @classmethod
     def get_gap(cls) -> tuple[int, int]:
-        """Obtenir l'espace de centrage du labyrinthe"""
+        """Get the centering offset for the maze.
+
+        Returns:
+            tuple[int, int]: Gap offset (x, y) in pixels.
+        """
         return cls.gap
 
     @classmethod
     def get_cell_nb_bloc(cls) -> int:
-        """Obtenir le nombre de blocs par cellule"""
+        """Get the number of blocks per cell.
+
+        Returns:
+            int: Number of blocks per cell.
+        """
         return cls.cell_nb_bloc
 
     @classmethod
     def get_wall_thickness(cls) -> int:
-        """Obtenir l'épaisseur des murs"""
+        """Get the thickness of maze walls.
+
+        Returns:
+            int: Wall thickness in pixels.
+        """
         return cls.wall_thickness
