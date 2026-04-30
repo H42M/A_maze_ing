@@ -7,6 +7,7 @@ PY_FILES := a_maze_ing.py \
 	config_parsing.py \
 	maze_config.py \
 	maze_generator.py \
+	maze_solver.py \
 	maze_terminal.py
 
 # 	PY_FILES := $(shell git ls-files '*.py')
@@ -14,12 +15,18 @@ PY_FILES := a_maze_ing.py \
 .PHONY: install run debug clean lint lint-strict
 
 install:
-	$(PIP) install -r requirements.txt
-	$(PIP) install flake8 mypy
+	$(PYTHON) -m venv .venv
+	.venv/bin/pip install -r requirements.txt
 
 run:
-	$(PYTHON) $(MAIN) $(CONFIG)
-
+	
+	@if [ ! -d ".venv" ]; then \
+		echo "No virtual environment found, please run: make install"; \
+		exit 1; \
+	else \
+		.venv/bin/python $(MAIN) $(CONFIG); \
+	fi
+	
 debug:
 	$(PYTHON) -m pdb $(MAIN) $(CONFIG)
 
@@ -28,6 +35,7 @@ clean:
 	find . -type d -name ".mypy_cache" -exec rm -rf {} +
 	find . -type d -name ".pytest_cache" -exec rm -rf {} +
 	find . -type f \( -name "*.pyc" -o -name "*.pyo" \) -delete
+	rm -rf .venv
 
 lint:
 	flake8 $(PY_FILES)

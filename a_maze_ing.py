@@ -34,7 +34,10 @@ if __name__ == "__main__":
     maze = Maze()
     maze.load_config()
     maze.load_generator()
-    maze.generator.generate_perfect()
+    if maze.config.perfect is True:
+        maze.generator.generate_perfect()
+    else:
+        pass  # random maze here
 
     show_path = False
     status_message = ""
