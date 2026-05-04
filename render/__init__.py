@@ -1,5 +1,3 @@
-"""Render Module INIT."""
-
 from .Render import Render
 from .RenderBloc import Bloc
 from .RenderObj import RenderObj

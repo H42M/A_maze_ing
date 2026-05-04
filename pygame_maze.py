@@ -1,9 +1,3 @@
-"""Main entry point for the A_MAZE_ING game application.
-
-This module initializes the game, loads configuration and themes,
-creates the maze and player, and runs the main game loop.
-"""
-
 from render.Render import Render
 from render.RenderButtons import ToggleButton, Button, SelectButton
 from render.RenderDiv import RenderDiv, RenderWindow
@@ -64,16 +58,7 @@ if __name__ == "__main__":
             raise ConfigError("Player texture unloaded")
 
         def update_maze_texture(theme_name: str) -> None:
-            """Update the maze textures based on the given theme.
-
-            Retrieves the wall, exit, and checkpoint textures from
-
-            the theme manager
-            and applies them to the maze.
-
-            Args:
-                theme_name (str): The name of the theme to apply to the maze.
-            """
+            """Update maze textures for the selected theme."""
             GameState.set_theme(theme_name)
             new_textures = theme_manager.get_all_textures()
             new_wall = new_textures.get('wall')
@@ -83,14 +68,7 @@ if __name__ == "__main__":
                 maze.update_texture(new_wall, new_exit, new_soluce)
 
         def update_player_texture(theme_name: str) -> None:
-            """Update the player texture based on the given theme.
-
-            Retrieves the player texture from the theme manager and applies it
-            to the player.
-
-            Args:
-                theme_name (str): The name of the theme to apply to the player.
-            """
+            """Update the player texture for the selected theme."""
             new_textures = theme_manager.get_all_textures()
             new_player = new_textures.get('player')
             if new_player:
