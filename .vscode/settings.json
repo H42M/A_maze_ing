@@ -1,0 +1,31 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+
+  "mypy-type-checker.path": [
+    "${workspaceFolder}/.venv/bin/python",
+    "-m",
+    "mypy"
+  ],
+  "mypy-type-checker.args": [
+    "--warn-return-any",
+    "--warn-unused-ignores",
+    "--ignore-missing-imports",
+    "--disallow-untyped-defs",
+    "--check-untyped-defs"
+  ],
+  "mypy-type-checker.reportingScope": "workspace",
+  "mypy-type-checker.showNotifications": "off",
+
+  "flake8.path": [
+    "${workspaceFolder}/.venv/bin/python",
+    "-m",
+    "flake8"
+  ],
+  "flake8.args": [
+    "."
+  ],
+
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}"
+  ]
+}
