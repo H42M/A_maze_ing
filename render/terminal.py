@@ -4,12 +4,13 @@ from Maze.Cell import Cell
 
 from typing import Union
 
+
 def get_direction(start: Union[tuple[int, int], Cell], end: Union[tuple[int, int], Cell]) -> str:
     if isinstance(start, Cell):
         start_pos = start.pos
     else:
         start_pos = start
-    
+
     if isinstance(end, Cell):
         end_pos = end.pos
     else:
