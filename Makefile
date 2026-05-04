@@ -15,10 +15,12 @@ fclean:
 lint:
 	flake8 . --exclude=.venv,.env
 	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	make clean
 
 lint-strict:
 	flake8 . --exclude=.venv,.env
 	mypy . --exclude '\.venv|\.env' --strict
+	make clean
 
 run: build
 	.venv/bin/python pygame_maze.py
