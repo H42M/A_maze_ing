@@ -1,19 +1,11 @@
-"""Personal Errors."""
+"""Custom exceptions for the maze application."""
 
 
 class ConfigError(Exception):
-    """Error class for config Errors."""
+    """Raised when a configuration error occurs.
 
-    pass
-
-
-class DFSError(Exception):
-    """Error class for config Errors."""
-
-    pass
-
-
-class MazeError(Exception):
-    """Error class for Maze Errors."""
+    This exception is raised when there are issues with loading,
+    parsing, or validating configuration files.
+    """
 
     pass

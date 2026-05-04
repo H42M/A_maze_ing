@@ -1,15 +1,16 @@
-install:
+build:
 	python3 -m venv .venv
-	./.venv/bin/pip install -r requirements.txt
+	.venv/bin/python -m pip install --upgrade pip
+	.venv/bin/pip install -r requirements.txt
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +
-	rm -rf .mypy_cache
+	find . -type d -name .mypy_cache -exec rm -rf {} +
 	rm output.txt
 
-run:
-	./.venv/bin/python a_maze_ing.py config.txt
+fclean:
 	make clean
+	rm -rf .venv
 
 lint:
 	flake8 . --exclude=.venv,.env
@@ -18,3 +19,11 @@ lint:
 lint-strict:
 	flake8 . --exclude=.venv,.env
 	mypy . --exclude '\.venv|\.env' --strict
+
+run: build
+	.venv/bin/python pygame_maze.py
+	make clean
+
+run-terminal: build
+	.venv/bin/python terminal_maze.py
+	make clean
