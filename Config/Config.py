@@ -22,6 +22,7 @@ class Config(BaseModel):
 
     width: int = Field(gt=3, le=200)
     height: int = Field(gt=3, le=200)
+    perfect: bool
     exit: tuple[int, int]
     entry: tuple[int, int]
 

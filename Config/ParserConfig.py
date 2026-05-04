@@ -33,7 +33,7 @@ class ParserConfig:
         """
         self.__file_path = file_path
         self.__expected_data = [
-            'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT'
+            'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'PERFECT'
         ]
         self.__parsed_data: dict[str, Union[int, tuple[int, int]]] = {}
 
@@ -56,6 +56,7 @@ class ParserConfig:
         config = Config(
             width=cast(int, self.__parsed_data['WIDTH']),
             height=cast(int, self.__parsed_data['HEIGHT']),
+            perfect=cast(bool, self.__parsed_data['PERFECT']),
             exit=cast(tuple[int, int], self.__parsed_data['EXIT']),
             entry=cast(tuple[int, int], self.__parsed_data['ENTRY'])
         )
@@ -105,6 +106,8 @@ class ParserConfig:
                     y = int(parts[1].strip())
 
                     parsed_file[key] = (x, y)
+                elif key == 'PERFECT':
+                    parsed_file[key] = True if value.upper() == 'TRUE' else False
                 else:
                     parsed_file[key] = int(value)
 
@@ -132,6 +135,10 @@ class ParserConfig:
             elif key == 'HEIGHT':
                 if not isinstance(val, int):
                     raise ValueError("Height must be an integer")
+            
+            elif key == "PERFECT":
+                if not isinstance(val, bool):
+                    raise ValueError("Perfect must be boolean")
 
             elif key in ('EXIT', 'ENTRY'):
                 if not (

@@ -8,11 +8,21 @@ config = ParserConfig('settings.txt').init_config()
 maze = Maze(config)
 maze.solve()
 
+maze_over = False
 while (True):
-	if not maze.is_maze_generated:
+	if not maze.is_maze_generated and not maze_over:
 		maze.generate_anim()
+	elif maze.is_maze_generated and not maze_over:
+		maze_over = True
+		if not config.perfect:
+			print('break walls !')
+			time.sleep(2)
+			maze.unperfect()
 		maze.solve()
 	ascii_maze = render_maze(maze, maze.entry, maze.exit, maze.soluce)
+
 	os.system('clear')
 	print(ascii_maze)
-	time.sleep(0.1)
+	time.sleep(0.05)
+	if maze_over:
+		break

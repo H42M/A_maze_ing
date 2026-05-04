@@ -295,6 +295,35 @@ class Maze:
             bool: True if solution is being displayed, False otherwise.
         """
         return self.__display_soluce
+    
+    def unperfect(self):
+        import random
+        neigh_map = {
+            'n': ('s', 0, -1),
+            's': ('n', 0, +1),
+            'e': ('w', +1, 0),
+            'w': ('e', -1, 0)
+        }
+
+        end_points: list[Cell] = []
+        for y in self.__maze_lst:
+            for cell in y:
+                if (sum([getattr(cell, w) for w in "nsew"]) >= 3 and
+                        not cell.is42):
+                    end_points.append(cell)
+        print(f"Walls to break: {len(end_points)}")
+
+        for cell in end_points:
+            walls_present = [w for w in "nsew" if getattr(cell, w)]
+            wall = random.choice(walls_present)
+
+            neigh_wall, dx, dy = neigh_map[wall]
+            neigh = self.get_cell((cell.x + dx, cell.y + dy))
+
+            if neigh and not neigh.is42:
+                setattr(cell, wall, False)
+                setattr(neigh, neigh_wall, False)
+
 
     @property
     def entry(self) -> Cell:
