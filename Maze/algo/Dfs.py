@@ -24,7 +24,7 @@ class DFS:
         _DFS__cell (Cell): Current cell in the generation process.
     """
 
-    def __init__(self, maze: Maze) -> None:
+    def __init__(self, maze: Maze, seed: Optional[int] = None) -> None:
         """Initialize DFS maze generator.
 
         Args:
@@ -34,6 +34,8 @@ class DFS:
         self.__maze = maze
         if maze.entry:
             self.__cell = maze.entry
+        if seed:
+            random.seed(seed)
 
     def get_instruct(self) -> Optional["Instruct"]:
         """Get next instruction for maze generation step.

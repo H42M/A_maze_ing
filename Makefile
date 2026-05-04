@@ -23,6 +23,10 @@ lint-strict:
 	make clean
 
 run: build
+	.venv/bin/python a_maze_ing.py
+	make clean
+
+run-pygame: build
 	.venv/bin/python pygame_maze.py
 	make clean
 

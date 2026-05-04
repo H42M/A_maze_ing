@@ -18,7 +18,7 @@ from Errors import ConfigError
 from Config.GameState import GameState
 from Config.ThemeManager import ThemeManager
 
-if __name__ == "__main__":
+def pygame_maze() -> None:
     try:
         parser = ParserConfig('settings.txt')
         config = parser.init_config()
