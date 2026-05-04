@@ -21,5 +21,9 @@ lint-strict:
 	mypy . --exclude '\.venv|\.env' --strict
 
 run: build
-	.venv/bin/python main.py
+	.venv/bin/python pygame_maze.py
+	make clean
+
+run-terminal: build
+	.venv/bin/python terminal_maze.py
 	make clean

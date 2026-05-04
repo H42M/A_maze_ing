@@ -28,9 +28,10 @@ class Maze:
     """
 
     def __init__(self, config: Config,
-                 wall_tex: Union[tuple[int, int, int], pygame.Surface],
-                 exit_tex: Union[tuple[int, int, int], pygame.Surface],
-                 sol_tex: Union[tuple[int, int, int], pygame.Surface]) -> None:
+                 wall_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = None,
+                 exit_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = None,
+                 sol_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = None
+                 ) -> None:
         """Initialize a maze with configuration and textures.
 
         Args:
@@ -51,10 +52,10 @@ class Maze:
         self.__cell_size = GameState.get_cell_size()
         self.__wall_thickness = GameState.get_wall_thickness()
         self.__gap = GameState.get_gap()
-
-        self.__wall_tex: Union[tuple[int, int, int], pygame.Surface] = wall_tex
-        self.__exit_tex: Union[tuple[int, int, int], pygame.Surface] = exit_tex
-        self.__sol_tex: Union[tuple[int, int, int], pygame.Surface] = sol_tex
+        
+        self.__wall_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = wall_tex
+        self.__exit_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = exit_tex
+        self.__sol_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = sol_tex
         self.__is_maze_generated = False
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
@@ -62,7 +63,8 @@ class Maze:
 
         self.__soluce: list[Cell] = []
         self.__display_soluce = False
-        self.set_textures(wall_tex, exit_tex, sol_tex)
+        if wall_tex and exit_tex and sol_tex:
+            self.set_textures(wall_tex, exit_tex, sol_tex)
 
     def __empty_maze(self) -> list[list[Cell]]:
         """Create an empty maze filled with cells.
@@ -92,8 +94,9 @@ class Maze:
             print(instruct._cell.pos)
             setattr(instruct._cell, instruct._wall, False)
             setattr(instruct._neigh, instruct._neigh_wall, False)
-            instruct._cell.set_render_cell()
-            instruct._neigh.set_render_cell()
+            if self.__wall_tex and self.__sol_tex and self.__exit_tex:
+                instruct._cell.set_render_cell()
+                instruct._neigh.set_render_cell()
             return False
 
         self.__is_maze_generated = True
@@ -185,7 +188,8 @@ class Maze:
         print("Soluce: ")
         for cell in self.__soluce:
             cell.display_soluce = self.__display_soluce
-        self.set_textures(self.__wall_tex, self.__exit_tex, self.__sol_tex)
+        if self.__sol_tex and self.__exit_tex and self.__wall_tex:
+            self.set_textures(self.__wall_tex, self.__exit_tex, self.__sol_tex)
 
     def add_to_soluce(self, cell: Cell) -> None:
         """Add a cell to the solution path.
