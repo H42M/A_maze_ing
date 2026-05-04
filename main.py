@@ -4,6 +4,8 @@ This module initializes the game, loads configuration and themes,
 creates the maze and player, and runs the main game loop.
 """
 
+import time
+
 from render.Render import Render
 from render.RenderButtons import ToggleButton, Button, SelectButton
 from render.RenderDiv import RenderDiv, RenderWindow
@@ -144,7 +146,10 @@ if __name__ == "__main__":
     )
     window.add([title_div, btn_div])
 
+    # start_time = time.time()
     while True:
+        # if time.time() - start_time > 3600:
+        #     break
         if not render.handle_events(btns):
             break
         render.clear()

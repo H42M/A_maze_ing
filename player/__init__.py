@@ -1,4 +1,4 @@
-"""Config Module INIT."""
+"""Player Module INIT."""
 
 from .Player import Player
 

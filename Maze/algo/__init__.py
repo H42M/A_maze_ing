@@ -1,4 +1,4 @@
-"""Config Module INIT."""
+"""Algorithms Module INIT."""
 
 from .AStar import A_Star
 from .Dfs import DFS

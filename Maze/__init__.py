@@ -1,4 +1,4 @@
-"""Config Module INIT."""
+"""Maze Module INIT."""
 
 from .Cell import Cell
 from .Maze import Maze

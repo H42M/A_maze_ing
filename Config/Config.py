@@ -20,8 +20,8 @@ class Config(BaseModel):
         entry (tuple[int, int]): Entry coordinates (x, y).
     """
 
-    width: int = Field(gt=3, le=50)
-    height: int = Field(gt=3, le=50)
+    width: int = Field(gt=3, le=200)
+    height: int = Field(gt=3, le=200)
     exit: tuple[int, int]
     entry: tuple[int, int]
 

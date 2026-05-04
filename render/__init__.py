@@ -1,4 +1,4 @@
-"""Config Module INIT."""
+"""Render Module INIT."""
 
 from .Render import Render
 from .RenderBloc import Bloc

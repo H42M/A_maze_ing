@@ -140,7 +140,7 @@ class Render:
 
         Updates the pygame display and limits the frame rate to 60 FPS.
         """
-        self.__clock.tick(60)
+        self.__clock.tick(360)
         pygame.display.flip()
 
     def get_screen_size(self) -> tuple[int, int]:

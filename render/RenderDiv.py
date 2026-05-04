@@ -129,7 +129,6 @@ class RenderWindow(RenderDiv):
             total_height -= total_gap
         space = total_height // len(self._content)
 
-        print(f"Total height: {self._size[1]}")
         for i, div in enumerate(self._content):
             gap = 0
             if self._gap:
@@ -140,6 +139,5 @@ class RenderWindow(RenderDiv):
                     self._pos.x,
                     pos_y
                 )
-                print(f"elm {i}: posy = {pos_y}")
                 div._size = (self._size[0], space)
                 div.render(screen)
