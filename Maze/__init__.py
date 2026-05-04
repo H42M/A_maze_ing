@@ -1,5 +1,3 @@
-"""Maze Module INIT."""
-
 from .Cell import Cell
 from .Maze import Maze
 from .Output import Output

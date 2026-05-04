@@ -1,36 +1,15 @@
-"""Maze output export module.
-
-Provides functionality to export maze data to a text file in hexadecimal
-format with entry, exit, and solution path information.
-"""
-
 from Maze.Maze import Maze
 
 
 class Output:
-    """Export maze to output file.
-
-    Handles exporting maze structure, entry/exit points, and solution
-    path to a text file in hexadecimal format.
-
-    Attributes:
-        _Output__maze (Maze): The maze instance to export.
-    """
+    """Export maze data to a file."""
 
     def __init__(self, maze: Maze) -> None:
-        """Initialize output exporter for a maze.
-
-        Args:
-            maze (Maze): The maze instance to export.
-        """
+        """Initialize the exporter."""
         self.__maze = maze
 
     def write(self) -> None:
-        """Write maze data to output file.
-
-        Exports maze structure as hexadecimal, entry/exit coordinates,
-        and solution path to 'output.txt'.
-        """
+        """Write the maze output file."""
         with open('output.txt', 'w') as f:
 
             f.write(self.__get_hexa_maze())
@@ -42,14 +21,7 @@ class Output:
             f.write(self.__get_soluce_as_str())
 
     def __get_soluce_as_str(self) -> str:
-        """Convert solution path to direction string.
-
-        Converts the list of cells in the solution path to a string of
-        direction characters (N/S/E/W for North/South/East/West).
-
-        Returns:
-            str: Direction string representing solution path (e.g., 'WSSENW').
-        """
+        """Return the solution as directions."""
         final_str = ''
         soluce = self.__maze.soluce
         if self.__maze.exit not in soluce:
@@ -68,14 +40,7 @@ class Output:
         return final_str
 
     def __get_hexa_maze(self) -> str:
-        """Convert maze structure to hexadecimal representation.
-
-        Each cell is converted to a hex digit (0-F) where bits represent
-        wall states (N, E, S, W).
-
-        Returns:
-            str: Maze in hexadecimal format with newlines for each row.
-        """
+        """Return the maze as hexadecimal rows."""
         final_str = ''
         for y in self.__maze.maze_lst:
             for cell in y:
