@@ -1,3 +1,5 @@
+"""Teminal render for maze."""
+
 from Maze.Maze import Maze
 from Maze.Cell import Cell
 
@@ -5,7 +7,9 @@ from Maze.Cell import Cell
 from typing import Union
 
 
-def get_direction(start: Union[tuple[int, int], Cell], end: Union[tuple[int, int], Cell]) -> str:
+def get_direction(start: Union[tuple[int, int], Cell],
+                  end: Union[tuple[int, int], Cell]) -> str:
+    """Determine the cardinal direction between two cells or positions."""
     if isinstance(start, Cell):
         start_pos = start.pos
     else:
@@ -30,6 +34,7 @@ def get_direction(start: Union[tuple[int, int], Cell], end: Union[tuple[int, int
 
 
 def opposite(direction: str) -> str:
+    """Return the opposite cardinal direction."""
     opposites = {
         "N": "S",
         "E": "W",
@@ -40,6 +45,7 @@ def opposite(direction: str) -> str:
 
 
 def build_path_connections(path: list[Cell]) -> dict[Cell, set[str]]:
+    """Build a dict mapping cells to their connected directions."""
     connections: dict[Cell, set[str]] = {}
 
     for current, next_cell in zip(path, path[1:]):
@@ -58,7 +64,7 @@ def render_maze(maze: Maze, entry: Cell, exit: Cell,
                 wall_color: str = "",
                 path_color: str = "",
                 reset_color: str = "",) -> str:
-
+    """Render with entry, exit, and optional colored path as ASCII art."""
     lines: list[str] = []
     path_connections = build_path_connections(path) if path else {}
     path_cells = set(path) if path is not None else set()

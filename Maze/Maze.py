@@ -28,9 +28,12 @@ class Maze:
     """
 
     def __init__(self, config: Config,
-                 wall_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = None,
-                 exit_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = None,
-                 sol_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = None
+                 wall_tex: Optional[Union[
+                     tuple[int, int, int], pygame.Surface]] = None,
+                 exit_tex: Optional[Union[
+                     tuple[int, int, int], pygame.Surface]] = None,
+                 sol_tex: Optional[Union[
+                     tuple[int, int, int], pygame.Surface]] = None
                  ) -> None:
         """Initialize a maze with configuration and textures.
 
@@ -52,10 +55,13 @@ class Maze:
         self.__cell_size = GameState.get_cell_size()
         self.__wall_thickness = GameState.get_wall_thickness()
         self.__gap = GameState.get_gap()
-        
-        self.__wall_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = wall_tex
-        self.__exit_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = exit_tex
-        self.__sol_tex: Optional[Union[tuple[int, int, int], pygame.Surface]] = sol_tex
+
+        self.__wall_tex: Optional[
+            Union[tuple[int, int, int], pygame.Surface]] = wall_tex
+        self.__exit_tex: Optional[
+            Union[tuple[int, int, int], pygame.Surface]] = exit_tex
+        self.__sol_tex: Optional[
+            Union[tuple[int, int, int], pygame.Surface]] = sol_tex
         self.__is_maze_generated = False
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
@@ -295,8 +301,9 @@ class Maze:
             bool: True if solution is being displayed, False otherwise.
         """
         return self.__display_soluce
-    
-    def unperfect(self):
+
+    def unperfect(self) -> None:
+        """Break some walls to make maze unperfect."""
         import random
         neigh_map = {
             'n': ('s', 0, -1),
@@ -323,7 +330,6 @@ class Maze:
             if neigh and not neigh.is42:
                 setattr(cell, wall, False)
                 setattr(neigh, neigh_wall, False)
-
 
     @property
     def entry(self) -> Cell:

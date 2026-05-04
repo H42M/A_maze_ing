@@ -28,7 +28,8 @@ class Cell:
     """
 
     def __init__(self, x: int, y: int,
-                 color: Optional[Union[tuple[int, int, int], pygame.Surface]]) -> None:
+                 color: Optional[Union[tuple[int, int, int], pygame.Surface]]
+                 ) -> None:
         """Initialize a maze cell.
 
         Args:

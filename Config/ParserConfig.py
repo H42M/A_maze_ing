@@ -107,7 +107,8 @@ class ParserConfig:
 
                     parsed_file[key] = (x, y)
                 elif key == 'PERFECT':
-                    parsed_file[key] = True if value.upper() == 'TRUE' else False
+                    parsed_file[key] = (True if value.upper() == 'TRUE'
+                                        else False)
                 else:
                     parsed_file[key] = int(value)
 
@@ -135,7 +136,7 @@ class ParserConfig:
             elif key == 'HEIGHT':
                 if not isinstance(val, int):
                     raise ValueError("Height must be an integer")
-            
+
             elif key == "PERFECT":
                 if not isinstance(val, bool):
                     raise ValueError("Perfect must be boolean")
