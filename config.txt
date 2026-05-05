@@ -3,3 +3,4 @@ HEIGHT=10
 PERFECT=False
 ENTRY=0,0
 EXIT=9,9
+OUTPUT_FILE=output.txt

@@ -42,6 +42,6 @@ def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
         time.sleep(animate)
         if maze_over:
             output = Output(maze)
-            output.write()
+            output.write(config.output_file)
             input('Press Enter to return to the menu')
             break

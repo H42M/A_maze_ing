@@ -136,7 +136,7 @@ def pygame_maze() -> None:
             if maze.generate_anim():
                 maze.solve()
                 ouput = Output(maze)
-                ouput.write()
+                ouput.write(config.output_file)
 
         maze.render(render.screen)
 
