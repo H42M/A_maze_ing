@@ -13,19 +13,18 @@ class Output:
         with open('output.txt', 'w') as f:
 
             f.write(self.__get_hexa_maze())
-            f.write("\n\n")
+            f.write("\n")
             f.write(f"{self.__maze.entry.pos}")
             f.write("\n")
             f.write(f"{self.__maze.exit.pos}")
             f.write("\n")
             f.write(self.__get_soluce_as_str())
+            f.write("\n")
 
     def __get_soluce_as_str(self) -> str:
         """Return the solution as directions."""
         final_str = ''
         soluce = self.__maze.soluce
-        if self.__maze.exit not in soluce:
-            soluce.append(self.__maze.exit)
 
         for i, cell in enumerate(soluce):
             if i < len(soluce) - 1:
