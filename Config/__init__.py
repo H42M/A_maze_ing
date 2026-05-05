@@ -1,5 +1,3 @@
-"""Config Module INIT."""
-
 from .Config import Config
 from .GameState import GameState
 from .ParserConfig import ParserConfig

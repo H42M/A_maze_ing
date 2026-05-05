@@ -1,9 +1,3 @@
-"""Main render engine module.
-
-Provides the Render class for managing the pygame display, handling events,
-loading backgrounds, and managing theme changes.
-"""
-
 import pygame
 from typing import Optional, TYPE_CHECKING
 
@@ -12,25 +6,10 @@ if TYPE_CHECKING:
 
 
 class Render:
-    """Main rendering engine for the game.
-
-    Manages pygame display, screen updates, event handling, background
-    textures, and theme change notifications.
-
-    Attributes:
-        _Render__screen_size (tuple): Display dimensions.
-        _Render__screen_name (str): Window title.
-        _Render__clock (pygame.time.Clock): Game loop timer.
-        _Render__screen (pygame.Surface): Main display surface.
-        _Render__background (pygame.Surface): Current background texture.
-        theme_manager: Manager for theme handling.
-    """
+    """Manage the pygame display and events."""
 
     def __init__(self) -> None:
-        """Initialize the rendering engine with pygame.
-
-        Sets up the display, clock, and theme manager observer.
-        """
+        """Initialize the render engine."""
         pygame.init()
         self.__screen_size = (1000, 1000)
         self.__screen_name = "Hello World"
@@ -56,33 +35,19 @@ class Render:
             self.theme_manager = None
 
     def on_theme_changed(self, theme_name: str) -> None:
-        """Handle theme change notification.
-
-        Args:
-            theme_name (str): Name of the new active theme.
-        """
+        """Handle theme changes."""
         print(f"Render - Nouveau theme: {theme_name}", flush=True)
         self.__reload_theme_assets()
 
     def __reload_theme_assets(self) -> None:
-        """Reload theme assets from the theme manager.
-
-        Called when theme changes to update the background and other textures.
-        """
+        """Reload theme assets."""
         if self.theme_manager:
             bg_texture = self.theme_manager.get_texture('background')
             if bg_texture:
                 self.load_background(bg_texture)
 
     def load_background(self, bg: pygame.Surface) -> bool:
-        """Load and scale a background image.
-
-        Args:
-            bg (pygame.Surface): The background surface to load.
-
-        Returns:
-            bool: True if loading succeeded, False otherwise.
-        """
+        """Load the background image."""
         try:
 
             self.__background = pygame.transform.scale(bg,
@@ -94,15 +59,7 @@ class Render:
 
     def handle_events(self, buttons: Optional[list["RenderObj"]] = None
                       ) -> bool:
-        """Handle pygame events and button clicks.
-
-        Args:
-            buttons (Optional[list]): List of button objects to check
-            for clicks.
-
-        Returns:
-            bool: False if quit event received, True otherwise.
-        """
+        """Handle events and return whether the app should continue."""
         from render.RenderButtons import Button
         mouse_pos = pygame.mouse.get_pos()
 
@@ -126,43 +83,25 @@ class Render:
         return True
 
     def clear(self) -> None:
-        """Clear the screen with background or black color.
-
-        Fills the screen with either the loaded background or black color.
-        """
+        """Clear the screen."""
         if self.__background:
             self.__screen.blit(self.__background, (0, 0))
         else:
             self.__screen.fill((0, 0, 0))
 
     def flip(self) -> None:
-        """Update the display and control frame rate.
-
-        Updates the pygame display and limits the frame rate to 60 FPS.
-        """
+        """Update the display."""
         self.__clock.tick(360)
         pygame.display.flip()
 
     def get_screen_size(self) -> tuple[int, int]:
-        """Get the current screen dimensions.
-
-        Returns:
-            tuple: Screen size (width, height).
-        """
+        """Return the screen size."""
         return self.__screen.get_size()
 
     def quit(self) -> None:
-        """Cleanup pygame and exit.
-
-        Closes pygame and releases resources.
-        """
+        """Quit pygame."""
         pygame.quit()
 
     @property
     def screen(self) -> pygame.Surface:
-        """Get screen instance.
-
-        Returns:
-            pygame.Surface: Screen instance.
-        """
         return self.__screen

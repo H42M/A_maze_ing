@@ -1,5 +1,3 @@
-"""Run termnal maze."""
-
 from Maze.Maze import Maze
 from Config.ParserConfig import ParserConfig
 from render.terminal import render_maze

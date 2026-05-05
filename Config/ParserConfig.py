@@ -1,9 +1,3 @@
-"""Configuration file parser for maze settings.
-
-Provides a parser class to read maze configuration from text files
-and validate the parameters before creating a Config object.
-"""
-
 from Errors import ConfigError
 from typing import Union, cast
 from typing import TYPE_CHECKING
@@ -13,24 +7,10 @@ if TYPE_CHECKING:
 
 
 class ParserConfig:
-    """Parser for maze configuration files.
-
-    Reads maze configuration from a text file, validates the data,
-    and creates a Config object. Configuration files should contain
-    key-value pairs separated by '=' (WIDTH, HEIGHT, ENTRY, EXIT).
-
-    Attributes:
-        _ParserConfig__file_path (str): Path to the configuration file.
-        _ParserConfig__expected_data (list): Expected configuration keys.
-        _ParserConfig__parsed_data (dict): Parsed configuration data.
-    """
+    """Parse maze configuration files."""
 
     def __init__(self, file_path: str) -> None:
-        """Initialize the parser with a configuration file path.
-
-        Args:
-            file_path (str): Path to the configuration file to parse.
-        """
+        """Initialize the parser."""
         self.__file_path = file_path
         self.__expected_data = [
             'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'PERFECT'
@@ -38,14 +18,7 @@ class ParserConfig:
         self.__parsed_data: dict[str, Union[int, tuple[int, int]]] = {}
 
     def init_config(self) -> "Config":
-        """Parse configuration file and return a Config object.
-
-        Returns:
-            Config: A validated configuration object.
-
-        Raises:
-            ConfigError: If parsing or validation fails.
-        """
+        """Return a validated Config object."""
         from Config.Config import Config
 
         try:
@@ -64,11 +37,7 @@ class ParserConfig:
         return config
 
     def __parse_and_check(self) -> None:
-        """Parse the file and validate all configuration values.
-
-        Raises:
-            ValueError: If validation fails during parsing or checking.
-        """
+        """Parse and validate the configuration file."""
         self.__parse()
         try:
             self.__check_parsed()
@@ -76,14 +45,7 @@ class ParserConfig:
             raise ValueError(f"[PARSER-CHECKER ERROR] {e}")
 
     def __parse(self) -> None:
-        """Parse key-value pairs from the configuration file.
-
-        Reads the file line by line, skipping comments and empty lines.
-        Supports both integer values and coordinate tuples (x,y).
-
-        Raises:
-            ValueError: If coordinate format is invalid.
-        """
+        """Parse key-value pairs from the file."""
         parsed_file: dict[str, Union[int, tuple[int, int]]] = {}
 
         with open(self.__file_path, 'r') as f:
@@ -115,14 +77,7 @@ class ParserConfig:
         self.__parsed_data = parsed_file
 
     def __check_parsed(self) -> None:
-        """Validate that all required keys exist and have correct types.
-
-        Ensures all expected configuration keys are present and validates
-        data types for WIDTH, HEIGHT, ENTRY, and EXIT.
-
-        Raises:
-            ValueError: If required keys are missing or types are invalid.
-        """
+        """Check required keys and value types."""
         for expected in self.__expected_data:
             if expected not in self.__parsed_data:
                 raise ValueError(f"Expected {expected} in config file")

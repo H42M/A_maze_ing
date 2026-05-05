@@ -1,5 +1,3 @@
-"""Teminal render for maze."""
-
 from Maze.Maze import Maze
 from Maze.Cell import Cell
 

@@ -1,9 +1,3 @@
-"""Maze generation and management module.
-
-Provides the Maze class for creating, rendering, and managing maze
-structures with pathfinding and texture support.
-"""
-
 import pygame
 
 from Config.Config import Config
@@ -15,17 +9,7 @@ from typing import Union, Optional
 
 
 class Maze:
-    """Represents a maze with cells, walls, and pathfinding.
-
-    Manages maze generation using depth-first search, rendering,
-    texture management, and solution path computation using A* algorithm.
-
-    Attributes:
-        _Maze__width (int): Width of the maze in cells.
-        _Maze__height (int): Height of the maze in cells.
-        _Maze__entry (tuple[int, int]): Entry point coordinates.
-        _Maze__exit (tuple[int, int]): Exit point coordinates.
-    """
+    """Manage maze cells, generation, rendering, and solving."""
 
     def __init__(self, config: Config,
                  wall_tex: Optional[Union[
@@ -34,18 +18,9 @@ class Maze:
                      tuple[int, int, int], pygame.Surface]] = None,
                  sol_tex: Optional[Union[
                      tuple[int, int, int], pygame.Surface]] = None,
-                 seed: Optional[int] = None) -> None:
-        """Initialize a maze with configuration and textures.
-
-        Args:
-            config (Config): Maze configuration object.
-            wall_tex (Union[tuple[int, int, int], pygame.Surface]):
-            Wall texture.
-            exit_tex (Union[tuple[int, int, int], pygame.Surface]):
-            Exit texture.
-            sol_tex (Union[tuple[int, int, int], pygame.Surface]):
-            Solution texture.
-        """
+                 seed: Optional[int] = None
+                 ) -> None:
+        """Initialize the maze."""
         from Maze.algo.Dfs import DFS
         self.__width = config.width
         self.__height = config.height
@@ -73,11 +48,7 @@ class Maze:
             self.set_textures(wall_tex, exit_tex, sol_tex)
 
     def __empty_maze(self) -> list[list[Cell]]:
-        """Create an empty maze filled with cells.
-
-        Returns:
-            list[list[Cell]]: 2D grid of Cell objects.
-        """
+        """Return a closed grid of cells."""
         maze = []
         for y in range(self.__height):
             row = []
@@ -87,11 +58,7 @@ class Maze:
         return maze
 
     def generate_anim(self) -> bool:
-        """Generate maze step-by-step for animation.
-
-        Returns:
-            bool: True if generation is complete, False if continuing.
-        """
+        """Run one animated generation step."""
         if self.__is_maze_generated:
             return True
 
@@ -109,11 +76,7 @@ class Maze:
         return True
 
     def render(self, screen: pygame.Surface) -> None:
-        """Render the maze and all cells to the screen.
-
-        Args:
-            screen (pygame.Surface): The display surface to render on.
-        """
+        """Render the maze."""
         # Render Background:
         RenderObj((self.__gap[0], self.__gap[1]),
                   ((self.__cell_size[0] * self.__width) +
@@ -128,14 +91,7 @@ class Maze:
                 cell.render(screen)
 
     def get_cell(self, coord: tuple[int, int]) -> Optional[Cell]:
-        """Get a cell at the specified coordinate.
-
-        Args:
-            coord (tuple[int, int]): (x, y) coordinate in maze grid.
-
-        Returns:
-            Optional[Cell]: The cell at given coordinates or None.
-        """
+        """Return the cell at a coordinate."""
         x, y = coord
         if 0 <= x < self.__width and 0 <= y < self.__height:
             return self.__maze_lst[y][x]
@@ -146,14 +102,7 @@ class Maze:
                      exit: Union[tuple[int, int, int], pygame.Surface],
                      soluce: Union[tuple[int, int, int], pygame.Surface]
                      ) -> None:
-        """Set textures for all maze cells.
-
-        Args:
-            wall (Union[tuple[int, int, int], pygame.Surface]): Wall texture.
-            exit (Union[tuple[int, int, int], pygame.Surface]): Exit texture.
-            soluce (Union[tuple[int, int, int], pygame.Surface]):
-            Solution texture.
-        """
+        """Set maze cell textures."""
         for row in self.__maze_lst:
             for cell in row:
                 if isinstance(wall, pygame.Surface):
@@ -173,21 +122,11 @@ class Maze:
     def update_texture(self, wall: pygame.Surface,
                        exit: pygame.Surface,
                        soluce: pygame.Surface) -> None:
-        """Update maze textures on theme change.
-
-        Args:
-            wall (pygame.Surface): New wall texture.
-            exit (pygame.Surface): New exit texture.
-            soluce (pygame.Surface): New solution texture.
-        """
+        """Update maze textures."""
         self.set_textures(wall, exit, soluce)
 
     def solve(self) -> None:
-        """Compute the solution path from entry to exit using A* algorithm.
-
-        Uses the A* pathfinding algorithm to find the optimal path and
-        marks cells as part of the solution.
-        """
+        """Compute the solution path."""
         from Maze.algo.AStar import A_Star
         astar = A_Star(self)
         self.__soluce = astar.solve()
@@ -197,31 +136,19 @@ class Maze:
             self.set_textures(self.__wall_tex, self.__exit_tex, self.__sol_tex)
 
     def add_to_soluce(self, cell: Cell) -> None:
-        """Add a cell to the solution path.
-
-        Args:
-            cell (Cell): Cell to add to the solution path.
-        """
+        """Add a cell to the solution path."""
         if self.get_cell(cell.pos):
             self.__soluce.append(cell)
 
     def reset(self) -> None:
-        """Reset the maze to initial state (regenerate and clear solution).
-
-        Clears the current maze, regenerates cells, resets the DFS state,
-        and clears the solution path.
-        """
+        """Reset the maze state."""
         self.__is_maze_generated = False
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
         self.__soluce = []
 
     def __set_42_logo(self) -> None:
-        """Generate a 42 school logo pattern in the maze.
-
-        Creates the visual pattern of '42' using non-walkable cells
-        positioned in the center of the maze.
-        """
+        """Mark cells forming the 42 pattern."""
         starting_cell = self.get_cell((
             (self.__width - 7) // 2,
             (self.__height - 5) // 2
@@ -280,12 +207,7 @@ class Maze:
                         cell.is42 = True
 
     def set_display_soluce(self, value: Optional[bool] = None) -> None:
-        """Toggle or set the display state of the solution path.
-
-        Args:
-            value (Optional[bool]): If None, toggles current state.
-                If True/False, sets to that state.
-        """
+        """Set or toggle solution display."""
         if value is None:
             self.__display_soluce = not self.__display_soluce
         else:
@@ -294,15 +216,10 @@ class Maze:
             cell.display_soluce = self.__display_soluce
 
     def get_display_soluce(self) -> bool:
-        """Check if solution path is currently displayed.
-
-        Returns:
-            bool: True if solution is being displayed, False otherwise.
-        """
         return self.__display_soluce
 
     def unperfect(self) -> None:
-        """Break some walls to make maze unperfect."""
+        """Open extra walls to make the maze imperfect."""
         import random
         neigh_map = {
             'n': ('s', 0, -1),
@@ -332,14 +249,6 @@ class Maze:
 
     @property
     def entry(self) -> Cell:
-        """Get the entry cell of the maze.
-
-        Returns:
-            Cell: The entry point cell.
-
-        Raises:
-            ValueError: If entry cell not found.
-        """
         entry = self.get_cell(self.__entry)
         if entry:
             return entry
@@ -348,14 +257,6 @@ class Maze:
 
     @property
     def exit(self) -> Cell:
-        """Get the exit cell of the maze.
-
-        Returns:
-            Cell: The exit point cell.
-
-        Raises:
-            ValueError: If exit cell not found.
-        """
         exit = self.get_cell(self.__exit)
         if exit:
             return exit
@@ -364,90 +265,40 @@ class Maze:
 
     @property
     def cell_size(self) -> tuple[int, int]:
-        """Get the size of each maze cell.
-
-        Returns:
-            tuple: Cell dimensions (width, height).
-        """
         return self.__cell_size
 
     @property
     def maze_lst(self) -> list[list[Cell]]:
-        """Get the 2D list of all maze cells.
-
-        Returns:
-            list[list[Cell]]: Grid of cells.
-        """
         return self.__maze_lst
 
     @property
     def soluce(self) -> list[Cell]:
-        """Get the list of cells forming the solution path.
-
-        Returns:
-            list[Cell]: Cells in the solution path.
-        """
         return self.__soluce
 
     @property
     def wall_thickness(self) -> int:
-        """Get the thickness of maze walls in pixels.
-
-        Returns:
-            int: Wall thickness.
-        """
         return self.__wall_thickness
 
     @property
     def gap(self) -> tuple[int, int]:
-        """Get the centering offset for the maze.
-
-        Returns:
-            tuple: Gap offset (x, y).
-        """
         return self.__gap
 
     @property
     def color(self) -> tuple[int, int, int]:
-        """Get the maze color.
-
-        Returns:
-            tuple: RGB color tuple.
-        """
         return self.__color
 
     @color.setter
     def color(self, value: tuple[int, int, int]) -> None:
-        """Set the maze color.
-
-        Args:
-            value (tuple): RGB color tuple.
-        """
         self.__color = value
 
     @property
     def display_soluce(self) -> bool:
-        """Get whether solution path is displayed.
-
-        Returns:
-            bool: True if solution is shown, False otherwise.
-        """
         return self.__display_soluce
 
     @property
     def is_maze_generated(self) -> bool:
-        """Get whether maze generation is complete.
-
-        Returns:
-            bool: True if generation finished, False otherwise.
-        """
         return self.__is_maze_generated
 
     @is_maze_generated.setter
     def is_maze_generated(self, value: bool) -> None:
-        """Set maze generation completion status.
-
-        Args:
-            value (bool): True if generation is complete.
-        """
         self.__is_maze_generated = value

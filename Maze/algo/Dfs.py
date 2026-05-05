@@ -1,9 +1,3 @@
-"""Depth-first search maze generation module.
-
-Implements the DFS algorithm for generating random mazes by randomly
-choosing unvisited neighbors and carving passages.
-"""
-
 from Maze.Maze import Maze
 from Maze.Cell import Cell
 
@@ -12,24 +6,10 @@ from typing import Optional
 
 
 class DFS:
-    """Depth-first search maze generation.
-
-    Generates a random maze using the depth-first search algorithm
-    by recursively visiting unvisited neighbors and removing walls
-    between cells.
-
-    Attributes:
-        _DFS__visited (list[Cell]): List of visited cells.
-        _DFS__maze (Maze): The maze being generated.
-        _DFS__cell (Cell): Current cell in the generation process.
-    """
+    """Generate a maze using depth-first search."""
 
     def __init__(self, maze: Maze, seed: Optional[int] = None) -> None:
-        """Initialize DFS maze generator.
-
-        Args:
-            maze (Maze): The maze instance to generate.
-        """
+        """Initialize the generator."""
         self.__visited: list[Cell] = []
         self.__maze = maze
         if maze.entry:
@@ -38,12 +18,7 @@ class DFS:
             random.seed(seed)
 
     def get_instruct(self) -> Optional["Instruct"]:
-        """Get next instruction for maze generation step.
-
-        Returns:
-            Optional[Instruct]: An instruction for wall removal, or None
-                if generation is complete.
-        """
+        """Return the next wall-removal instruction."""
         self.__visited.append(self.__cell)
         if self.__cell == self.__maze.exit:
             index = self.__visited.index(self.__cell)
@@ -63,11 +38,7 @@ class DFS:
         return instruct
 
     def get_av_neigh(self) -> list["Instruct"]:
-        """Get all available unvisited neighbors as instructions.
-
-        Returns:
-            list[Instruct]: List of instructions for unvisited neighbors.
-        """
+        """Return instructions for available neighbors."""
         neigh_list = self.__get_neigh()
         av_neighs = []
         for wall, neigh in neigh_list.items():
@@ -81,12 +52,7 @@ class DFS:
         return av_neighs
 
     def __get_neigh(self) -> dict[str, Cell]:
-        """Get all adjacent cells in four cardinal directions.
-
-        Returns:
-            dict[str, Cell]: Dictionary mapping directions ('n', 's', 'e', 'w')
-                to adjacent Cell objects.
-        """
+        """Return adjacent cells by wall direction."""
         neigh_list: dict[str, Cell] = {}
         infos: dict[str, tuple[int, int]] = {
             'n': (0, -1),
@@ -103,14 +69,7 @@ class DFS:
         return neigh_list
 
     def __opposite_wall(self, wall: str) -> str:
-        """Get the opposite wall direction.
-
-        Args:
-            wall (str): Wall direction ('n', 's', 'e', 'w').
-
-        Returns:
-            str: The opposite direction or 'None' if invalid.
-        """
+        """Return the opposite wall direction."""
         if wall == 'n':
             return 's'
         elif wall == 's':
@@ -123,35 +82,12 @@ class DFS:
             return "None"
 
 
-"""Instruction class for maze wall removal.
-
-Represents an instruction to remove a wall between two adjacent cells.
-"""
-
-
 class Instruct:
-    """Represents a maze generation instruction.
-
-    Contains information about a wall to remove between two adjacent cells
-    during depth-first search maze generation.
-
-    Attributes:
-        _Instruct__cell (Cell): Current cell.
-        _Instruct__wall (str): Wall identifier on current cell.
-        _Instruct__neigh (Cell): Neighbor cell.
-        _Instruct__neigh_wall (str): Wall identifier on neighbor cell.
-    """
+    """Store a wall-removal instruction."""
 
     def __init__(self, cell: Cell, wall: str,
                  neigh: Cell, neigh_wall: str) -> None:
-        """Initialize a maze generation instruction.
-
-        Args:
-            cell (Cell): Current cell.
-            wall (str): Wall identifier on current cell ('n', 's', 'e', 'w').
-            neigh (Cell): Adjacent neighbor cell.
-            neigh_wall (str): Wall identifier on neighbor cell.
-        """
+        """Initialize the instruction."""
         self.__cell = cell
         self.__wall = wall
         self.__neigh = neigh
@@ -159,72 +95,32 @@ class Instruct:
 
     @property
     def _cell(self) -> Cell:
-        """Get the current cell.
-
-        Returns:
-            Cell: The current cell in the instruction.
-        """
         return self.__cell
 
     @_cell.setter
     def _cell(self, value: Cell) -> None:
-        """Set the current cell.
-
-        Args:
-            value (Cell): The new current cell.
-        """
         self.__cell = value
 
     @property
     def _wall(self) -> str:
-        """Get the wall identifier.
-
-        Returns:
-            str: Wall direction ('n', 's', 'e', or 'w').
-        """
         return self.__wall
 
     @_wall.setter
     def _wall(self, value: str) -> None:
-        """Set the wall identifier.
-
-        Args:
-            value (str): Wall direction ('n', 's', 'e', or 'w').
-        """
         self.__wall = value
 
     @property
     def _neigh(self) -> Cell:
-        """Get the neighbor cell.
-
-        Returns:
-            Cell: The neighbor cell in the instruction.
-        """
         return self.__neigh
 
     @_neigh.setter
     def _neigh(self, value: Cell) -> None:
-        """Set the neighbor cell.
-
-        Args:
-            value (Cell): The new neighbor cell.
-        """
         self.__neigh = value
 
     @property
     def _neigh_wall(self) -> str:
-        """Get the neighbor's wall identifier.
-
-        Returns:
-            str: Wall direction on neighbor ('n', 's', 'e', or 'w').
-        """
         return self.__neigh_wall
 
     @_neigh_wall.setter
     def _neigh_wall(self, value: str) -> None:
-        """Set the neighbor's wall identifier.
-
-        Args:
-            value (str): Wall direction on neighbor ('n', 's', 'e', or 'w').
-        """
         self.__neigh_wall = value

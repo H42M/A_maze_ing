@@ -1,9 +1,3 @@
-"""Button rendering module.
-
-Provides Button, ToggleButton, and SelectButton classes for interactive
-UI elements with hover effects, shadows, and rounded borders.
-"""
-
 from render.RenderObj import RenderObj
 import pygame
 from typing import Optional, Union, Any
@@ -11,19 +5,7 @@ from collections.abc import Callable
 
 
 class Button(RenderObj):
-    """Base button class with hover effects and shadow.
-
-    Provides a base button with rounded corners, shadow effect, hover
-    brightness change, and callback execution.
-
-    Attributes:
-        BORDER_RADIUS (int): Radius for rounded corners.
-        BORDER_WIDTH (int): Width of button border.
-        DEFAULT_COLOR (tuple): Default button color.
-        SHADOW_COLOR (tuple): Color of drop shadow.
-        HOVER_BRIGHTNESS (int): Brightness increase on hover.
-        BORDER_DARKEN (int): Amount to darken border.
-    """
+    """Render an interactive button."""
 
     BORDER_RADIUS = 8
     BORDER_WIDTH = 2
@@ -43,16 +25,7 @@ class Button(RenderObj):
         callback: Optional[Union[Callable[..., Any],
                                  list[Callable[..., Any]]]] = None,
     ) -> None:
-        """Initialize a button.
-
-        Args:
-            text (str): Button display text.
-            pos (Optional[tuple[int, int]]): Button position (x, y).
-            size (Optional[tuple[int, int]]): Button size (width, height).
-            color (Optional[tuple[int, int, int]]): Button color as RGB tuple.
-            callback (Optional[Union[Callable, list[Callable]]]): Function(s)
-                to call when button is clicked.
-        """
+        """Initialize the button."""
         super().__init__(pos, size, color or self.DEFAULT_COLOR)
         self._text = text
         self._callback = callback
@@ -67,64 +40,30 @@ class Button(RenderObj):
 
     def _brighten(self, color: tuple[int, int, int], amount: int
                   ) -> tuple[int, int, int]:
-        """Brighten an RGB color by a given amount.
-
-        Args:
-            color (tuple[int, int, int]): RGB color to brighten.
-            amount (int): Amount to brighten each channel.
-
-        Returns:
-            tuple[int, int, int]: Brightened RGB color (capped at 255).
-        """
+        """Return a brighter RGB color."""
         r, g, b = color
         return (min(255, r + amount), min(255, g + amount),
                 min(255, b + amount))
 
     def _darken(self, color: tuple[int, int, int], amount: int
                 ) -> tuple[int, int, int]:
-        """Darken an RGB color by a given amount.
-
-        Args:
-            color (tuple[int, int, int]): RGB color to darken.
-            amount (int): Amount to darken each channel.
-
-        Returns:
-            tuple[int, int, int]: Darkened RGB color (capped at 0).
-        """
+        """Return a darker RGB color."""
         r, g, b = color
         return (max(0, r - amount), max(0, g - amount), max(0, b - amount))
 
     def _apply_hover(self, color: tuple[int, int, int]
                      ) -> tuple[int, int, int]:
-        """Apply hover brightness effect to a color.
-
-        Args:
-            color (tuple[int, int, int]): Base color.
-
-        Returns:
-            tuple[int, int, int]: Brightened color if hovering, else original.
-        """
+        """Apply the hover effect to a color."""
         return (self._brighten(color, self.HOVER_BRIGHTNESS)
                 if self._is_hovered else color)
 
     def _get_border_color(self, base_color: tuple[int, int, int]
                           ) -> tuple[int, int, int]:
-        """Get a darker color for button border.
-
-        Args:
-            base_color (tuple[int, int, int]): Base button color.
-
-        Returns:
-            tuple[int, int, int]: Darkened border color.
-        """
+        """Return the button border color."""
         return self._darken(base_color, self.BORDER_DARKEN)
 
     def _draw_shadow(self, screen: pygame.Surface) -> None:
-        """Draw drop shadow beneath the button.
-
-        Args:
-            screen (pygame.Surface): The display surface to draw on.
-        """
+        """Draw the button shadow."""
         offset = 4 if self._is_hovered else 2
         shadow = pygame.Surface(self._size)
         shadow.set_colorkey((0, 0, 0))
@@ -143,13 +82,7 @@ class Button(RenderObj):
         fill_color: tuple[int, int, int],
         border_color: tuple[int, int, int],
     ) -> None:
-        """Draw a rounded rectangle with fill and border.
-
-        Args:
-            surface (pygame.Surface): Surface to draw on.
-            fill_color (tuple[int, int, int]): Fill color RGB.
-            border_color (tuple[int, int, int]): Border color RGB.
-        """
+        """Draw the button body."""
         rect = (0, 0, *self._size)
 
         pygame.draw.rect(surface, fill_color, rect,
@@ -165,14 +98,7 @@ class Button(RenderObj):
         text: str,
         font: pygame.font.Font | None = None,
     ) -> None:
-        """Draw centered text on a surface.
-
-        Args:
-            surface (pygame.Surface): Surface to draw text on.
-            text (str): Text to render.
-            font (Optional[pygame.font.Font]): Font to use. If None,
-            uses default.
-        """
+        """Draw centered text."""
         font = font or self._font
         text_surf = font.render(text, True, self._text_color)
         surface.blit(
@@ -182,13 +108,7 @@ class Button(RenderObj):
         )
 
     def _resolve_color(self) -> tuple[int, int, int]:
-        """Get the color to use for current frame.
-
-        Can be overridden by subclasses for different state logic.
-
-        Returns:
-            tuple[int, int, int]: The color to render with.
-        """
+        """Return the current button color."""
         base = (self._hover_color if self._is_hovered and self._hover_color
                 else self._color)
         if not base:
@@ -196,11 +116,7 @@ class Button(RenderObj):
         return self._apply_hover(base)
 
     def _blit_to_screen(self, screen: pygame.Surface) -> None:
-        """Copy internal surface to screen at button position.
-
-        Args:
-            screen (pygame.Surface): The display surface to blit to.
-        """
+        """Blit the button surface to the screen."""
         if self._surface:
             screen.blit(self._surface, (int(self._pos.x), int(self._pos.y)))
 
@@ -209,11 +125,7 @@ class Button(RenderObj):
     # ------------------------------------------------------------------ #
 
     def render(self, screen: pygame.Surface) -> None:
-        """Render the current buttons's state.
-
-        Args:
-            screen (pygame.Surface): Render Screen
-        """
+        """Render the button."""
         color = self._resolve_color()
         if self._surface:
             self._draw_shadow(screen)
@@ -227,37 +139,19 @@ class Button(RenderObj):
     # ------------------------------------------------------------------ #
 
     def _get_rect(self) -> pygame.Rect:
-        """Get the button's rectangular bounds.
-
-        Returns:
-            pygame.Rect: Rectangle representing button position and size.
-        """
+        """Return the button bounds."""
         return pygame.Rect(int(self._pos.x), int(self._pos.y), *self._size)
 
     def is_clicked(self, mouse_pos: tuple[int, int]) -> bool:
-        """Check if mouse position is within button bounds.
-
-        Args:
-            mouse_pos (tuple[int, int]): Mouse position (x, y).
-
-        Returns:
-            bool: True if position is within button, False otherwise.
-        """
+        """Return whether the mouse position clicks the button."""
         return self._get_rect().collidepoint(mouse_pos)
 
     def update_hover(self, mouse_pos: tuple[int, int]) -> None:
-        """Update hover state based on mouse position.
-
-        Args:
-            mouse_pos (tuple[int, int]): Current mouse position (x, y).
-        """
+        """Update the hover state."""
         self._is_hovered = self._get_rect().collidepoint(mouse_pos)
 
     def execute(self) -> None:
-        """Execute the button's callback function(s).
-
-        Calls all registered callbacks for this button.
-        """
+        """Run the button callback."""
         if not self._callback:
             return
         callbacks = (self._callback if isinstance(self._callback, list)
@@ -270,37 +164,19 @@ class Button(RenderObj):
     # ------------------------------------------------------------------ #
 
     def set_callback(self, callback: Callable[..., Any]) -> None:
-        """Set or replace the button's callback function.
-
-        Args:
-            callback (Callable): Function to call when clicked.
-        """
+        """Set the button callback."""
         self._callback = callback
 
     def set_hover_color(self, color: tuple[int, int, int]) -> None:
-        """Set custom hover color.
-
-        Args:
-            color (tuple[int, int, int]): Hover color as RGB tuple.
-        """
+        """Set the hover color."""
         self._hover_color = color
 
     @property
     def text(self) -> str:
-        """Get the current button text.
-
-        Return:
-            str: current button text.
-        """
         return self._text
 
     @text.setter
     def text(self, value: str) -> None:
-        """Set the current button text.
-
-        Args:
-            value (str): current button text.
-        """
         self._text = value
 
 
@@ -309,22 +185,8 @@ class Button(RenderObj):
 # ------------------------------------------------------------------ #
 
 
-"""Toggle button subclass.
-
-A button that changes color based on an external boolean state.
-"""
-
-
 class ToggleButton(Button):
-    """Button with state-dependent color.
-
-    Displays different colors based on a callback that returns a boolean
-    state. Red when disabled, green when enabled.
-
-    Attributes:
-        DEFAULT_DISABLE_COLOR (tuple): Color when state is False.
-        DEFAULT_ENABLE_COLOR (tuple): Color when state is True.
-    """
+    """Render a button with state-dependent color."""
 
     DEFAULT_DISABLE_COLOR = (200, 50, 50)
     DEFAULT_ENABLE_COLOR = (50, 180, 50)
@@ -339,17 +201,7 @@ class ToggleButton(Button):
         pos: Optional[tuple[int, int]] = None,
         size: Optional[tuple[int, int]] = None,
     ) -> None:
-        """Initialize a toggle button.
-
-        Args:
-            text (str): Button text.
-            callback (Callable): Function to call when clicked.
-            callback_state (Callable[[], bool]): Function returning state.
-            disable_color (Optional[tuple]): Color when state is False.
-            enable_color (Optional[tuple]): Color when state is True.
-            pos (Optional[tuple[int, int]]): Button position.
-            size (Optional[tuple[int, int]]): Button size.
-        """
+        """Initialize the toggle button."""
         super().__init__(text, pos, size, callback=callback)
         self._callback_state = callback_state
         self._disable_color = disable_color or self.DEFAULT_DISABLE_COLOR
@@ -361,22 +213,8 @@ class ToggleButton(Button):
         return self._apply_hover(base)
 
 
-"""Select button subclass.
-
-A cyclic button that iterates through a list of options.
-"""
-
-
 class SelectButton(Button):
-    """Cyclic option selector button.
-
-    Cycles through a list of options on each click. Displays the button
-    title at the top and selected option at the bottom.
-
-    Attributes:
-        _options (list[str]): List of available options.
-        selected_opt (int): Index of currently selected option.
-    """
+    """Render a cyclic option selector."""
 
     def __init__(
         self,
@@ -386,17 +224,7 @@ class SelectButton(Button):
         pos: Optional[tuple[int, int]] = None,
         size: Optional[tuple[int, int]] = None,
     ) -> None:
-        """Initialize a select button.
-
-        Args:
-            text (str): Button title text.
-            callback (Callable[[str], Any]): Function called with
-            selected value.
-
-            options (list[str]): List of options to cycle through.
-            pos (Optional[tuple[int, int]]): Button position.
-            size (Optional[tuple[int, int]]): Button size.
-        """
+        """Initialize the select button."""
         super().__init__(text, pos, size, color=(50, 100, 180),
                          callback=callback)
         self._options = options
@@ -405,11 +233,6 @@ class SelectButton(Button):
 
     @property
     def selected_value(self) -> str:
-        """Get the currently selected option.
-
-        Returns:
-            str: The currently selected option string.
-        """
         return self._options[self.selected_opt]
 
     def _resolve_color(self) -> tuple[int, int, int]:
@@ -418,11 +241,7 @@ class SelectButton(Button):
         return self._apply_hover(self._color)
 
     def render(self, screen: pygame.Surface) -> None:
-        """Render the current buttons's state.
-
-        Args:
-            screen (pygame.Surface): Render Screen
-        """
+        """Render the select button."""
         if not self._surface:
             return
         color = self._resolve_color()
@@ -448,11 +267,7 @@ class SelectButton(Button):
         self._blit_to_screen(screen)
 
     def execute(self) -> None:
-        """Cycle to next option and call callback with new selection.
-
-        Moves to the next option in the list and calls the callback with
-        the newly selected option string.
-        """
+        """Select the next option and run the callback."""
         if not self._callback:
             return
         if callable(self._callback):
