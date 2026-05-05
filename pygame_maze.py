@@ -16,7 +16,7 @@ from Config.ThemeManager import ThemeManager
 def pygame_maze() -> None:
     """Launch pygame maze."""
     try:
-        parser = ParserConfig('settings.txt')
+        parser = ParserConfig('config.txt')
         config = parser.init_config()
 
         render = Render()
@@ -136,7 +136,7 @@ def pygame_maze() -> None:
             if maze.generate_anim():
                 maze.solve()
                 ouput = Output(maze)
-                ouput.write()
+                ouput.write(config.output_file)
 
         maze.render(render.screen)
 

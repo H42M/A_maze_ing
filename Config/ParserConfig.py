@@ -13,9 +13,9 @@ class ParserConfig:
         """Initialize the parser."""
         self.__file_path = file_path
         self.__expected_data = [
-            'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'PERFECT'
+            'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'PERFECT', 'OUTPUT_FILE'
         ]
-        self.__parsed_data: dict[str, Union[int, tuple[int, int]]] = {}
+        self.__parsed_data: dict[str, Union[int, tuple[int, int], str]] = {}
 
     def init_config(self) -> "Config":
         """Return a validated Config object."""
@@ -31,9 +31,9 @@ class ParserConfig:
             height=cast(int, self.__parsed_data['HEIGHT']),
             perfect=cast(bool, self.__parsed_data['PERFECT']),
             exit=cast(tuple[int, int], self.__parsed_data['EXIT']),
-            entry=cast(tuple[int, int], self.__parsed_data['ENTRY'])
+            entry=cast(tuple[int, int], self.__parsed_data['ENTRY']),
+            output_file=cast(str, self.__parsed_data['OUTPUT_FILE'])
         )
-
         return config
 
     def __parse_and_check(self) -> None:
@@ -46,7 +46,7 @@ class ParserConfig:
 
     def __parse(self) -> None:
         """Parse key-value pairs from the file."""
-        parsed_file: dict[str, Union[int, tuple[int, int]]] = {}
+        parsed_file: dict[str, Union[int, tuple[int, int], str]] = {}
 
         with open(self.__file_path, 'r') as f:
             for line in f:
@@ -71,8 +71,10 @@ class ParserConfig:
                 elif key == 'PERFECT':
                     parsed_file[key] = (True if value.upper() == 'TRUE'
                                         else False)
-                else:
+                elif key == 'WIDTH' or key == 'HEIGHT':
                     parsed_file[key] = int(value)
+                else:
+                    parsed_file[key] = value
 
         self.__parsed_data = parsed_file
 

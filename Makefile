@@ -1,7 +1,10 @@
-build:
+install:
 	python3 -m venv .venv
 	.venv/bin/python -m pip install --upgrade pip
 	.venv/bin/pip install -r requirements.txt
+
+debug:
+	.venv/bin/python -m pdb a_maze_ing.py
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +
@@ -24,12 +27,4 @@ lint-strict:
 
 run: build
 	.venv/bin/python a_maze_ing.py
-	make clean
-
-run-pygame: build
-	.venv/bin/python pygame_maze.py
-	make clean
-
-run-terminal: build
-	.venv/bin/python terminal_maze.py
 	make clean

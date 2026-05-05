@@ -8,9 +8,9 @@ class Output:
         """Initialize the exporter."""
         self.__maze = maze
 
-    def write(self) -> None:
+    def write(self, path: str) -> None:
         """Write the maze output file."""
-        with open('output.txt', 'w') as f:
+        with open(path, 'w') as f:
 
             f.write(self.__get_hexa_maze())
             f.write("\n")
