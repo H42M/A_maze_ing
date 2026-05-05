@@ -1,6 +1,3 @@
-"""A_Maze_Ing menu selection."""
-
-
 from terminal_maze import generate_maze
 from pygame_maze import pygame_maze
 import os
@@ -36,23 +33,19 @@ class Option_menu:
 
     @property
     def val(self) -> int:
-        """Return option value."""
         return self.__val
 
     @val.setter
     def val(self, value: int) -> None:
-        """Set option value."""
         self.__val = value
 
     @property
     def display_str(self) -> str:
-        """Return display str."""
         self.__set_display_str()
         return self.__display_str
 
     @property
     def current_option(self) -> int:
-        """Return selected option."""
         return self.__current_option
 
 
