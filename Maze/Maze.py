@@ -33,8 +33,8 @@ class Maze:
                  exit_tex: Optional[Union[
                      tuple[int, int, int], pygame.Surface]] = None,
                  sol_tex: Optional[Union[
-                     tuple[int, int, int], pygame.Surface]] = None
-                 ) -> None:
+                     tuple[int, int, int], pygame.Surface]] = None,
+                 seed: Optional[int] = None) -> None:
         """Initialize a maze with configuration and textures.
 
         Args:
@@ -65,7 +65,7 @@ class Maze:
         self.__is_maze_generated = False
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
-        self.__dfs = DFS(self)
+        self.__dfs = DFS(self, seed)
 
         self.__soluce: list[Cell] = []
         self.__display_soluce = False
@@ -191,7 +191,6 @@ class Maze:
         from Maze.algo.AStar import A_Star
         astar = A_Star(self)
         self.__soluce = astar.solve()
-        print("Soluce: ")
         for cell in self.__soluce:
             cell.display_soluce = self.__display_soluce
         if self.__sol_tex and self.__exit_tex and self.__wall_tex:
