@@ -18,7 +18,9 @@ from Errors import ConfigError
 from Config.GameState import GameState
 from Config.ThemeManager import ThemeManager
 
+
 def pygame_maze() -> None:
+    """Launch pygame maze."""
     try:
         parser = ParserConfig('settings.txt')
         config = parser.init_config()
