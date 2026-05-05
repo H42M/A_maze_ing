@@ -1,3 +1,5 @@
 *__pycache__*
 *.venv*
 *output.txt
+.flake8
+.vscode

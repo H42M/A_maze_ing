@@ -8,12 +8,14 @@ from typing import Optional
 class DFS:
     """Generate a maze using depth-first search."""
 
-    def __init__(self, maze: Maze) -> None:
+    def __init__(self, maze: Maze, seed: Optional[int] = None) -> None:
         """Initialize the generator."""
         self.__visited: list[Cell] = []
         self.__maze = maze
         if maze.entry:
             self.__cell = maze.entry
+        if seed:
+            random.seed(seed)
 
     def get_instruct(self) -> Optional["Instruct"]:
         """Return the next wall-removal instruction."""
