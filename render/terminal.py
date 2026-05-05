@@ -89,7 +89,9 @@ def render_maze(maze: Maze, entry: Cell, exit: Cell,
         for x, cell in enumerate(row):
             cur_cell = maze.get_cell((x, y))
             if cur_cell:
-                if cur_cell == entry:
+                if cur_cell.is42:
+                    content = f"{wall_color}███{reset_color}"
+                elif cur_cell == entry:
                     content = " E "
                 elif cur_cell == exit:
                     content = " X "
