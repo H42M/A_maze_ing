@@ -7,11 +7,15 @@ from typing import Optional
 import time
 
 
-def generate_maze(seed: Optional[int] = None, solve: bool = True,
-                  animate: float = 0.05
+def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
+                  animate: float = 0.05, color: str = "\033[37m"
                   ) -> None:
     """Generate complete ascii maze."""
-    config = ParserConfig('settings.txt').init_config()
+
+    PATH_COLOR = "\033[36m"
+    RESET = "\033[0m"
+
+    config = ParserConfig('config.txt').init_config()
     maze = Maze(config, seed=seed)
     maze.solve()
 
@@ -23,9 +27,15 @@ def generate_maze(seed: Optional[int] = None, solve: bool = True,
             maze_over = True
             if not config.perfect:
                 maze.unperfect()
-            if solve:
-                maze.solve()
-        ascii_maze = render_maze(maze, maze.entry, maze.exit, maze.soluce)
+            maze.solve()
+
+        if display_solve:
+            soluce = maze.soluce
+        else:
+            soluce = []
+        ascii_maze = render_maze(maze, maze.entry, maze.exit, soluce,
+                                 wall_color=color, path_color=PATH_COLOR,
+                                 reset_color=RESET)
 
         os.system('clear')
         print(ascii_maze)

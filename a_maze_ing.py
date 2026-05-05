@@ -65,28 +65,44 @@ def select_menu(options: list[Option_menu]) -> int:
 
 
 if __name__ == "__main__":
+    colors = {
+        0: ["WHITE", "\033[37m"],
+        1: ["YELLOW", "\033[33m"],
+        2: ["GREEN", "\033[32m"],
+        3: ["BLUE", "\033[34m"],
+        4: ["RED", "\033[31m"],
+    }
     options = [
         Option_menu('Re-generate a new random maze', 0),
         Option_menu('Re-Generate a new maze with seed', 1),
         Option_menu('% path from entry to exit', 2, ['Show', 'Hide']),
         Option_menu('% animation', 3, ['Disable', 'Toggle']),
-        Option_menu('Rotate maze colors: %', 4, ['RED', 'GREEN', 'BLUE', 'WHITE']),
+        Option_menu('Rotate maze colors (Current color: %)', 4, [color[0] for color in colors.values()]),
         Option_menu('Open with pygame', 5),
         Option_menu('Quit', 6),
     ]
     opt = 0
     solve = False
     animate = 0.05
+    selected_color = colors[0][1]
 
     while (opt != len(options) - 1):
         opt = select_menu(options)
         if opt == 0:
-            generate_maze(solve=solve, animate=animate)
+            try:
+                generate_maze(display_solve=solve, animate=animate, color=selected_color)
+            except Exception as e:
+                print(f'Error: {e}')
+                input('Press Enter to continue')
 
         if opt == 1:
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
-                generate_maze(int(seed), solve=solve, animate=animate)
+                try:
+                    generate_maze(int(seed), display_solve=solve, animate=animate, color=selected_color)
+                except Exception as e:
+                    print(f'Error: {e}')
+                    print('Press Enter to continue')
             else:
                 print('Invalid Seed provided')
                 input('Press Enter to return to the menu')
@@ -106,6 +122,10 @@ if __name__ == "__main__":
                     animate = 0.05
             else:
                 animate = 0.0
+        
+        if opt == 4:
+            options[4].switch_option()
+            selected_color = colors[options[4].current_option][1]
 
         if opt == 5:
             pygame_maze()
