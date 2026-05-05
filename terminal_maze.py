@@ -27,8 +27,6 @@ def generate_maze(seed: Optional[int] = None, solve: bool = True,
                 maze.unperfect()
             if solve:
                 maze.solve()
-                print('Maze Solved')
-                input('Wait!')
         ascii_maze = render_maze(maze, maze.entry, maze.exit, maze.soluce)
 
         os.system('clear')

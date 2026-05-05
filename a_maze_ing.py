@@ -77,7 +77,7 @@ if __name__ == "__main__":
         Option_menu('Re-Generate a new maze with seed', 1),
         Option_menu('% path from entry to exit', 2, ['Show', 'Hide']),
         Option_menu('% animation', 3, ['Disable', 'Toggle']),
-        Option_menu('Rotate maze colors', 4),
+        Option_menu('Rotate maze colors: %', 4, ['RED', 'GREEN', 'BLUE', 'WHITE']),
         Option_menu('Open with pygame', 5),
         Option_menu('Quit', 6),
     ]
