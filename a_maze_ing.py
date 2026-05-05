@@ -39,11 +39,12 @@ class Option_menu:
         return self.__display_str
 
     @property
-    def _current_option(self):
+    def current_option(self):
         return self.__current_option
 
 
 def select_menu(options: list[Option_menu]) -> int:
+    """Print menu selection and return user input"""
     os.system('clear')
     print("=== A-Maze-Ing ===")
     [print(f"{i}. {opt.display_str}") for i, opt in enumerate(options)]
@@ -61,23 +62,43 @@ if __name__ == "__main__":
         Option_menu('Re-generate a new random maze', 0),
         Option_menu('Re-Generate a new maze with seed', 1),
         Option_menu('% path from entry to exit', 2, ['Show', 'Hide']),
-        Option_menu('animation', 3, ['Show' 'Hide']),
+        Option_menu('% animation', 3, ['Disable', 'Toggle']),
         Option_menu('Rotate maze colors', 4),
         Option_menu('Open with pygame', 5),
         Option_menu('Quit', 6),
     ]
     opt = 0
+    solve = False
+    animate = 0.05
+
     while (opt != len(options) - 1):
         opt = select_menu(options)
         if opt == 0:
-            generate_maze()
+            generate_maze(solve=solve, animate=animate)
+
         if opt == 1:
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
-                generate_maze(int(seed))
+                generate_maze(int(seed), solve=solve, animate=animate)
             else:
                 print('Invalid Seed provided')
                 input('Press Enter to return to the menu')
+
+        if opt == 2:
+            options[2].switch_option()
+            solve = not solve
+        
+        if opt == 3:
+            options[3].switch_option()
+            if options[3].current_option == 0:
+                try:
+                    animate = float(input('Enter animation speed (ex: 0.05): '))
+                except Exception:
+                    print('Animation speed must be valid float (ex: 0.01)')
+                    animate = 0.05
+            else:
+                animate = 0.0
+
         if opt == 5:
             pygame_maze()
 

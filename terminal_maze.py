@@ -8,7 +8,8 @@ import os
 from typing import Optional
 import time
 
-def generate_maze(seed: Optional[int] = None, solve: bool = True
+def generate_maze(seed: Optional[int] = None, solve: bool = True,
+                  animate = 0.05
                   ) -> None:
     """Generate complete ascii maze"""
     config = ParserConfig('settings.txt').init_config()
@@ -25,11 +26,13 @@ def generate_maze(seed: Optional[int] = None, solve: bool = True
                 maze.unperfect()
             if solve:
                 maze.solve()
+                print('Maze Solved')
+                input('Wait!')
         ascii_maze = render_maze(maze, maze.entry, maze.exit, maze.soluce)
 
         os.system('clear')
         print(ascii_maze)
-        time.sleep(0.05)
+        time.sleep(animate)
         if maze_over:
             output = Output(maze)
             output.write()

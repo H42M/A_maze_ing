@@ -191,7 +191,6 @@ class Maze:
         from Maze.algo.AStar import A_Star
         astar = A_Star(self)
         self.__soluce = astar.solve()
-        print("Soluce: ")
         for cell in self.__soluce:
             cell.display_soluce = self.__display_soluce
         if self.__sol_tex and self.__exit_tex and self.__wall_tex:
