@@ -12,7 +12,7 @@ clean:
 
 fclean:
 	make clean
-	rm output.txt
+	rm maze.txt
 	rm -rf .venv
 
 lint:

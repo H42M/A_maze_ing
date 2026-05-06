@@ -4,6 +4,7 @@ from Config.Config import Config
 from Maze.Cell import Cell
 from render.RenderObj import RenderObj
 from Config.GameState import GameState
+from Maze.logo_42 import clear_42_logo, non_42_cells_are_connected
 
 from Errors import MazeError
 from random import randint
@@ -225,7 +226,22 @@ class Maze:
                     cell = self.get_cell((cell.x + 1, cell.y))
                     if cell:
                         cell.is42 = True
-        self.check_entry_exit_in_42()
+
+        if self.entry.is42 or self.exit.is42:
+            clear_42_logo(self)
+            self.__warnings.append(
+                "Could not display the 42 pattern because it overlaps "
+                "the entry or exit."
+            )
+            return
+
+        if not non_42_cells_are_connected(self):
+            clear_42_logo(self)
+            self.__warnings.append(
+                "Maze is too small to display the 42 pattern without "
+                "disconnecting the maze."
+            )
+            return
 
     def check_entry_exit_in_42(self) -> None:
         for row in self.__maze_lst:
@@ -280,7 +296,7 @@ class Maze:
         if entry:
             return entry
         else:
-            raise ValueError("Entry cell has not found")
+            raise ValueError("Entry cell is not inside maze limits")
 
     @property
     def exit(self) -> Cell:
@@ -288,7 +304,7 @@ class Maze:
         if exit:
             return exit
         else:
-            raise ValueError("Exit cell has not found")
+            raise ValueError("Exit cell is not inside maze limits")
 
     @property
     def cell_size(self) -> tuple[int, int]:
