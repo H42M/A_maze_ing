@@ -75,7 +75,7 @@ def select_menu(options: list[Option_menu],
 
         try:
             choice = int(input(f'Choose (0-{len(options) - 1}): '))
-            if choice < 0 or choice > len(options):
+            if choice < 0 or choice >= len(options):
                 raise ValueError()
             return choice
         except ValueError:

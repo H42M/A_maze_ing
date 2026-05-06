@@ -16,7 +16,7 @@ class Config(BaseModel):
         """Validate entry and exit coordinates."""
         for coordinate in [self.exit, self.entry]:
             x, y = coordinate
-            if x < 0 or x > self.width or y < 0 or y > self.height:
+            if x < 0 or x >= self.width or y < 0 or y >= self.height:
                 raise ValueError(f"Invalid Coordinates ({x}, {y})")
         if self.exit == self.entry:
             raise ValueError("Exit and Entry cannot be placed "

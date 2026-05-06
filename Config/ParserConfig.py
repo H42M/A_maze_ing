@@ -69,8 +69,12 @@ class ParserConfig:
 
                     parsed_file[key] = (x, y)
                 elif key == 'PERFECT':
-                    parsed_file[key] = (True if value.upper() == 'TRUE'
-                                        else False)
+                    if value.upper() == "TRUE":
+                        parsed_file[key] = True
+                    elif value.upper() == "FALSE":
+                        parsed_file[key] = False
+                    else:
+                        raise ValueError("PERFECT must be True or False")
                 elif key == 'WIDTH' or key == 'HEIGHT':
                     parsed_file[key] = int(value)
                 else:

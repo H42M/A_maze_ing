@@ -14,9 +14,9 @@ class Output:
 
             f.write(self.__get_hexa_maze())
             f.write("\n")
-            f.write(f"{self.__maze.entry.pos}")
+            f.write(f"{self.__maze.entry.x},{self.__maze.entry.y}")
             f.write("\n")
-            f.write(f"{self.__maze.exit.pos}")
+            f.write(f"{self.__maze.exit.x},{self.__maze.exit.y}")
             f.write("\n")
             f.write(self.__get_soluce_as_str())
             f.write("\n")

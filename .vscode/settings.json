@@ -16,15 +16,6 @@
   "mypy-type-checker.reportingScope": "workspace",
   "mypy-type-checker.showNotifications": "off",
 
-  "flake8.path": [
-    "${workspaceFolder}/.venv/bin/python",
-    "-m",
-    "flake8"
-  ],
-  "flake8.args": [
-    "."
-  ],
-
   "python.analysis.extraPaths": [
     "${workspaceFolder}"
   ]
