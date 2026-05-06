@@ -25,6 +25,6 @@ lint-strict:
 	mypy . --exclude '\.venv|\.env' --strict
 	make clean
 
-run: build
+run: install
 	.venv/bin/python a_maze_ing.py
 	make clean
