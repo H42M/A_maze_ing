@@ -2,7 +2,9 @@ from terminal_maze import generate_maze
 from pygame_maze import pygame_maze
 import os
 from typing import Optional
+from Config.ParserConfig import ParserConfig
 import sys
+from math import sqrt
 import os.path
 
 
@@ -89,6 +91,7 @@ if __name__ == "__main__":
     if not os.path.isfile(config_path):
         print(f"Error: {config_path} doesn't exist")
         exit()
+    config = ParserConfig(config_path).init_config()
 
     colors = {
         0: ["WHITE", "\033[37m"],
@@ -109,16 +112,21 @@ if __name__ == "__main__":
     ]
     opt = 0
     solve = True
-    animate = 0.05
     selected_color = colors[0][1]
     status_message = ""
-
+    anim_speed_set = False
+    animate: float = 0.0
     while (opt != len(options) - 1):
         opt = select_menu(options, status_message)
+        config = ParserConfig(config_path).init_config()
+        if not anim_speed_set:
+            animate = 0.5 / sqrt(config.width * config.height)
+            print(f'Anim speed: {animate}')
+            input('press enter to continue')
         status_message = ""
         if opt == 0:
             try:
-                status_message = generate_maze(config_path,
+                status_message = generate_maze(config,
                                                display_solve=solve,
                                                animate=animate,
                                                color=selected_color)
@@ -129,7 +137,7 @@ if __name__ == "__main__":
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
                 try:
-                    generate_maze(config_path, int(seed), display_solve=solve,
+                    generate_maze(config, int(seed), display_solve=solve,
                                   animate=animate, color=selected_color)
                 except Exception as e:
                     status_message = f"Error: {e}"
@@ -150,6 +158,7 @@ if __name__ == "__main__":
                         animate = 0.0
                     if animate > 1:
                         animate = 1.0
+                    anim_speed_set = True
                 except Exception:
                     animate = 0.05
                     status_message = "Animation speed must be a valid float. Reset to 0.05."
