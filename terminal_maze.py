@@ -9,7 +9,7 @@ import time
 
 def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
                   animate: float = 0.05, color: str = "\033[37m"
-                  ) -> None:
+                  ) -> str:
     """Generate complete ascii maze."""
     PATH_COLOR = "\033[36m"
     RESET = "\033[0m"
@@ -38,9 +38,12 @@ def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
 
         os.system('clear')
         print(ascii_maze)
+        if maze.warnings:
+            print()
+            print("\n".join(maze.warnings))
         time.sleep(animate)
         if maze_over:
             output = Output(maze)
             output.write(config.output_file)
             input('Press Enter to return to the menu')
-            break
+            return "\n".join(maze.warnings)

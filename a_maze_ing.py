@@ -58,18 +58,18 @@ def select_menu(options: list[Option_menu],
         os.system('clear')
         print("=== A-Maze-Ing ===")
 
-        if status_message:
-            print(f"\n{status_message}\n")
+        for i, opt in enumerate(options):
+            print(f"{i}. {opt.display_str}")
 
         if local_error:
             print(f"\n{local_error}\n")
 
-        for i, opt in enumerate(options):
-            print(f"{i}. {opt.display_str}")
+        if status_message:
+            print(f"\n{status_message}\n")
 
         try:
             choice = int(input(f'Choose (0-{len(options) - 1}): '))
-            if choice < 0 or choice >= len(options):
+            if choice < 0 or choice > len(options):
                 raise ValueError()
             return choice
         except ValueError:
@@ -98,49 +98,58 @@ if __name__ == "__main__":
     solve = False
     animate = 0.05
     selected_color = colors[0][1]
+    status_message = ""
 
     while (opt != len(options) - 1):
-        opt = select_menu(options)
+        opt = select_menu(options, status_message)
+        status_message = ""
         if opt == 0:
             try:
-                generate_maze(display_solve=solve, animate=animate,
-                              color=selected_color)
+                status_message = generate_maze(display_solve=solve,
+                                               animate=animate,
+                                               color=selected_color)
             except Exception as e:
-                print(f'Error: {e}')
-                input('Press Enter to continue')
+                status_message = f"Error: {e}"
 
-        if opt == 1:
+        elif opt == 1:
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
                 try:
-                    generate_maze(int(seed), display_solve=solve,
-                                  animate=animate, color=selected_color)
+                    status_message = generate_maze(int(seed),
+                                                   display_solve=solve,
+                                                   animate=animate,
+                                                   color=selected_color)
                 except Exception as e:
-                    print(f'Error: {e}')
-                    print('Press Enter to continue')
+                    status_message = f"Error: {e}"
             else:
-                print('Invalid Seed provided')
-                input('Press Enter to return to the menu')
+                status_message = "Invalid seed provided."
 
-        if opt == 2:
+        elif opt == 2:
             options[2].switch_option()
             solve = not solve
 
-        if opt == 3:
+        elif opt == 3:
             options[3].switch_option()
             if options[3].current_option == 0:
                 try:
                     animate = float(input('Enter animation '
                                           'speed (ex: 0.05): '))
+                    if animate < 0:
+                        animate = 0.0
+                    if animate > 1:
+                        animate = 1.0
                 except Exception:
-                    print('Animation speed must be valid float (ex: 0.01)')
                     animate = 0.05
+                    status_message = "Animation speed must be a valid float. Reset to 0.05."
             else:
                 animate = 0.0
 
-        if opt == 4:
+        elif opt == 4:
             options[4].switch_option()
             selected_color = colors[options[4].current_option][1]
 
         if opt == 5:
-            pygame_maze()
+            try:
+                pygame_maze()
+            except Exception as e:
+                status_message = f"Pygame error: {e}"
