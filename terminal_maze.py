@@ -38,6 +38,7 @@ def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
 
         os.system('clear')
         print(ascii_maze)
+        print(f"Seed: {maze.seed}")
         time.sleep(animate)
         if maze_over:
             output = Output(maze)
