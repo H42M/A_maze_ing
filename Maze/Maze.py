@@ -209,7 +209,7 @@ class Maze:
                         cell.is42 = True
         self.check_entry_exit_in_42()
 
-    def check_entry_exit_in_42(self):
+    def check_entry_exit_in_42(self) -> None:
         for row in self.__maze_lst:
             for cell in row:
                 if cell.is42 and (cell == self.entry or cell == self.exit):

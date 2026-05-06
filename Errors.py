@@ -3,6 +3,7 @@ class ConfigError(Exception):
 
     pass
 
+
 class MazeError(Exception):
     """Raise for Maze errors."""
 
