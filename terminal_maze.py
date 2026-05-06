@@ -1,13 +1,16 @@
 from Maze.Maze import Maze
 from Config.ParserConfig import ParserConfig
+from Config.Config import Config
 from render.terminal import render_maze
 from Maze.Output import Output
 import os
 from typing import Optional
 import time
+from random import randint
 
 
-def generate_maze(config_path: str, seed: Optional[int] = None,
+def generate_maze(config: Config,
+                  seed: Optional[int] = None,
                   display_solve: bool = True,
                   animate: float = 0.05, color: str = "\033[37m"
                   ) -> str:
@@ -15,7 +18,9 @@ def generate_maze(config_path: str, seed: Optional[int] = None,
     PATH_COLOR = "\033[36m"
     RESET = "\033[0m"
 
-    config = ParserConfig(config_path).init_config()
+    if not seed:
+        seed = randint(500, 10000)
+
     maze = Maze(config, seed=seed)
     maze.solve()
 
@@ -39,6 +44,7 @@ def generate_maze(config_path: str, seed: Optional[int] = None,
 
         os.system('clear')
         print(ascii_maze)
+        print(f'Seed: {seed}')
         if maze.warnings:
             print()
             print("\n".join(maze.warnings))
