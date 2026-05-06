@@ -25,6 +25,12 @@ lint-strict:
 	mypy . --exclude '\.venv|\.env' --strict
 	make clean
 
-run: build
+lint-doc:
+	flake8 . --exclude=.venv,.env --extend-ignore=D100,D101,D102,D103,D104
+	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	make clean
+
+
+run: install
 	.venv/bin/python a_maze_ing.py
 	make clean

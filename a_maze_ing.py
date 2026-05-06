@@ -77,7 +77,8 @@ if __name__ == "__main__":
         Option_menu('Re-Generate a new maze with seed', 1),
         Option_menu('% path from entry to exit', 2, ['Show', 'Hide']),
         Option_menu('% animation', 3, ['Disable', 'Toggle']),
-        Option_menu('Rotate maze colors (Current color: %)', 4, [color[0] for color in colors.values()]),
+        Option_menu('Rotate maze colors (Current color: %)', 4,
+                    [color[0] for color in colors.values()]),
         Option_menu('Open with pygame', 5),
         Option_menu('Quit', 6),
     ]
@@ -90,7 +91,8 @@ if __name__ == "__main__":
         opt = select_menu(options)
         if opt == 0:
             try:
-                generate_maze(display_solve=solve, animate=animate, color=selected_color)
+                generate_maze(display_solve=solve, animate=animate,
+                              color=selected_color)
             except Exception as e:
                 print(f'Error: {e}')
                 input('Press Enter to continue')
@@ -99,7 +101,8 @@ if __name__ == "__main__":
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
                 try:
-                    generate_maze(int(seed), display_solve=solve, animate=animate, color=selected_color)
+                    generate_maze(int(seed), display_solve=solve,
+                                  animate=animate, color=selected_color)
                 except Exception as e:
                     print(f'Error: {e}')
                     print('Press Enter to continue')
@@ -122,7 +125,7 @@ if __name__ == "__main__":
                     animate = 0.05
             else:
                 animate = 0.0
-        
+
         if opt == 4:
             options[4].switch_option()
             selected_color = colors[options[4].current_option][1]

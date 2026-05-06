@@ -5,6 +5,8 @@ from Maze.Cell import Cell
 from render.RenderObj import RenderObj
 from Config.GameState import GameState
 
+from Errors import MazeError
+
 from typing import Union, Optional
 
 
@@ -205,6 +207,13 @@ class Maze:
                     cell = self.get_cell((cell.x + 1, cell.y))
                     if cell:
                         cell.is42 = True
+        self.check_entry_exit_in_42()
+
+    def check_entry_exit_in_42(self) -> None:
+        for row in self.__maze_lst:
+            for cell in row:
+                if cell.is42 and (cell == self.entry or cell == self.exit):
+                    raise MazeError('Entry or Exit set in 42 Logo')
 
     def set_display_soluce(self, value: Optional[bool] = None) -> None:
         """Set or toggle solution display."""
