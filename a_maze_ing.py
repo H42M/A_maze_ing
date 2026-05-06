@@ -61,11 +61,13 @@ def select_menu(options: list[Option_menu],
         for i, opt in enumerate(options):
             print(f"{i}. {opt.display_str}")
 
-        if local_error:
-            print(f"\n{local_error}\n")
+        message = local_error or status_message
+        message = message.strip()
 
-        if status_message:
-            print(f"\n{status_message}\n")
+        if message:
+            print()
+            print(message)
+            print()
 
         try:
             choice = int(input(f'Choose (0-{len(options) - 1}): '))
@@ -87,7 +89,7 @@ if __name__ == "__main__":
     options = [
         Option_menu('Re-generate a new random maze', 0),
         Option_menu('Re-Generate a new maze with seed', 1),
-        Option_menu('% path from entry to exit', 2, ['Show', 'Hide']),
+        Option_menu('% path from entry to exit', 2, ["Hide", "Show"]),
         Option_menu('% animation', 3, ['Disable', 'Toggle']),
         Option_menu('Rotate maze colors (Current color: %)', 4,
                     [color[0] for color in colors.values()]),
@@ -95,7 +97,7 @@ if __name__ == "__main__":
         Option_menu('Quit', 6),
     ]
     opt = 0
-    solve = False
+    solve = True
     animate = 0.05
     selected_color = colors[0][1]
     status_message = ""
