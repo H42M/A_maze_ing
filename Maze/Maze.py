@@ -6,6 +6,7 @@ from render.RenderObj import RenderObj
 from Config.GameState import GameState
 
 from Errors import MazeError
+from random import randint
 
 from typing import Union, Optional
 
@@ -42,7 +43,11 @@ class Maze:
         self.__is_maze_generated = False
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
-        self.__dfs = DFS(self, seed)
+        if not seed:
+            self.__seed = randint(500, 10000)
+        else:
+            self.__seed = seed
+        self.__dfs = DFS(self, self.__seed)
 
         self.__soluce: list[Cell] = []
         self.__display_soluce = False
@@ -275,6 +280,10 @@ class Maze:
     @property
     def cell_size(self) -> tuple[int, int]:
         return self.__cell_size
+
+    @property
+    def seed(self) -> int:
+        return self.__seed
 
     @property
     def maze_lst(self) -> list[list[Cell]]:
