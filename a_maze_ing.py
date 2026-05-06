@@ -49,19 +49,31 @@ class Option_menu:
         return self.__current_option
 
 
-def select_menu(options: list[Option_menu]) -> int:
+def select_menu(options: list[Option_menu],
+                status_message: str = "") -> int:
     """Print menu selection and return user input."""
-    os.system('clear')
-    print("=== A-Maze-Ing ===")
-    [print(f"{i}. {opt.display_str}") for i, opt in enumerate(options)]
-    while (True):
+    local_error = ""
+
+    while True:
+        os.system('clear')
+        print("=== A-Maze-Ing ===")
+
+        if status_message:
+            print(f"\n{status_message}\n")
+
+        if local_error:
+            print(f"\n{local_error}\n")
+
+        for i, opt in enumerate(options):
+            print(f"{i}. {opt.display_str}")
+
         try:
             choice = int(input(f'Choose (0-{len(options) - 1}): '))
-            if choice < 0 or choice > len(options):
+            if choice < 0 or choice >= len(options):
                 raise ValueError()
             return choice
-        except Exception:
-            print('Invalid choice provided !')
+        except ValueError:
+            local_error = "Invalid choice provided!"
 
 
 if __name__ == "__main__":
