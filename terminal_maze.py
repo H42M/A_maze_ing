@@ -11,7 +11,6 @@ def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
                   animate: float = 0.05, color: str = "\033[37m"
                   ) -> None:
     """Generate complete ascii maze."""
-
     PATH_COLOR = "\033[36m"
     RESET = "\033[0m"
 
