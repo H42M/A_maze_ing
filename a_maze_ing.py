@@ -2,6 +2,8 @@ from terminal_maze import generate_maze
 from pygame_maze import pygame_maze
 import os
 from typing import Optional
+import sys
+import os.path
 
 
 class Option_menu:
@@ -65,6 +67,15 @@ def select_menu(options: list[Option_menu]) -> int:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print('Error: Only one parameter expected')
+        print("  ex: python a_maze_ing.py config.txt")
+        exit()
+    config_path = sys.argv[1]
+    if not os.path.isfile(config_path):
+        print(f"Error: {config_path} doesn't exist")
+        exit()
+
     colors = {
         0: ["WHITE", "\033[37m"],
         1: ["YELLOW", "\033[33m"],
@@ -91,7 +102,7 @@ if __name__ == "__main__":
         opt = select_menu(options)
         if opt == 0:
             try:
-                generate_maze(display_solve=solve, animate=animate,
+                generate_maze(config_path, display_solve=solve, animate=animate,
                               color=selected_color)
             except Exception as e:
                 print(f'Error: {e}')
@@ -101,7 +112,7 @@ if __name__ == "__main__":
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
                 try:
-                    generate_maze(int(seed), display_solve=solve,
+                    generate_maze(config_path, int(seed), display_solve=solve,
                                   animate=animate, color=selected_color)
                 except Exception as e:
                     print(f'Error: {e}')
@@ -131,4 +142,4 @@ if __name__ == "__main__":
             selected_color = colors[options[4].current_option][1]
 
         if opt == 5:
-            pygame_maze()
+            pygame_maze(config_path)

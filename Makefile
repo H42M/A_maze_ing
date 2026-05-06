@@ -32,5 +32,5 @@ lint-doc:
 
 
 run: install
-	.venv/bin/python a_maze_ing.py
+	.venv/bin/python a_maze_ing.py config.txt
 	make clean

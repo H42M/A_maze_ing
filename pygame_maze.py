@@ -13,10 +13,10 @@ from Config.GameState import GameState
 from Config.ThemeManager import ThemeManager
 
 
-def pygame_maze() -> None:
+def pygame_maze(config_path: str) -> None:
     """Launch pygame maze."""
     try:
-        parser = ParserConfig('config.txt')
+        parser = ParserConfig(config_path)
         config = parser.init_config()
 
         render = Render()

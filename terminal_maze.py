@@ -7,14 +7,14 @@ from typing import Optional
 import time
 
 
-def generate_maze(seed: Optional[int] = None, display_solve: bool = True,
+def generate_maze(config_path: str, seed: Optional[int] = None, display_solve: bool = True,
                   animate: float = 0.05, color: str = "\033[37m"
                   ) -> None:
     """Generate complete ascii maze."""
     PATH_COLOR = "\033[36m"
     RESET = "\033[0m"
 
-    config = ParserConfig('config.txt').init_config()
+    config = ParserConfig(config_path).init_config()
     maze = Maze(config, seed=seed)
     maze.solve()
 
