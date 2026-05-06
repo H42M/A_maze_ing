@@ -5,6 +5,7 @@ from Maze.Output import Output
 import os
 from typing import Optional
 import time
+from random import randint
 
 
 def generate_maze(config_path: str, seed: Optional[int] = None,
@@ -14,6 +15,9 @@ def generate_maze(config_path: str, seed: Optional[int] = None,
     """Generate complete ascii maze."""
     PATH_COLOR = "\033[36m"
     RESET = "\033[0m"
+
+    if not seed:
+        seed = randint(500, 10000)
 
     config = ParserConfig(config_path).init_config()
     maze = Maze(config, seed=seed)
@@ -39,6 +43,7 @@ def generate_maze(config_path: str, seed: Optional[int] = None,
 
         os.system('clear')
         print(ascii_maze)
+        print(f'Seed: {seed}')
         if maze.warnings:
             print()
             print("\n".join(maze.warnings))
