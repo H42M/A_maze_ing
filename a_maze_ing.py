@@ -91,7 +91,11 @@ if __name__ == "__main__":
     if not os.path.isfile(config_path):
         print(f"Error: {config_path} doesn't exist")
         exit()
-    config = ParserConfig(config_path).init_config()
+    try:
+        config = ParserConfig(config_path).init_config()
+    except Exception as e:
+        print(f"Configuration error: {e}")
+        sys.exit(1)
 
     colors = {
         0: ["WHITE", "\033[37m"],
