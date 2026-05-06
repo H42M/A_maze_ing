@@ -14,7 +14,7 @@ class DFS:
         self.__maze = maze
         if maze.entry:
             self.__cell = maze.entry
-        if seed:
+        if seed is not None:
             random.seed(seed)
 
     def get_instruct(self) -> Optional["Instruct"]:
