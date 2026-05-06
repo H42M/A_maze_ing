@@ -114,8 +114,8 @@ if __name__ == "__main__":
         opt = select_menu(options)
         if opt == 0:
             try:
-                generate_maze(config_path, display_solve=solve, animate=animate,
-                              color=selected_color)
+                generate_maze(config_path, display_solve=solve,
+                              animate=animate, color=selected_color)
             except Exception as e:
                 print(f'Error: {e}')
                 input('Press Enter to continue')

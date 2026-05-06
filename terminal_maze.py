@@ -7,7 +7,8 @@ from typing import Optional
 import time
 
 
-def generate_maze(config_path: str, seed: Optional[int] = None, display_solve: bool = True,
+def generate_maze(config_path: str, seed: Optional[int] = None,
+                  display_solve: bool = True,
                   animate: float = 0.05, color: str = "\033[37m"
                   ) -> None:
     """Generate complete ascii maze."""
