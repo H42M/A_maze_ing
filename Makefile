@@ -4,7 +4,7 @@ install:
 	.venv/bin/pip install -r requirements.txt
 
 debug:
-	.venv/bin/python -m pdb a_maze_ing.py
+	.venv/bin/python -m pdb a_maze_ing.py config.txt
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +
@@ -12,25 +12,30 @@ clean:
 
 fclean:
 	make clean
-	rm maze.txt
 	rm -rf .venv
+	rm -f maze.txt
 
-lint:
-	flake8 . --exclude=.venv,.env
-	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+lint: install
+	.venv/bin/flake8 . --exclude=.venv,.env
+	.venv/bin/mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 	make clean
 
-lint-strict:
-	flake8 . --exclude=.venv,.env
-	mypy . --exclude '\.venv|\.env' --strict
+lint-strict: install
+	.venv/bin/flake8 . --exclude=.venv,.env
+	.venv/bin/mypy . --exclude '\.venv|\.env' --strict
 	make clean
 
-lint-doc:
-	flake8 . --exclude=.venv,.env --extend-ignore=D100,D101,D102,D103,D104
-	mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+lint-doc: install
+	.venv/bin/flake8 . --exclude=.venv,.env --extend-ignore=D100,D101,D102,D103,D104
+	.venv/bin/mypy . --exclude '\.venv|\.env' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 	make clean
 
 
 run: install
 	.venv/bin/python a_maze_ing.py config.txt
 	make clean
+
+package: install
+	.venv/bin/python -m pip install --upgrade build
+	.venv/bin/python -m build
+	cp dist/mazegen-*.whl .
