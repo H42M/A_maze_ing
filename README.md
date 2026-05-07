@@ -1,246 +1,491 @@
-*This activity has been created as part of the 42 curriculum by ngaubil, hgeorges*
+*This activity has been created as part of the 42 curriculum by ngaubil, hgeorges.*
 
 # A-Maze-ing
 
-> *"A labyrinth is not a place to be lost, but a path to be found."*
+A-Maze-ing is a Python maze generator and visualizer. It reads a plain-text configuration file, generates a valid maze, displays it visually, writes the maze to a hexadecimal output file, and exposes the generator logic through a reusable pip-installable module named `mazegen`.
 
-A random maze generator written in Python, featuring visual rendering, generation, resolution, and an embedded **42 logo** hidden inside every maze.
+## Description
 
----
+The goal of this activity is to generate random mazes while keeping the generated data coherent and reusable. Each maze is made of cells with walls on the four cardinal directions: North, East, South, and West. The final output file stores each cell as one hexadecimal digit, where each bit represents one closed wall.
 
-## 📋 Table of Contents
+The project supports both perfect and imperfect mazes. A perfect maze has exactly one path between the entry and the exit. An imperfect maze keeps the maze connected but opens additional walls to create loops and multiple valid paths.
 
-- [Overview](#overview)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration File](#configuration-file)
-- [Output Format](#output-format)
-- [Project Structure](#project-structure)
-- [Algorithms](#algorithms)
-- [Development](#development)
-
----
-This activity has been created as part of
-the 42 curriculum by
-## Overview
-
-A-Maze-ing generates random mazes from a configuration file and outputs them in a hexadecimal wall-encoded format. Each cell encodes its walls (North, South, East, West) as a single hex digit. Mazes can be **perfect** (single path between entry and exit) or **imperfect** (multiple paths). A visual representation is displayed in the terminal, and a stylized **"42"** pattern is always embedded in the maze.
-
----
+The project also provides visual rendering. The terminal version shows the maze, the entry, the exit, and optionally the shortest solution path. A Pygame version is also available with buttons, themes, and a movable player.
 
 ## Features
 
-- **Random maze generation** with reproducible seeds
-- **Perfect maze** support (unique path between entry and exit)
-- **pathfinding** to resolve the maze
-- **Terminal visual rendering** with optional step-by-step animation
-- **Embedded "42" logo** composed of fully closed cells
-- **Hexadecimal output file** encoding wall states per cell
-- **Fully configurable** via a plain-text config file
-
----
+- Random maze generation from a configuration file.
+- Reproducible generation with a seed.
+- Perfect maze generation using Depth-First Search / recursive backtracking.
+- Optional imperfect maze generation by opening extra coherent walls.
+- Entry and exit validation.
+- Fully closed external borders.
+- Coherent wall encoding between neighboring cells.
+- Shortest path solving from entry to exit.
+- Hexadecimal output file compatible with the subject format.
+- Visible `42` pattern made from fully closed cells when the maze is large enough.
+- Terminal rendering with optional solution display, animation, and wall color changes.
+- Pygame rendering with theme selection, regeneration, solution toggle, and player movement.
+- Standalone reusable `mazegen.py` module.
+- Buildable Python package producing a `mazegen-*` wheel or source archive.
 
 ## Requirements
 
-- Python **3.10** or later
-- Dependencies listed in `requirements.txt`
+- Python 3.10 or later.
+- A virtual environment is recommended.
+- Project dependencies are listed in `requirements.txt`.
 
----
+The main dependencies used by the complete activity are:
 
-## Installation
+```text
+flake8
+mypy
+pygame
+pydantic
+```
+
+The standalone reusable `mazegen` package itself has no third-party runtime dependency.
+
+## Instructions
+
+### Install dependencies
+
+From the root of the repository:
 
 ```bash
-# Install dependencies
 make install
 ```
 
----
+This creates `.venv`, upgrades `pip`, and installs the dependencies from `requirements.txt`.
 
-## Usage
+### Run the activity
+
+The required subject command is:
 
 ```bash
 python3 a_maze_ing.py config.txt
 ```
 
-or
+You can also use:
 
 ```bash
-make run 
+make run
 ```
 
-| Argument     | Description                              |
-|--------------|------------------------------------------|
-| `config.txt` | Path to your configuration file          |
+The program expects exactly one argument: the path to a configuration file.
 
-**Examples:**
+### Debug
 
 ```bash
-# Run with default config
-make run
+make debug
+```
 
-# Lint the project
+This runs the main script with Python's built-in debugger.
+
+### Clean generated files
+
+```bash
+make clean
+```
+
+This removes Python cache folders and mypy cache folders.
+
+For a deeper cleanup, including the virtual environment and generated maze output:
+
+```bash
+make fclean
+```
+
+### Lint and type-check
+
+```bash
 make lint
 ```
 
----
+This runs:
 
-## Configuration File
+```bash
+flake8 .
+mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+```
 
-The configuration file uses `KEY=VALUE` pairs, one per line. Lines starting with `#` are treated as comments.
+An optional stricter target is also available:
+
+```bash
+make lint-strict
+```
+
+### Build the reusable package
+
+The reusable generator package is built from the root-level `mazegen.py` module and `pyproject.toml`.
+
+```bash
+make package
+```
+
+This builds the package and copies the wheel to the root of the repository. After building, the root of the repository should contain a file named like:
+
+```text
+mazegen-1.0.0-py3-none-any.whl
+```
+
+The build may also create files inside `dist/`, such as:
+
+```text
+dist/mazegen-1.0.0-py3-none-any.whl
+dist/mazegen-1.0.0.tar.gz
+```
+
+Both `.whl` and `.tar.gz` are valid Python build artifacts. The important file for review is the root-level `mazegen-*` package file.
+
+Manual build command:
+
+```bash
+.venv/bin/python -m pip install --upgrade build
+.venv/bin/python -m build
+cp dist/mazegen-*.whl .
+```
+
+### Test the reusable package in a clean virtual environment
+
+```bash
+python3 -m venv package_test_env
+package_test_env/bin/python -m pip install ./mazegen-1.0.0-py3-none-any.whl
+package_test_env/bin/python - <<'PY'
+from mazegen import MazeGenerator
+
+generator = MazeGenerator(width=10, height=8, entry=(0, 0), exit=(9, 7), seed=42)
+generator.generate()
+
+print(generator.to_hex_rows())
+print(generator.solution)
+print(generator.solution_moves)
+PY
+```
+
+## Configuration file
+
+The configuration file is a plain-text file using one `KEY=VALUE` pair per line.
+
+Rules:
+
+- Empty lines are ignored.
+- Lines starting with `#` are ignored as comments.
+- Spaces around keys and values are allowed.
+- Coordinates use the format `x,y`.
+- All mandatory keys must be present.
+
+Complete structure:
 
 ```ini
-# Maze dimensions
-WIDTH=20
-HEIGHT=15
-
-# Entry and exit coordinates (x,y)
+WIDTH=10
+HEIGHT=10
 ENTRY=0,0
-EXIT=19,14
-
-# Output file
-OUTPUT_FILE=output.txt
-
-# Perfect maze (single path between entry and exit)
+EXIT=9,9
+OUTPUT_FILE=maze.txt
 PERFECT=True
 ```
 
 ### Mandatory keys
 
-| Key           | Description                        | Example          |
-|---------------|------------------------------------|------------------|
-| `WIDTH`       | Number of columns                  | `WIDTH=20`       |
-| `HEIGHT`      | Number of rows                     | `HEIGHT=15`      |
-| `ENTRY`       | Entry cell coordinates `(x,y)`     | `ENTRY=0,0`      |
-| `EXIT`        | Exit cell coordinates `(x,y)`      | `EXIT=19,14`     |
-| `OUTPUT_FILE` | Name of the output file            | `OUTPUT_FILE=maze.txt` |
-| `PERFECT`     | Whether the maze is perfect        | `PERFECT=True`   |
+| Key | Type | Format | Description | Example |
+| --- | --- | --- | --- | --- |
+| `WIDTH` | Integer | `WIDTH=<number>` | Maze width in cells. Must be greater than 3 and at most 200. | `WIDTH=20` |
+| `HEIGHT` | Integer | `HEIGHT=<number>` | Maze height in cells. Must be greater than 3 and at most 200. | `HEIGHT=15` |
+| `ENTRY` | Coordinate | `ENTRY=x,y` | Entry cell coordinates. Must be inside the maze. | `ENTRY=0,0` |
+| `EXIT` | Coordinate | `EXIT=x,y` | Exit cell coordinates. Must be inside the maze and different from entry. | `EXIT=19,14` |
+| `OUTPUT_FILE` | String | `OUTPUT_FILE=<path>` | File where the hexadecimal maze output is written. | `OUTPUT_FILE=maze.txt` |
+| `PERFECT` | Boolean | `PERFECT=True` or `PERFECT=False` | Generates a perfect maze when true, and an imperfect maze when false. | `PERFECT=True` |
 
-A default `config.txt` is included in the repository.
+A default/example `config.txt` is provided at the root of the repository.
 
----
+## Output file format
 
-## Output Format
+The output file starts with the maze grid. Each cell is encoded as one hexadecimal digit representing its closed walls.
 
-Each cell is encoded as a **single hexadecimal digit** representing which walls are closed, using bitmask values:
+| Direction | Bit | Decimal value |
+| --- | --- | --- |
+| North | 0 | 1 |
+| East | 1 | 2 |
+| South | 2 | 4 |
+| West | 3 | 8 |
 
-| Wall  | Bit | Value |
-|-------|-----|-------|
-| North | 0   | 1     |
-| East  | 1   | 2     |
-| South | 2   | 4     |
-| West  | 3   | 8     |
+Examples:
 
-A cell with all 4 walls closed has value `8 + 4 + 2 + 1 = 15` → `F`.  
-A cell open to the South and West has value `1 + 2` → `3`.
+- `F` means all four walls are closed: `1 + 2 + 4 + 8 = 15`.
+- `3` means North and East walls are closed: `1 + 2 = 3`.
+- `A` means East and West walls are closed: `2 + 8 = 10`.
 
-**Example output (`maze.txt`):**
-```
-F9F3F6...
-...
-```
+Rows are written from top to bottom, one line per maze row.
 
----
+After the grid, the file contains an empty line followed by:
 
-## Project Structure
+1. Entry coordinates.
+2. Exit coordinates.
+3. The shortest valid path from entry to exit using `N`, `E`, `S`, and `W`.
 
-```
-./
-├── a_maze_ing.py
-├── Config
-│   ├── Config.py
-│   ├── GameState.py
-│   ├── __init__.py
-│   ├── ParserConfig.py
-│   ├── ThemeManager.py
-│   └── themes.json
-├── config.txt
-├── Errors.py
-├── Makefile
-├── Maze
-│   ├── algo
-│   │   ├── AStar.py
-│   │   ├── Dfs.py
-│   │   └── __init__.py
-│   ├── Cell.py
-│   ├── __init__.py
-│   ├── logo_42.py
-│   ├── Maze.py
-│   └── Output.py
-├── maze.txt
-├── player
-│   ├── __init__.py
-│   └── Player.py
-├── pygame_maze.py
-├── README.md
-├── render
-│   ├── __init__.py
-│   ├── RenderBloc.py
-│   ├── RenderButtons.py
-│   ├── RenderDiv.py
-│   ├── RenderObj.py
-│   ├── Render.py
-│   ├── RenderText.py
-│   └── terminal.py
-├── requirements.txt
-├── srcs
-│   ├── mario
-│   │   ├── mario-cloud
-│   │   │   ├── mario-cloud-bg-1.png
-│   │   │   └── mario-cloud.png
-│   │   ├── mario-coin.png
-│   │   ├── mario-flag-1.png
-│   │   └── mario.png
-│   └── metroid
-│       ├── bg.jpg
-│       ├── bloc.png
-│       ├── enemy.png
-│       ├── lava-bloc.png
-│       ├── metroid-samus.png
-│       └── samus.png
-└── terminal_maze.py
+Example shape:
+
+```text
+FFFFFFFF
+F...maze rows...
+FFFFFFFF
+
+0,0
+7,7
+EESSWWNN
 ```
 
----
+All lines end with a newline character.
 
-## Algorithms
+## Visual representation
 
-### Generation — Depth-First Search (DFS)
+The project provides two visual modes.
 
-The maze is built using a **recursive backtracker** (DFS). Starting from the entry cell, the algorithm carves passages by visiting unvisited neighbors randomly until all cells have been visited. This guarantees a **spanning tree** — i.e., a perfect maze with exactly one path between any two cells.
+### Terminal mode
 
-When `PERFECT=False`, random walls are additionally broken to create multiple paths, while respecting the 2-cell corridor width limit and preserving the 42 pattern.
-
-### Resolution — A\*
-
-The maze is solved using the **A\* algorithm**, which finds the shortest path from entry to exit using a heuristic (Manhattan distance). The solution path is stored and can be displayed or exported as a direction string (`N`, `S`, `E`, `W`).
-
----
-
-## Development
+The terminal display is available from the main menu after running:
 
 ```bash
-# Remove caches and temporary files
-make clean
-
-# Run linting (flake8 + mypy)
-make lint
-
-# Run strict linting (optional)
-make lint-strict
+python3 a_maze_ing.py config.txt
 ```
 
-### Code Standards
+Available menu actions:
 
-- Style: **flake8**
-- Type checking: **mypy** with `--warn-return-any --warn-unused-ignores --disallow-untyped-defs --check-untyped-defs`
-- Docstrings: **PEP 257** (Google style)
-- All functions include **type hints**
+| Option | Action |
+| --- | --- |
+| `0` | Re-generate a new random maze. |
+| `1` | Re-generate a new maze with a user-provided seed. |
+| `2` | Show or hide the solution path. |
+| `3` | Enable or disable animation speed. |
+| `4` | Rotate wall colors. |
+| `5` | Open the Pygame visualizer. |
+| `6` | Quit. |
 
----
+### Pygame mode
 
-## License
+The Pygame visualizer includes buttons to:
 
-This project is part of the **42 Association** curriculum.  
-All rights reserved — see [legal@42.fr](mailto:legal@42.fr) for usage inquiries.
+- show or hide the solution;
+- generate a new maze;
+- choose a visual theme.
+
+The player can be moved with the arrow keys while respecting wall collisions.
+
+## Maze generation algorithm
+
+The main generation algorithm is Depth-First Search using the recursive backtracker strategy, implemented iteratively.
+
+The generation starts from the entry cell. At each step, it chooses a random unvisited neighbor, opens the wall between the current cell and that neighbor, and continues from the neighbor. When no unvisited neighbor is available, it backtracks until another unvisited neighbor can be found. This continues until all walkable cells have been visited.
+
+The `42` pattern cells are treated as blocked cells. They remain fully closed and are skipped by the generation algorithm. If the maze is too small, if the pattern overlaps the entry or exit, or if the pattern would disconnect the maze, the pattern is omitted and a warning is displayed.
+
+When `PERFECT=True`, the resulting maze is kept as a spanning tree, which means there is exactly one path between any two walkable cells.
+
+When `PERFECT=False`, the program opens additional walls after the DFS generation. These extra openings create loops and multiple possible paths while keeping neighboring wall encodings coherent.
+
+## Why this algorithm was chosen
+
+Depth-First Search / recursive backtracking was chosen because:
+
+- it is simple to explain during review;
+- it naturally produces perfect mazes;
+- it is easy to make reproducible with a random seed;
+- it works well with an animated generation display;
+- it maps cleanly to the cell-and-wall representation used by the project;
+- it can skip the fully closed `42` pattern cells without changing the whole architecture.
+
+For solving, the main project uses A* with Manhattan distance to find a shortest path from entry to exit.
+
+## Reusable code and package
+
+The reusable part of this project is the root-level file:
+
+```text
+mazegen.py
+```
+
+It contains a standalone `MazeGenerator` class that can be imported by another Python project without importing the terminal renderer, Pygame renderer, menu system, or configuration parser.
+
+The package is configured by:
+
+```text
+pyproject.toml
+```
+
+The package name is:
+
+```text
+mazegen
+```
+
+The generated build artifact is named like:
+
+```text
+mazegen-1.0.0-py3-none-any.whl
+```
+
+### Basic reusable usage
+
+```python
+from mazegen import MazeGenerator
+
+generator = MazeGenerator(width=20, height=15)
+generator.generate()
+
+print(generator.structure)
+print(generator.solution)
+print(generator.solution_moves)
+```
+
+### Custom parameters
+
+```python
+from mazegen import MazeGenerator
+
+generator = MazeGenerator(
+    width=30,
+    height=20,
+    entry=(0, 0),
+    exit=(29, 19),
+    seed=1234,
+    perfect=True,
+)
+generator.generate()
+```
+
+Available constructor parameters:
+
+| Parameter | Description |
+| --- | --- |
+| `width` | Maze width in cells. |
+| `height` | Maze height in cells. |
+| `entry` | Entry coordinate as `(x, y)`. Defaults to `(0, 0)`. |
+| `exit` | Exit coordinate as `(x, y)`. Defaults to the bottom-right cell. |
+| `seed` | Optional random seed for reproducible generation. |
+| `perfect` | Keeps exactly one path when true. Opens extra walls when false. |
+| `include_logo_42` | Reserves fully closed cells shaped like `42` when possible. |
+| `extra_open_probability` | Controls how many extra walls may be opened when `perfect=False`. |
+
+### Accessing generated data
+
+After calling `generate()`, the reusable generator exposes:
+
+| Attribute or method | Return type | Description |
+| --- | --- | --- |
+| `structure` | `list[list[int]]` | The generated maze as a copied 2D grid of wall bitmasks. |
+| `solution` | `list[tuple[int, int]]` | The shortest path as coordinates from entry to exit. |
+| `solution_moves` | `str` | The shortest path as `N`, `E`, `S`, `W` moves. |
+| `to_hex_rows()` | `list[str]` | The maze as hexadecimal text rows. |
+| `to_output_text()` | `str` | A subject-style output string containing rows, entry, exit, and solution. |
+| `logo_cells` | `set[tuple[int, int]]` | Coordinates reserved for the `42` pattern. |
+| `warnings` | `list[str]` | Non-fatal warnings, such as a maze being too small for the `42` pattern. |
+
+The reusable structure does not depend on the output file format, but it uses the same wall bitmask values for convenience.
+
+## Project structure
+
+```text
+.
+├── a_maze_ing.py              # Main required entry point
+├── config.txt                 # Default/example configuration file
+├── Makefile                   # Install, run, debug, lint, clean, package targets
+├── pyproject.toml             # Python package build configuration for mazegen
+├── mazegen.py                 # Standalone reusable generator module
+├── test_mazegen.py            # Small package usage test
+├── requirements.txt           # Development and runtime dependencies
+├── Config/                    # Config parsing, validation, game state, themes
+├── Maze/                      # Main project maze model, DFS generation, A* solving, output
+├── render/                    # Pygame rendering components
+├── player/                    # Pygame player movement and collision
+├── srcs/                      # Theme assets
+├── terminal_maze.py           # Terminal generation and rendering workflow
+└── pygame_maze.py             # Pygame visualizer workflow
+```
+
+## Advanced features
+
+The project includes several features beyond basic file generation:
+
+- Terminal menu workflow.
+- Animated terminal generation.
+- Solution path toggle.
+- Wall color rotation.
+- Pygame graphical display.
+- Theme selection through `Config/themes.json`.
+- Player movement with wall collision.
+- Reusable pip-installable generator module.
+
+## Team and project management
+
+### Team roles
+
+- `hgeorges`: maze generation/refinement, configuration validation fixes, terminal workflow, output format checks, `42` logo edge cases, reusable `mazegen` module, packaging, lint/build checks.
+- `ngaubil`: Pygame visual rendering, UI/buttons, theme management, seed display, output integration, animation behavior, initial README structure, project integration fixes.
+
+Both team members worked on debugging, merging branches, cleaning style issues, and keeping the implementation aligned with the subject requirements.
+
+### Initial planning
+
+The project was planned in stages:
+
+1. Build a working maze model and generator.
+2. Parse and validate the configuration file.
+3. Export the maze in the required hexadecimal format.
+4. Add a visual representation.
+5. Add interactions: regeneration, solution toggle, and colors.
+6. Add the `42` pattern constraint.
+7. Clean lint/type issues and improve error handling.
+8. Add the reusable `mazegen` package and documentation.
+
+### How the planning evolved
+
+The implementation started with the core maze model and terminal output because these were the safest mandatory requirements to validate. Pygame rendering and themes were then added as a richer visual layer. Near the end, the project was adjusted to better match the reusability requirement by extracting a clean standalone `mazegen.py` module and adding `pyproject.toml` packaging support.
+
+### What worked well
+
+- The cell wall model made output encoding straightforward.
+- DFS generation was easy to animate and explain.
+- A* solving gave a clear shortest path for display and export.
+- The menu made subject-required interactions easy to access.
+- Keeping `mazegen.py` standalone made the reusable module simpler and safer to install.
+
+### What could be improved
+
+- The reusable package could eventually become the single source of truth for both the main project and external users.
+- More automated tests could be added for edge cases, such as very small mazes, invalid configurations, and impossible `42` logo placement.
+- The Pygame code could be further separated from maze logic to reduce coupling.
+- The Makefile package target could be adjusted to build directly at the root with `python -m build --outdir .`.
+
+### Tools used
+
+- Git and GitHub for version control and branch merging.
+- Python virtual environments for dependency isolation.
+- `flake8` for style checks.
+- `mypy` for static type checking.
+- `pydantic` for configuration validation.
+- `pygame` for graphical rendering.
+- Standard Python packaging tools: `pyproject.toml`, `setuptools`, `wheel`, and `build`.
+- VS Code for development.
+- AI assistance for subject interpretation, compliance checking, packaging guidance, reusable-module refactoring guidance, and README drafting. AI-generated suggestions were reviewed, tested, and adapted before inclusion.
+
+## Resources
+
+Classic references and documentation used or useful for this project:
+
+- Python documentation: https://docs.python.org/3/
+- Python `venv` documentation: https://docs.python.org/3/library/venv.html
+- Python packaging guide: https://packaging.python.org/en/latest/tutorials/packaging-projects/
+- PyPA `build` documentation: https://build.pypa.io/en/stable/
+- setuptools documentation: https://setuptools.pypa.io/
+- Pygame documentation: https://www.pygame.org/docs/
+- Pydantic documentation: https://docs.pydantic.dev/
+- Flake8 documentation: https://flake8.pycqa.org/
+- Mypy documentation: https://mypy.readthedocs.io/
+- Maze generation reference: https://en.wikipedia.org/wiki/Maze_generation_algorithm
+- Depth-First Search reference: https://en.wikipedia.org/wiki/Depth-first_search
+- A* search algorithm reference: https://en.wikipedia.org/wiki/A*_search_algorithm
+
+## License and subject context
+
+This project was created for the 42 curriculum. The subject material belongs to Association 42. This repository contains the implementation produced for the activity.
