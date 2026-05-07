@@ -42,7 +42,7 @@ class Maze:
         self.__sol_tex: Optional[
             Union[tuple[int, int, int], pygame.Surface]] = sol_tex
         self.__is_maze_generated = False
-        self.__warnings: list [str] = []
+        self.__warnings: list[str] = []
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
         if not seed:
@@ -168,7 +168,7 @@ class Maze:
                 "(minimum size: 7x5)."
             )
             return
-        
+
         starting_cell = self.get_cell((
             (self.__width - logo_width) // 2,
             (self.__height - logo_height) // 2
@@ -341,7 +341,7 @@ class Maze:
     @property
     def display_soluce(self) -> bool:
         return self.__display_soluce
-    
+
     @property
     def warnings(self) -> list[str]:
         return self.__warnings

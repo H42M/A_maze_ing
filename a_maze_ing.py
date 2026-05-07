@@ -139,8 +139,10 @@ if __name__ == "__main__":
             seed = input('Enter valid seed (ex: 3242): ')
             if seed.isdigit():
                 try:
-                    generate_maze(config, int(seed), display_solve=solve,
-                                  animate=animate, color=selected_color)
+                    status_message = generate_maze(config, int(seed),
+                                                   display_solve=solve,
+                                                   animate=animate,
+                                                   color=selected_color)
                 except Exception as e:
                     status_message = f"Error: {e}"
             else:

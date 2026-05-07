@@ -1,5 +1,4 @@
 from Maze.Maze import Maze
-from Config.ParserConfig import ParserConfig
 from Config.Config import Config
 from render.terminal import render_maze
 from Maze.Output import Output
