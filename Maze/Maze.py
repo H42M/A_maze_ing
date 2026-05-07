@@ -45,7 +45,7 @@ class Maze:
         self.__warnings: list[str] = []
         self.__maze_lst = self.__empty_maze()
         self.__set_42_logo()
-        if not seed:
+        if seed is None:
             self.__seed = randint(500, 10000)
         else:
             self.__seed = seed

@@ -17,7 +17,7 @@ def generate_maze(config: Config,
     PATH_COLOR = "\033[36m"
     RESET = "\033[0m"
 
-    if not seed:
+    if seed is None:
         seed = randint(500, 10000)
 
     maze = Maze(config, seed=seed)
