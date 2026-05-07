@@ -125,8 +125,6 @@ if __name__ == "__main__":
         config = ParserConfig(config_path).init_config()
         if not anim_speed_set:
             animate = 0.5 / sqrt(config.width * config.height)
-            print(f'Anim speed: {animate}')
-            input('press enter to continue')
         status_message = ""
         if opt == 0:
             try:
@@ -165,7 +163,8 @@ if __name__ == "__main__":
                     anim_speed_set = True
                 except Exception:
                     animate = 0.05
-                    status_message = "Animation speed must be a valid float. Reset to 0.05."
+                    status_message = "Animation speed must be a valid float.\
+                        Reset to 0.05."
             else:
                 animate = 0.0
 
