@@ -277,7 +277,6 @@ class Maze:
                 if (sum([getattr(cell, w) for w in "nsew"]) >= 3 and
                         not cell.is42):
                     end_points.append(cell)
-        print(f"Walls to break: {len(end_points)}")
 
         for cell in end_points:
             walls_present = [w for w in "nsew" if getattr(cell, w)]
