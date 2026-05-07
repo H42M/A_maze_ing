@@ -244,6 +244,7 @@ class Maze:
             return
 
     def check_entry_exit_in_42(self) -> None:
+        """Raise if entry or exit overlaps the 42 pattern."""
         for row in self.__maze_lst:
             for cell in row:
                 if cell.is42 and (cell == self.entry or cell == self.exit):

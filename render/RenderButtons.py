@@ -208,6 +208,7 @@ class ToggleButton(Button):
         self._enable_color = enable_color or self.DEFAULT_ENABLE_COLOR
 
     def _resolve_color(self) -> tuple[int, int, int]:
+        """Return the color matching the toggle state."""
         base = (self._enable_color if self._callback_state()
                 else self._disable_color)
         return self._apply_hover(base)
@@ -236,6 +237,7 @@ class SelectButton(Button):
         return self._options[self.selected_opt]
 
     def _resolve_color(self) -> tuple[int, int, int]:
+        """Return the select button color."""
         if not self._color:
             return self._apply_hover((255, 0, 0))
         return self._apply_hover(self._color)
